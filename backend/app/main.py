@@ -30,22 +30,18 @@
 
 # if __name__ == "__main__":
 #     main()
-
 from services.coingecko_service import CoinGeckoService
-
-CoinGeckoService
 
 
 def main():
 
-    print("==============================")
-    print("       CRYPTO TRACKER")
-    print("==============================")
-
-    print("Aplicación iniciada")
     service = CoinGeckoService()
-    response = service.ping()
-    print(response)
+
+    coins = service.get_market_coins()
+
+    for coin in coins:
+
+        print(coin["name"], "| $", coin["current_price"])
 
 
 if __name__ == "__main__":
