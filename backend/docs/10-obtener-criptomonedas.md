@@ -50,16 +50,13 @@ Tiene:
 
 ## Arquitectura actual
 
+```shell
 main.py
-
-↓
-
+    ↓
 CoinGeckoService
-
-↓
-
+    ↓
 CoinMapper
-
-↓
-
+    ↓
 Coin Model
+
+```
