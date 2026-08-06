@@ -1,15 +1,57 @@
+import unittest
+from unittest.mock import patch
+
 from app.models.coin import Coin
 from app.repositories.coin_repository import CoinRepository
 
 
-def main():
-    coin = Coin(id="bitcoin", symbol="btc", name="Bitcoin", market_cap_rank=1)
+class FakeCursor:
+    def __init__(self):
+        self.executed = None
+        self.closed = False
 
-    repository = CoinRepository()
+    def execute(self, query, values):
+        self.executed = (query, values)
 
-    repository.save(coin)
-    print("Moneda guardada correctamente.")
+    def close(self):
+        self.closed = True
 
 
-if __name__ == "__main__":
-    main()
+class FakeConnection:
+    def __init__(self, cursor):
+        self._cursor = cursor
+        self.committed = False
+        self.closed = False
+
+    def cursor(self):
+        return self._cursor
+
+    def commit(self):
+        self.committed = True
+
+    def close(self):
+        self.closed = True
+
+
+class CoinRepositoryTest(unittest.TestCase):
+    @patch("app.repositories.coin_repository.get_connection")
+    def test_save_executes_upsert_query(self, mock_get_connection):
+        cursor = FakeCursor()
+        connection = FakeConnection(cursor)
+        mock_get_connection.return_value = connection
+
+        repository = CoinRepository()
+        repository.save(
+            Coin(id="bitcoin", symbol="btc", name="Bitcoin", market_cap_rank=1)
+        )
+
+        self.assertTrue(connection.committed)
+        self.assertTrue(connection.closed)
+        self.assertTrue(cursor.closed)
+        self.assertIsNotNone(cursor.executed)
+
+        query, values = cursor.executed
+        self.assertIn("INSERT INTO coins", query)
+        self.assertIn("ON DUPLICATE KEY UPDATE", query)
+        self.assertEqual(values, ("bitcoin", "btc", "Bitcoin", 1))
+

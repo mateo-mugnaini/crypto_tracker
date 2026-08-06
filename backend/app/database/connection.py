@@ -1,15 +1,15 @@
 import mysql.connector
 
-from app.config.settings import Settings
+from app.config.settings import settings
 
 
 def get_connection():
 
     connection = mysql.connector.connect(
-        host=Settings.mysql_host,
-        port=Settings.mysql_port,
-        user=Settings.mysql_user,
-        password=Settings.mysql_password,
-        database=Settings.mysql_database,
+        host=settings.mysql_host,
+        port=settings.mysql_port,
+        user=settings.mysql_user,
+        password=settings.mysql_password,
+        database=settings.mysql_database,
     )
     return connection

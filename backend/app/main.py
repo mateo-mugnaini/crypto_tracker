@@ -1,47 +1,29 @@
-# # from utils import sumar
-# # import utils
+from pathlib import Path
+import sys
 
-# # print("Opcion 1")
-# # print(sumar(2, 5))
+if __package__ in {None, ""}:
+    sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-# # print("Opcion 2")
-# # print(utils.sumar(2, 5))
-
-# from utils import mostrar_titulo
-# from models.coin import Coin
-
-
-# def main():
-#     mostrar_titulo()
-#     print("¡Bienvenido!")
-#     print("El proyecto se ha iniciado correctamente.")
-
-#     print("Creando un objeto para COINS")
-#     peso_argentino = Coin(name="Peso Argentino", symbol="ARS", value=100)
-#     peso_argentino.show()
-#     print("cambio de valor")
-#     peso_argentino.value = 200
-#     peso_argentino.show()
-#     # bitcoin = Coin("Bitcoin", "BTC")
-#     # ethereum = Coin("Ethereum", "ETH")
-#     # bitcoin.show()
-#     # ethereum.show()
-
-
-# if __name__ == "__main__":
-#     main()
-from services.coingecko_service import CoinGeckoService
+from app.api.coingecko_client import CoinGeckoClient
+from app.repositories.coin_repository import CoinRepository
+from app.services.coin_service import CoinService
 
 
 def main():
+    service = CoinService(CoinRepository(), CoinGeckoClient())
 
-    service = CoinGeckoService()
+    try:
+        coin = service.update_coin("bitcoin")
 
-    coins = service.get_market_coins()
+        print("================")
+        print("Moneda actualizada")
+        print("================")
+        print(f"{coin.name} ({coin.symbol.upper()})")
+        print(f"Ranking: #{coin.market_cap_rank}")
 
-    for coin in coins:
-
-        print(coin["name"], "| $", coin["current_price"])
+    except Exception as error:
+        print("No se pudo completar la sincronización con CoinGecko/MySQL.")
+        print(f"Detalle: {error}")
 
 
 if __name__ == "__main__":

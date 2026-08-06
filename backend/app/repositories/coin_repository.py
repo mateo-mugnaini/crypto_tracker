@@ -8,6 +8,7 @@ class CoinRepository:
     def save(self, coin: Coin):
 
         connection = None
+        cursor = None
 
         try:
 
@@ -46,6 +47,10 @@ class CoinRepository:
             connection.commit()
 
         finally:
+
+            if cursor:
+
+                cursor.close()
 
             if connection:
 

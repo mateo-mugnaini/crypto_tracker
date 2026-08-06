@@ -6,20 +6,14 @@ load_dotenv()
 
 
 class Settings:
-
-    coingecko_base_url = os.getenv("COINGECKO_BASE_URL")
-
-    request_timeout = int(os.getenv("REQUEST_TIMEOUT", 10))
-
-    mysql_host = os.getenv("MYSQL_HOST")
-
-    mysql_port = int(os.getenv("MYSQL_PORT", 3306))
-
-    mysql_user = os.getenv("MYSQL_USER")
-
-    mysql_password = os.getenv("MYSQL_PASSWORD")
-
-    mysql_database = os.getenv("MYSQL_DATABASE")
+    def __init__(self):
+        self.coingecko_base_url = os.getenv("COINGECKO_BASE_URL")
+        self.request_timeout = int(os.getenv("REQUEST_TIMEOUT", 10))
+        self.mysql_host = os.getenv("MYSQL_HOST")
+        self.mysql_port = int(os.getenv("MYSQL_PORT", 3306))
+        self.mysql_user = os.getenv("MYSQL_USER")
+        self.mysql_password = os.getenv("MYSQL_PASSWORD")
+        self.mysql_database = os.getenv("MYSQL_DATABASE")
 
 
 settings = Settings()
