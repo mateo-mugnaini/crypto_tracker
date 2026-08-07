@@ -68,3 +68,43 @@ class UserRepository:
 
         cursor.close()
         connection.close()
+
+    def find_all(self):
+        connection = get_connection()
+
+        cursor = connection.cursor(dictionary=True)
+
+        query = """
+        SELECT *
+        FROM users
+        """
+
+        cursor.execute(query)
+
+        users = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        return users
+
+    def find_by_id(self, user_id):
+
+        connection = get_connection()
+
+        cursor = connection.cursor(dictionary=True)
+
+        query = """
+        SELECT *
+        FROM users
+        WHERE id = %s
+        """
+
+        cursor.execute(query, (user_id,))
+
+        user = cursor.fetchone()
+
+        cursor.close()
+        connection.close()
+
+        return user
