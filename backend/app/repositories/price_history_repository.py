@@ -29,3 +29,26 @@ class PriceHistoryRepository:
 
         cursor.close()
         connection.close()
+
+    def find_by_coin(self, coin_id):
+
+        connection = get_connection()
+
+        cursor = connection.cursor(dictionary=True)
+
+        query = """
+        SELECT *
+        FROM price_history
+        WHERE coin_id = %s
+        ORDER BY recorded_at DESC
+        """
+
+        cursor.execute(query, (coin_id))
+
+        history = cursor.fetchall()
+
+        cursor.close()
+
+        connection.close()
+
+        return history
