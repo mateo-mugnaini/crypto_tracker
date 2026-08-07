@@ -27,10 +27,10 @@ class CoinServiceTest(unittest.TestCase):
         repository = FakeRepository()
         api_client = FakeApiClient(
             {
-                "id": "bitcoin",
-                "symbol": "btc",
-                "name": "Bitcoin",
-                "market_cap_rank": 1,
+                "id": "usdt",
+                "symbol": "usdt",
+                "name": "Dolar Cripto",
+                "market_cap_rank": 2,
             }
         )
 
@@ -53,4 +53,3 @@ class CoinServiceTest(unittest.TestCase):
 
         with self.assertRaises(CoinGeckoException):
             service.update_coin("bitcoin")
-

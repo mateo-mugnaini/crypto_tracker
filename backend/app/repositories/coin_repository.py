@@ -97,3 +97,47 @@ class CoinRepository:
         connection.close()
 
         return coin
+
+    def exists(self, coin_id):
+
+        connection = get_connection()
+
+        cursor = connection.cursor()
+
+        query = """
+        SELECT COUNT(*)
+        FROM coins
+        WHERE id =%s
+        """
+
+        cursor.execute(query, (coin_id))
+
+        count = cursor.fetchone()[0]
+
+        cursor.close()
+        connection.close()
+
+        return count > 0
+
+    def update(self, coin):
+
+        connection = get_connection()
+
+        cursor = connection.cursor()
+
+        query = """
+        UPDATE coins
+        SET
+            symbol = %s,
+            name = %s,
+            market_cap_rank = %s
+        WHERE id = %s
+        """
+
+        cursor.execute(query, (coin.symbol, coin.name, coin.market_cap_rank, coin.id))
+
+        connection.commit()
+
+        cursor.close()
+
+        connection.close()

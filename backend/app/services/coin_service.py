@@ -18,6 +18,9 @@ class CoinService:
 
         coin = CoinMapper.to_coin(data)
 
-        self.repository.save(coin)
+        if self.repository.exists(coin.id):
+            self.repository.update(coin)
+        else:
+            self.repository.save(coin)
 
         return coin
