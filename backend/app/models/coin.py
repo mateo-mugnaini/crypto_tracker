@@ -1,9 +1,11 @@
-from dataclasses import dataclass
 
-
-@dataclass
 class Coin:
-    id: str
-    symbol: str
-    name: str
-    market_cap_rank: int | None = None
+
+    def __init__(self, id, symbol, name, market_cap_rank):
+        self.id = id
+        self.symbol = symbol
+        self.name = name
+        self.market_cap_rank = market_cap_rank
+
+    def __str__(self):
+        return f"{self.name} ({self.symbol})"
