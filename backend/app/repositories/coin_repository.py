@@ -89,7 +89,7 @@ class CoinRepository:
         WHERE id = %s
         """
 
-        cursor.execute(query, (coin_id,))
+        cursor.execute(query, (coin_id))
 
         coin = cursor.fetchone()
 
