@@ -110,7 +110,7 @@ class CoinRepository:
         WHERE id =%s
         """
 
-        cursor.execute(query, (coin_id))
+        cursor.execute(query, (coin_id,))
 
         count = cursor.fetchone()[0]
 
