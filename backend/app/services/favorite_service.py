@@ -22,3 +22,7 @@ class FavoriteService:
     def get_favorites(self, user_id):
 
         return self.repository.find_all_by_user(user_id)
+
+    def get_favorites_with_coin_data(self, user_id):
+
+        return self.repository.find_all_with_coin_data(user_id)

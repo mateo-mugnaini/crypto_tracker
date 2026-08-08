@@ -91,3 +91,30 @@ class FavoriteRepository:
         connection.close()
 
         return deleted
+
+    def find_all_with_coin_data(self, user_id):
+
+        connection = get_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = """
+        SELECT
+            f.user_id,
+            f.coin_id,
+            c.symbol,
+            c.name,
+            c.market_cap_rank
+        FROM favorites f
+        INNER JOIN coins c
+            ON f.coin_id = c.id
+        WHERE f.user_id = %s
+        """
+
+        cursor.execute(query, (user_id,))
+
+        favorites = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        return favorites
