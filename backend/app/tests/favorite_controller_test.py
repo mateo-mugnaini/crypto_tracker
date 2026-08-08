@@ -1,8 +1,11 @@
 from app.models.favorite import Favorite
+
 from app.repositories.favorite_repository import FavoriteRepository
 from app.repositories.user_repository import UserRepository
 from app.repositories.coin_repository import CoinRepository
+
 from app.services.favorite_service import FavoriteService
+from app.controllers.favorite_controller import FavoriteController
 
 
 def main():
@@ -13,22 +16,13 @@ def main():
 
     service = FavoriteService(favorite_repository, user_repository, coin_repository)
 
-    favorite = Favorite(1, "bitcoin")
+    controller = FavoriteController(service)
 
-    # Agregar favorito
-    success, message = service.add_favorite(favorite)
+    favorite = Favorite(1, "ethereum")
 
-    print(message)
+    result = controller.add_favorite(favorite)
 
-    # Eliminar favorito
-    success, message = service.remove_favorite(favorite.user_id, favorite.coin_id)
-
-    print(message)
-
-    # Intentar eliminarlo nuevamente
-    success, message = service.remove_favorite(favorite.user_id, favorite.coin_id)
-
-    print(message)
+    print(result)
 
 
 if __name__ == "__main__":

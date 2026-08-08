@@ -24,3 +24,27 @@ class CoinService:
             self.repository.save(coin)
 
         return coin
+
+    def sync_coins(self) -> list[Coin]:
+
+        data = self.api_client.get_market_coins(
+            vs_currency="usd", per_page=10, page=1, order="market_cap_desc"
+        )
+
+        if not data:
+            raise CoinGeckoException("No se pudieron obtener las monedas.")
+
+        coins = []
+
+        for item in data:
+
+            coin = CoinMapper.to_coin(item)
+
+            if self.repository.exists(coin.id):
+                self.repository.update(coin)
+            else:
+                self.repository.save(coin)
+
+            coins.append(coin)
+
+        return coins
