@@ -1,4 +1,5 @@
 class Favorite:
+
     def __init__(self, user_id, coin_id):
         self.user_id = user_id
         self.coin_id = coin_id
