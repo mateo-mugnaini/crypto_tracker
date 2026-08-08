@@ -43,7 +43,7 @@ class PriceHistoryRepository:
         ORDER BY recorded_at DESC
         """
 
-        cursor.execute(query, (coin_id))
+        cursor.execute(query, (coin_id,))
 
         history = cursor.fetchall()
 
