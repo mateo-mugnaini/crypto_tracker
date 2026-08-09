@@ -88,3 +88,30 @@ def get_favorites(user_id: int):
 def get_favorites_with_coin_data(user_id: int):
 
     return container.favorite_controller.get_favorites_with_coin_data(user_id)
+
+
+# ============================================================
+# PRICE HISTORY
+# ============================================================
+
+
+@app.post("/coins/{coin_id}/price")
+def update_coin_price(
+    coin_id: str = Path(
+        ...,
+        min_length=1,
+        description="ID de la criptomoneda en CoinGecko",
+    )
+):
+    return container.price_history_controller.update_price(coin_id)
+
+
+@app.get("/coins/{coin_id}/price-history")
+def get_price_history(
+    coin_id: str = Path(
+        ...,
+        min_length=1,
+        description="ID de la criptomoneda en CoinGecko",
+    )
+):
+    return container.price_history_controller.get_history(coin_id)
