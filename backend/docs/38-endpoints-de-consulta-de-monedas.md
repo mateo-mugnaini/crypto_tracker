@@ -1,5 +1,13 @@
 # Módulo 38 - Endpoints de consulta de monedas
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 En este módulo integramos los métodos de consulta de monedas con la API HTTP utilizando FastAPI.
@@ -15,7 +23,7 @@ De esta forma, el proyecto deja de depender únicamente de scripts Python y comi
 
 ---
 
-# 1. Flujo de una petición HTTP
+## 1. Flujo de una petición HTTP
 
 La arquitectura utilizada es:
 
@@ -53,7 +61,7 @@ Cuando la información necesita actualizarse desde CoinGecko:
 
 ---
 
-# 2. Endpoint GET /coins
+## 2. Endpoint GET /coins
 
 Se creó un endpoint para consultar las monedas:
 
@@ -79,7 +87,7 @@ y se sincroniza con MySQL.
 
 ---
 
-# 3. Respuesta del endpoint
+## 3. Respuesta del endpoint
 
 Una respuesta exitosa tiene la siguiente estructura:
 

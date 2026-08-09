@@ -1,5 +1,13 @@
 # Módulo 35 - PriceHistoryController
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 Crear el Controller encargado de gestionar las operaciones relacionadas con el historial de precios.

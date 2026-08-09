@@ -1,5 +1,13 @@
 # Módulo 37 - Introducción a FastAPI y API REST
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 Introducir una capa HTTP en el backend utilizando **FastAPI** y **Uvicorn**, permitiendo acceder a la lógica existente mediante endpoints REST.
@@ -10,7 +18,7 @@ A partir de este módulo, el backend puede recibir peticiones HTTP.
 
 ---
 
-# 1. FastAPI
+## 1. FastAPI
 
 FastAPI es un framework de Python utilizado para construir APIs HTTP.
 
@@ -34,7 +42,7 @@ FastAPI también genera documentación automática mediante OpenAPI.
 
 ---
 
-# 2. Uvicorn
+## 2. Uvicorn
 
 Uvicorn es el servidor ASGI utilizado para ejecutar nuestra aplicación FastAPI.
 
@@ -54,7 +62,7 @@ hace que el servidor se reinicie automáticamente cuando detecta cambios en el c
 
 ---
 
-# 3. Aplicación FastAPI
+## 3. Aplicación FastAPI
 
 Se creó:
 
@@ -84,7 +92,7 @@ es la aplicación que posteriormente utiliza Uvicorn.
 
 ---
 
-# 4. Primer endpoint
+## 4. Primer endpoint
 
 Se creó un endpoint raíz:
 
@@ -117,7 +125,7 @@ Respuesta:
 
 ---
 
-# 5. Documentación automática
+## 5. Documentación automática
 
 FastAPI genera automáticamente documentación interactiva.
 
@@ -137,7 +145,7 @@ Estas herramientas permiten consultar y probar los endpoints de la aplicación.
 
 ---
 
-# 6. Integración con Container
+## 6. Integración con Container
 
 El proyecto ya disponía de un `Container` encargado de construir las dependencias:
 
@@ -162,7 +170,7 @@ Esto evita crear manualmente todas las dependencias dentro de cada endpoint.
 
 ---
 
-# 7. Endpoint de sincronización de monedas
+## 7. Endpoint de sincronización de monedas
 
 Se agregó un endpoint para sincronizar una criptomoneda:
 
@@ -206,7 +214,7 @@ Esto mantiene separadas las responsabilidades de cada capa.
 
 ---
 
-# 8. Controller
+## 8. Controller
 
 El Controller continúa siendo responsable de recibir la operación y delegarla al Service.
 
@@ -221,7 +229,7 @@ Su responsabilidad es actuar como intermediario entre HTTP y la capa de servicio
 
 ---
 
-# 9. Resultado probado
+## 9. Resultado probado
 
 La aplicación se levantó correctamente mediante:
 
@@ -254,7 +262,7 @@ Esto confirma que la integración HTTP está funcionando correctamente.
 
 ---
 
-# 10. Serialización
+## 10. Serialización
 
 El Controller devuelve un objeto `Coin` dentro de:
 
@@ -281,7 +289,7 @@ En módulos posteriores se introducirá una solución más explícita mediante *
 
 ---
 
-# 11. Arquitectura actual
+## 11. Arquitectura actual
 
 Después de este módulo, la arquitectura queda:
 
@@ -313,7 +321,7 @@ Después de este módulo, la arquitectura queda:
 
 ---
 
-# 12. Responsabilidades
+## 12. Responsabilidades
 
 ## FastAPI
 
@@ -358,7 +366,7 @@ Gestiona:
 
 ---
 
-# 13. Dependencias nuevas
+## 13. Dependencias nuevas
 
 Se agregaron:
 
@@ -381,7 +389,7 @@ pip freeze > requirements.txt
 
 ---
 
-# 14. Estado del proyecto
+## 14. Estado del proyecto
 
 Antes del módulo:
 
@@ -417,7 +425,7 @@ El backend ya dispone de una primera capa HTTP funcional.
 
 ---
 
-# 15. Próximo paso
+## 15. Próximo paso
 
 El siguiente paso será mejorar la estructura de entrada y salida de la API.
 

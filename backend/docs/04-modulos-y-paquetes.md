@@ -1,5 +1,13 @@
 # Módulo 4 - Módulos y paquetes en Python
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Qué es un módulo?
 
 Un módulo es un archivo Python (`.py`) que contiene código reutilizable.
@@ -16,7 +24,7 @@ Un paquete es una carpeta que agrupa varios módulos relacionados.
 
 Ejemplo:
 
-```
+```text
 services/
 
 ├── crypto_service.py

@@ -1,5 +1,13 @@
 # Módulo 12 - Diseño de una capa de servicios profesional
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Qué es una capa de servicios?
 
 La capa de servicios contiene la lógica de negocio de la aplicación.

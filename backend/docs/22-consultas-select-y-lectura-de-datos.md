@@ -1,5 +1,13 @@
 # Módulo 22 - Consultas SELECT y lectura de datos
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 En este módulo aprendemos a recuperar información desde MySQL utilizando repositories.
@@ -10,7 +18,7 @@ Ahora también pueden consultar información.
 
 ---
 
-# Operaciones de lectura
+## Operaciones de lectura
 
 Las consultas SQL utilizan:
 
@@ -29,7 +37,7 @@ Esto devuelve registros almacenados en la base de datos.
 
 ---
 
-# find_all()
+## find_all()
 
 El método:
 
@@ -54,7 +62,7 @@ FROM users;
 
 ---
 
-# find_by_id()
+## find_by_id()
 
 Este método busca un único registro.
 
@@ -74,7 +82,7 @@ WHERE id = 1;
 
 ---
 
-# fetchall()
+## fetchall()
 
 `fetchall()` devuelve múltiples registros.
 
@@ -92,7 +100,7 @@ Se utiliza cuando esperamos varios resultados.
 
 ---
 
-# fetchone()
+## fetchone()
 
 `fetchone()` devuelve solamente un registro.
 
@@ -109,7 +117,7 @@ Se utiliza cuando buscamos un elemento específico.
 
 ---
 
-# dictionary=True
+## dictionary=True
 
 MySQL Connector puede devolver datos como tuplas.
 
@@ -138,7 +146,7 @@ Esto facilita trabajar con los datos.
 
 ---
 
-# Arquitectura actual
+## Arquitectura actual
 
 ```text
 Service
@@ -156,7 +164,7 @@ El Repository es responsable de traducir entre objetos Python y consultas SQL.
 
 ---
 
-# Resultado del módulo
+## Resultado del módulo
 
 Crypto Tracker ahora puede:
 

@@ -1,5 +1,13 @@
 # Módulo 27 - Favorite Service
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 Crear una capa de servicio encargada de gestionar las monedas favoritas de los usuarios.

@@ -1,5 +1,13 @@
 # Módulo 39 - Endpoints de favoritos y operaciones HTTP
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 Integrar las operaciones de favoritos con la API HTTP mediante FastAPI.
@@ -15,7 +23,7 @@ En este módulo se conectan los Controllers de favoritos con los endpoints HTTP,
 
 ---
 
-# 1. Arquitectura
+## 1. Arquitectura
 
 El flujo utilizado en este módulo es:
 

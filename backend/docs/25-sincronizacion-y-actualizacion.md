@@ -1,5 +1,13 @@
 # Módulo 25 - Sincronización inteligente y actualización de registros
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 En este módulo aprendimos a sincronizar información de forma segura, evitando errores por registros duplicados.
@@ -8,7 +16,7 @@ La estrategia consiste en comprobar si un registro ya existe antes de decidir si
 
 ---
 
-# El problema de los duplicados
+## El problema de los duplicados
 
 Cuando una moneda ya existe en la base de datos, intentar insertarla nuevamente produce un error de clave primaria.
 
@@ -22,7 +30,7 @@ Esto ocurre porque el identificador de la moneda ya está almacenado en la tabla
 
 ---
 
-# Método exists()
+## Método exists()
 
 Se incorpora un método que consulta si una moneda existe.
 
@@ -35,7 +43,7 @@ Este método utiliza una consulta `SELECT COUNT(*)`.
 
 ---
 
-# Método update()
+## Método update()
 
 También se agrega un método `update()` al Repository.
 
@@ -45,7 +53,7 @@ El Repository no decide cuándo actualizar; simplemente ejecuta la operación so
 
 ---
 
-# Nueva responsabilidad del Service
+## Nueva responsabilidad del Service
 
 El Service pasa a contener la lógica de decisión.
 
@@ -71,7 +79,7 @@ De esta forma la lógica de negocio permanece en la capa Service.
 
 ---
 
-# Separación de responsabilidades
+## Separación de responsabilidades
 
 - **Service:** decide qué operación realizar.
 - **Repository:** ejecuta la operación sobre la base de datos.
@@ -81,7 +89,7 @@ Cada capa mantiene una única responsabilidad.
 
 ---
 
-# Ventajas
+## Ventajas
 
 - Evita errores por claves duplicadas.
 - Permite sincronizar datos múltiples veces.
@@ -90,6 +98,6 @@ Cada capa mantiene una única responsabilidad.
 
 ---
 
-# Próximo paso
+## Próximo paso
 
 En el siguiente módulo optimizaremos este proceso y comenzaremos a trabajar con la actualización del historial de precios de las criptomonedas, incorporando nuevas reglas de negocio.

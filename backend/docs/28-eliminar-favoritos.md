@@ -1,5 +1,13 @@
 # Módulo 28 - Eliminación de favoritos
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 Implementar la eliminación de una moneda de la lista de favoritos de un usuario.

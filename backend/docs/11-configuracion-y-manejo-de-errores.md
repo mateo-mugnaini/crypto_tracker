@@ -1,5 +1,13 @@
 # Módulo 11 - Configuración y manejo de errores
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Por qué no debemos hardcodear valores?
 
 Hardcodear significa escribir valores directamente en el código fuente, por ejemplo una URL, una contraseña o un puerto.

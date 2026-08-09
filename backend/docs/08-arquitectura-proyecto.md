@@ -1,5 +1,13 @@
 # Módulo 8 - Arquitectura del proyecto
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Qué es arquitectura?
 
 Es la forma en que organizamos las diferentes partes de una aplicación para separar responsabilidades.

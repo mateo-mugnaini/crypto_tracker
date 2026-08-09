@@ -1,4 +1,12 @@
-# Módulo 31 — Validación de favoritos
+# Módulo 31 - Validación de favoritos
+
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
 
 ## Objetivo
 
@@ -14,7 +22,7 @@ Esto evita depender exclusivamente de los errores y restricciones de MySQL.
 
 ---
 
-# 1. Repositories utilizados
+## 1. Repositories utilizados
 
 Para realizar las validaciones utilizamos tres repositories:
 
@@ -87,7 +95,7 @@ y no:
 
 ---
 
-# 2. CoinRepository
+## 2. CoinRepository
 
 También ya disponíamos de:
 
@@ -117,7 +125,7 @@ Este método comprueba si la moneda existe en la tabla `coins`.
 
 ---
 
-# 3. FavoriteRepository
+## 3. FavoriteRepository
 
 `FavoriteRepository` ya disponía de:
 
@@ -161,7 +169,7 @@ PRIMARY KEY (user_id, coin_id)
 
 ---
 
-# 4. Validación en FavoriteService
+## 4. Validación en FavoriteService
 
 El `FavoriteService` ahora recibe los tres repositories:
 
@@ -183,7 +191,7 @@ Esto permite que el Service coordine las validaciones.
 
 ---
 
-# 5. add_favorite()
+## 5. add_favorite()
 
 La implementación es:
 
@@ -242,7 +250,7 @@ add_favorite()
 
 ---
 
-# 6. Valores de retorno
+## 6. Valores de retorno
 
 El método devuelve dos valores:
 
@@ -278,7 +286,7 @@ print(message)
 
 ---
 
-# 7. FavoriteService completo
+## 7. FavoriteService completo
 
 La versión actual queda:
 
@@ -328,7 +336,7 @@ class FavoriteService:
 
 ---
 
-# 8. Test
+## 8. Test
 
 El test necesita crear los tres repositories:
 
@@ -371,7 +379,7 @@ python -m app.tests.favorite_service_test
 
 ---
 
-# 9. Casos de prueba
+## 9. Casos de prueba
 
 ## Usuario existente + moneda existente + favorito nuevo
 
@@ -446,7 +454,7 @@ por una clave primaria duplicada.
 
 ---
 
-# 10. Responsabilidades
+## 10. Responsabilidades
 
 Este módulo refuerza la separación entre Repository y Service.
 
@@ -490,7 +498,7 @@ FavoriteService
 
 ---
 
-# 11. Corrección adicional
+## 11. Corrección adicional
 
 Durante la revisión se detectó un pequeño detalle en algunos métodos:
 
@@ -520,7 +528,7 @@ cuando correspondía.
 
 ---
 
-# Estado del módulo
+## Estado del módulo
 
 **Módulo 31 — COMPLETADO**
 

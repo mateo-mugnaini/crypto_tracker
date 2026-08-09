@@ -1,5 +1,13 @@
 # Módulo 33 - Capa de Controllers
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 Introducir la capa de Controllers en la arquitectura del proyecto.

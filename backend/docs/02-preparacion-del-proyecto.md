@@ -1,5 +1,13 @@
 # Módulo 2 - Preparación del proyecto
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Qué es una dependencia?
 
 Una dependencia es una librería creada por terceros que resuelve un problema específico y que podemos reutilizar en nuestro proyecto.

@@ -1,5 +1,13 @@
 # Módulo 10 - Obtener criptomonedas desde CoinGecko
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Endpoint utilizado
 
 Crypto Tracker utiliza:

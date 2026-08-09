@@ -1,5 +1,13 @@
 # Módulo 19 - Modelos y mapeo de datos
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 En este módulo comenzamos a conectar la estructura de la base de datos con el código Python.
@@ -8,7 +16,7 @@ Creamos modelos que representan las entidades del sistema.
 
 ---
 
-# ¿Qué es un modelo?
+## ¿Qué es un modelo?
 
 Un modelo es una representación en código de una entidad del sistema.
 
@@ -18,7 +26,7 @@ Un modelo Python representa esos mismos datos dentro de la aplicación.
 
 ---
 
-# Ejemplo
+## Ejemplo
 
 Tabla:
 
@@ -45,7 +53,7 @@ Ambos representan el mismo concepto desde diferentes capas.
 
 ---
 
-# ¿Por qué utilizar clases?
+## ¿Por qué utilizar clases?
 
 Las clases permiten:
 
@@ -56,7 +64,7 @@ Las clases permiten:
 
 ---
 
-# Separación de responsabilidades
+## Separación de responsabilidades
 
 La arquitectura queda:
 
@@ -80,7 +88,7 @@ Cada capa tiene una responsabilidad específica.
 
 ---
 
-# Método **str**
+## Método **str**
 
 Python utiliza `__str__` para definir cómo debe mostrarse un objeto cuando usamos:
 
@@ -92,7 +100,7 @@ Esto mejora la lectura durante pruebas y debugging.
 
 ---
 
-# Beneficios
+## Beneficios
 
 Trabajar con modelos permite:
 
@@ -103,7 +111,7 @@ Trabajar con modelos permite:
 
 ---
 
-# Estado del proyecto
+## Estado del proyecto
 
 Después de este módulo:
 

@@ -1,5 +1,13 @@
 # Módulo 3 - El punto de entrada de una aplicación Python
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Qué es `main.py`?
 
 `main.py` suele ser el punto de entrada de una aplicación Python.

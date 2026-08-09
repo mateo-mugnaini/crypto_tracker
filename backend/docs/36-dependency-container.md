@@ -1,5 +1,13 @@
 # Módulo 36 - Dependency Container
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 Centralizar la creación y conexión de las diferentes dependencias de la aplicación.

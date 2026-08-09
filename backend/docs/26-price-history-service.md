@@ -1,5 +1,13 @@
 # Módulo 26 - Price History Service
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 En este módulo incorporamos un servicio dedicado a registrar el historial de precios de las criptomonedas.
@@ -8,7 +16,7 @@ A diferencia de la tabla `coins`, donde se almacena información relativamente e
 
 ---
 
-# ¿Por qué existe `price_history`?
+## ¿Por qué existe `price_history`?
 
 El precio de una criptomoneda cambia constantemente.
 
@@ -37,7 +45,7 @@ Cada fila representa un instante diferente.
 
 ---
 
-# Arquitectura
+## Arquitectura
 
 El flujo para registrar un precio queda así:
 
@@ -65,7 +73,7 @@ Cada componente mantiene una única responsabilidad.
 
 ---
 
-# PriceHistoryService
+## PriceHistoryService
 
 El servicio recibe sus dependencias mediante el constructor.
 
@@ -81,7 +89,7 @@ Esto mantiene el código desacoplado y facilita las pruebas.
 
 ---
 
-# Método `update_price()`
+## Método `update_price()`
 
 El método realiza los siguientes pasos:
 
@@ -124,7 +132,7 @@ MySQL
 
 ---
 
-# Manejo de errores
+## Manejo de errores
 
 Si la API no devuelve información para la moneda solicitada, el servicio lanza una excepción.
 
@@ -140,7 +148,7 @@ De esta forma la aplicación puede manejar correctamente el error sin finalizar 
 
 ---
 
-# El campo `id`
+## El campo `id`
 
 La tabla `price_history` utiliza un `AUTO_INCREMENT`.
 
@@ -159,7 +167,7 @@ MySQL será el encargado de generar el identificador automáticamente durante el
 
 ---
 
-# Diferencia entre `coins` y `price_history`
+## Diferencia entre `coins` y `price_history`
 
 La tabla `coins` representa el estado actual de cada criptomoneda.
 
@@ -193,7 +201,7 @@ Mientras que una moneda existe una sola vez en `coins`, puede tener miles de reg
 
 ---
 
-# Restricción importante
+## Restricción importante
 
 La tabla `price_history` posee una clave foránea (`FOREIGN KEY`) hacia la tabla `coins`.
 
@@ -222,7 +230,7 @@ Esta restricción garantiza la consistencia de la base de datos.
 
 ---
 
-# Responsabilidades
+## Responsabilidades
 
 Cada componente mantiene una única función.
 
@@ -235,7 +243,7 @@ Esta separación facilita el mantenimiento y la evolución del proyecto.
 
 ---
 
-# Estado del proyecto
+## Estado del proyecto
 
 Después de este módulo el backend ya dispone de:
 
@@ -252,6 +260,6 @@ La aplicación ya es capaz de consultar el precio actual de una criptomoneda y a
 
 ---
 
-# Próximo módulo
+## Próximo módulo
 
 En el siguiente módulo continuaremos ampliando la lógica de negocio, integrando nuevos servicios y mejorando la coordinación entre las distintas capas de la aplicación.

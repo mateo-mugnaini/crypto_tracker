@@ -1,5 +1,13 @@
 # Módulo 15 - Conectar Python con MySQL
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Por qué necesitamos un driver?
 
 Python no puede comunicarse directamente con MySQL.

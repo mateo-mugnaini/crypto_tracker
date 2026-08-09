@@ -1,5 +1,13 @@
 # Módulo 5 - Tipos de datos y funciones
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Variables
 
 Python utiliza tipado dinámico. El tipo de una variable se determina automáticamente.

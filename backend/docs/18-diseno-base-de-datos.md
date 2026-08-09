@@ -1,5 +1,13 @@
 # Módulo 18 - Diseño completo de la Base de Datos
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 En este módulo diseñamos la estructura completa de la base de datos de Crypto Tracker antes de implementar nuevas funcionalidades.
@@ -8,7 +16,7 @@ Diseñar primero la base de datos permite detectar problemas de modelado y facil
 
 ---
 
-# Entidades principales
+## Entidades principales
 
 La aplicación estará compuesta inicialmente por cuatro entidades:
 
@@ -21,7 +29,7 @@ Cada una representa un concepto diferente del dominio de la aplicación.
 
 ---
 
-# Users
+## Users
 
 Almacena la información de los usuarios registrados.
 
@@ -37,7 +45,7 @@ La contraseña nunca debe almacenarse en texto plano. Siempre debe guardarse un 
 
 ---
 
-# Coins
+## Coins
 
 Representa las criptomonedas disponibles en el sistema.
 
@@ -52,7 +60,7 @@ Esta tabla contiene información relativamente estable de cada moneda.
 
 ---
 
-# Favorites
+## Favorites
 
 Relaciona usuarios con criptomonedas.
 
@@ -62,7 +70,7 @@ Este tipo de relación se conoce como **muchos a muchos (Many-to-Many)** y norma
 
 ---
 
-# Price History
+## Price History
 
 Almacena el historial de precios de cada moneda.
 
@@ -72,7 +80,7 @@ Esto permite realizar consultas históricas, gráficos y análisis sin perder in
 
 ---
 
-# ¿Por qué separar el historial?
+## ¿Por qué separar el historial?
 
 Si el precio se almacenara directamente en la tabla `coins`, cada actualización sobrescribiría el valor anterior.
 
@@ -80,13 +88,13 @@ Separar el historial permite conservar todos los cambios realizados a lo largo d
 
 ---
 
-# Tipos de datos
+## Tipos de datos
 
 Se utiliza `DECIMAL` para almacenar precios debido a que ofrece mayor precisión que `FLOAT` y evita errores de redondeo comunes en aplicaciones financieras.
 
 ---
 
-# Relaciones
+## Relaciones
 
 El modelo lógico queda así:
 
@@ -113,7 +121,7 @@ Este diseño facilita la escalabilidad del proyecto y evita duplicación inneces
 
 ---
 
-# Buenas prácticas aprendidas
+## Buenas prácticas aprendidas
 
 - Diseñar la base de datos antes de implementar funcionalidades.
 - Separar entidades según su responsabilidad.

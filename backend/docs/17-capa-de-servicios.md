@@ -1,5 +1,13 @@
 # Módulo 17 - Capa de Servicios (Service Layer)
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo del módulo
 
 En este módulo incorporamos la **capa de servicios**, una de las piezas fundamentales de una arquitectura backend por capas.
@@ -14,7 +22,7 @@ Sin embargo, todavía no existía una capa encargada de coordinar la lógica del
 
 ---
 
-# ¿Qué es una Service Layer?
+## ¿Qué es una Service Layer?
 
 La Service Layer (capa de servicios) contiene las reglas de negocio de la aplicación.
 
@@ -34,7 +42,7 @@ Tampoco debería conocer detalles internos de la base de datos.
 
 ---
 
-# Arquitectura por capas
+## Arquitectura por capas
 
 Después de este módulo la arquitectura queda organizada de la siguiente manera:
 
@@ -55,7 +63,7 @@ Cada capa tiene una única responsabilidad.
 
 ---
 
-# Responsabilidades
+## Responsabilidades
 
 ## Model
 
@@ -100,7 +108,7 @@ No debería escribir SQL directamente.
 
 ---
 
-# Separación de responsabilidades
+## Separación de responsabilidades
 
 Una arquitectura bien separada facilita:
 
@@ -115,7 +123,7 @@ Este principio está relacionado con el **Single Responsibility Principle (SRP)*
 
 ---
 
-# Dependency Injection
+## Dependency Injection
 
 Una buena práctica consiste en recibir las dependencias desde el constructor en lugar de crearlas dentro de la clase.
 
@@ -134,7 +142,7 @@ En el futuro podremos reemplazar el Repository por otra implementación sin modi
 
 ---
 
-# Beneficios
+## Beneficios
 
 Al separar responsabilidades obtenemos:
 
@@ -147,7 +155,7 @@ Esta arquitectura es utilizada en la mayoría de aplicaciones backend profesiona
 
 ---
 
-# Flujo actual del proyecto
+## Flujo actual del proyecto
 
 ```text
 Usuario
@@ -169,7 +177,7 @@ En los próximos módulos incorporaremos nuevos servicios que consumirán la API
 
 ---
 
-# Resumen
+## Resumen
 
 En este módulo aprendimos:
 

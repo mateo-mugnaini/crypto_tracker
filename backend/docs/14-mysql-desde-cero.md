@@ -1,5 +1,13 @@
 # Módulo 14 - MySQL desde cero
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Qué es MySQL?
 
 MySQL es un sistema gestor de bases de datos relacional (RDBMS).

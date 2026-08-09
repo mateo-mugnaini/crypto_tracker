@@ -1,5 +1,13 @@
 # Módulo 32 - Gestión y validación de favoritos
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 Completar la lógica de negocio relacionada con favoritos utilizando la arquitectura definida en el proyecto.

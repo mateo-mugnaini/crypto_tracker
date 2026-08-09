@@ -1,4 +1,12 @@
-# Módulo 30 — Integración entre favoritos y monedas
+# Módulo 30 - Integración entre favoritos y monedas
+
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
 
 ## Objetivo
 

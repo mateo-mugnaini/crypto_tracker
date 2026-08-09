@@ -1,4 +1,12 @@
-# Módulo 40 — Historial de precios (`Price History`)
+# Módulo 40 - Historial de precios (`Price History`)
+
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
 
 ## Objetivo
 
@@ -15,7 +23,7 @@ El objetivo es permitir:
 
 ---
 
-# 1. Arquitectura
+## 1. Arquitectura
 
 El módulo sigue la arquitectura utilizada en el resto del proyecto:
 
@@ -57,7 +65,7 @@ Se comunica con la API externa de CoinGecko.
 
 ---
 
-# 2. Modelo `PriceHistory`
+## 2. Modelo `PriceHistory`
 
 El historial utiliza el modelo:
 
@@ -92,7 +100,7 @@ Bitcoin
 
 ---
 
-# 3. `CoinGeckoClient`
+## 3. `CoinGeckoClient`
 
 El cliente existente fue reutilizado para obtener la información actual de una moneda.
 
@@ -120,7 +128,7 @@ De esta forma, el módulo Price History no necesita conocer los detalles HTTP de
 
 ---
 
-# 4. `PriceHistoryService`
+## 4. `PriceHistoryService`
 
 Archivo:
 
@@ -198,7 +206,7 @@ y se devuelve el objeto creado.
 
 ---
 
-# 5. `PriceHistoryRepository`
+## 5. `PriceHistoryRepository`
 
 Archivo:
 
@@ -283,7 +291,7 @@ El orden descendente permite obtener primero los registros más recientes.
 
 ---
 
-# 6. `PriceHistoryController`
+## 6. `PriceHistoryController`
 
 Archivo:
 
@@ -338,7 +346,7 @@ para devolver:
 
 ---
 
-# 7. Integración en `Container`
+## 7. Integración en `Container`
 
 El módulo fue agregado al sistema de dependencias.
 
@@ -384,7 +392,7 @@ CoinController  PriceHistoryController
 
 ---
 
-# 8. Endpoints
+## 8. Endpoints
 
 El módulo expone dos endpoints principales.
 
@@ -450,7 +458,7 @@ container.price_history_repository.find_by_coin(coin_id)
 
 ---
 
-# 9. Validación de parámetros
+## 9. Validación de parámetros
 
 Los endpoints utilizan `Path`:
 
@@ -471,7 +479,7 @@ Esto garantiza que:
 
 ---
 
-# 10. Tests manuales
+## 10. Tests manuales
 
 Se crearon dos scripts de prueba.
 
@@ -539,7 +547,7 @@ Esto permite verificar la respuesta generada por la capa Controller.
 
 ---
 
-# 11. Corrección importante en `app.py`
+## 11. Corrección importante en `app.py`
 
 Durante la integración se detectó que los endpoints de Price History estaban duplicados.
 
@@ -584,7 +592,7 @@ No deben coexistir dos handlers con el mismo método HTTP y path.
 
 ---
 
-# 12. Flujo completo del módulo
+## 12. Flujo completo del módulo
 
 El flujo para registrar un precio es:
 
@@ -643,7 +651,7 @@ GET /coins/bitcoin/price-history
 
 ---
 
-# 13. Conceptos aprendidos
+## 13. Conceptos aprendidos
 
 Con este módulo se incorporaron varios conceptos importantes:
 
@@ -677,7 +685,7 @@ Se agregaron endpoints específicos para actualizar y consultar información his
 
 ---
 
-# 14. Estado del módulo
+## 14. Estado del módulo
 
 ```text
 [✓] PriceHistory model

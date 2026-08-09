@@ -1,5 +1,13 @@
 # Módulo 9 - Consumir API CoinGecko
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Qué es una API?
 
 Una API permite que diferentes aplicaciones se comuniquen mediante solicitudes HTTP.

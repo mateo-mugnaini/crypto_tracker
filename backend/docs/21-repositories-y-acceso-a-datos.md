@@ -1,5 +1,13 @@
 # Módulo 21 - Repositories y acceso a datos
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 En este módulo creamos la capa Repository.
@@ -8,7 +16,7 @@ Esta capa permite separar el código que maneja la base de datos del resto de la
 
 ---
 
-# ¿Qué es un Repository?
+## ¿Qué es un Repository?
 
 Un Repository es una clase responsable de comunicarse con la base de datos.
 
@@ -21,7 +29,7 @@ Su función es:
 
 ---
 
-# ¿Por qué separar esta lógica?
+## ¿Por qué separar esta lógica?
 
 Sin Repository tendríamos SQL mezclado dentro de los servicios.
 
@@ -36,11 +44,11 @@ Esto genera código difícil de mantener.
 
 ---
 
-# Arquitectura
+## Arquitectura
 
 La aplicación queda:
 
-```
+```text
 Service
 
 ↓
@@ -56,7 +64,7 @@ Cada capa tiene una responsabilidad.
 
 ---
 
-# UserRepository
+## UserRepository
 
 Administra operaciones relacionadas con usuarios.
 
@@ -70,7 +78,7 @@ convierte un objeto Python en un INSERT SQL.
 
 ---
 
-# FavoriteRepository
+## FavoriteRepository
 
 Administra la relación entre usuarios y monedas favoritas.
 
@@ -84,7 +92,7 @@ Esto evita duplicados.
 
 ---
 
-# PriceHistoryRepository
+## PriceHistoryRepository
 
 Guarda los valores históricos de las monedas.
 
@@ -96,7 +104,7 @@ Permite almacenar:
 
 ---
 
-# Beneficios
+## Beneficios
 
 Separar repositories permite:
 
@@ -107,9 +115,9 @@ Separar repositories permite:
 
 ---
 
-# Flujo completo
+## Flujo completo
 
-```
+```text
 Usuario
 
 ↓

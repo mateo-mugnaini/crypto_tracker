@@ -1,4 +1,12 @@
-# Módulo 29 — Consultar favoritos de un usuario
+# Módulo 29 - Consultar favoritos de un usuario
+
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
 
 ## Objetivo
 

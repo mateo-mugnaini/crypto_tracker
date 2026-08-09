@@ -1,5 +1,13 @@
 # Módulo 1 - Preparación del entorno
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Qué es un entorno virtual?
 
 Un entorno virtual (`venv`) es una instalación aislada de Python para un proyecto específico.

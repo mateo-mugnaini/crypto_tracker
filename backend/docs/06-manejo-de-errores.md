@@ -1,5 +1,13 @@
 # Módulo 6 - Manejo de errores
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Qué es una excepción?
 
 Una excepción es un evento que altera la ejecución normal del programa.

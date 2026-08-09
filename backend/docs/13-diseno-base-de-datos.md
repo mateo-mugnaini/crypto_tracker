@@ -1,5 +1,13 @@
 # Módulo 13 - Diseño de la Base de Datos
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Qué es una base de datos?
 
 Una base de datos es un sistema que permite almacenar información de forma permanente.

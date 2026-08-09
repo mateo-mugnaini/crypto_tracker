@@ -1,5 +1,13 @@
 # Módulo 24 - Services y lógica de negocio
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 En este módulo incorporamos la capa **Service**, responsable de contener la lógica de negocio de la aplicación.
@@ -15,7 +23,7 @@ Ahora necesitamos una capa que coordine todos esos componentes.
 
 ---
 
-# Arquitectura
+## Arquitectura
 
 La aplicación comienza a tomar una estructura por capas:
 
@@ -39,7 +47,7 @@ Cada capa tiene una única responsabilidad.
 
 ---
 
-# Responsabilidades de cada capa
+## Responsabilidades de cada capa
 
 ## Main
 
@@ -98,7 +106,7 @@ Gracias a esto el servicio no depende de implementaciones concretas y resulta mu
 
 ---
 
-# Método update_coin()
+## Método update_coin()
 
 El método principal del servicio es:
 
@@ -140,7 +148,7 @@ Cada componente realiza una única tarea.
 
 ---
 
-# CoinMapper
+## CoinMapper
 
 En lugar de crear el objeto `Coin` directamente dentro del servicio, utilizamos un mapper.
 
@@ -156,7 +164,7 @@ Esto evita duplicar código y mantiene el Service más limpio.
 
 ---
 
-# Manejo de errores
+## Manejo de errores
 
 Si la API no devuelve información de una moneda, el servicio lanza una excepción específica.
 
@@ -172,7 +180,7 @@ Esto permite que otras capas puedan reaccionar correctamente al error.
 
 ---
 
-# Separación de responsabilidades
+## Separación de responsabilidades
 
 Cada clase tiene una única función.
 
@@ -212,7 +220,7 @@ Esta separación hace que el proyecto sea más mantenible y facilite la realizac
 
 ---
 
-# Dependency Injection
+## Dependency Injection
 
 El servicio no crea sus propias dependencias.
 
@@ -235,7 +243,7 @@ Esto permite reemplazar fácilmente cualquier implementación por otra durante p
 
 ---
 
-# Estado del proyecto
+## Estado del proyecto
 
 Después de este módulo la arquitectura queda:
 
@@ -263,6 +271,6 @@ La lógica de negocio queda completamente separada del acceso a datos y de la co
 
 ---
 
-# Próximo módulo
+## Próximo módulo
 
 En el siguiente módulo mejoraremos la sincronización de monedas, evitando registros duplicados y agregando operaciones de actualización cuando sea necesario.

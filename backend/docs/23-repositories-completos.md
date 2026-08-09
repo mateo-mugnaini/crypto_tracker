@@ -1,5 +1,13 @@
 # Módulo 23 - Repositories completos
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 En este módulo completamos la capa Repository para todas las entidades del proyecto.
@@ -8,7 +16,7 @@ Los repositories permiten separar la lógica de acceso a datos del resto de la a
 
 ---
 
-# CoinRepository
+## CoinRepository
 
 Responsable de manejar información de monedas.
 
@@ -26,7 +34,7 @@ Permite guardar monedas y recuperarlas desde MySQL.
 
 ---
 
-# FavoriteRepository
+## FavoriteRepository
 
 Gestiona la relación entre usuarios y monedas favoritas.
 
@@ -50,7 +58,7 @@ find_all_by_user()
 
 ---
 
-# PriceHistoryRepository
+## PriceHistoryRepository
 
 Gestiona el historial de precios.
 
@@ -74,7 +82,7 @@ find_by_coin()
 
 ---
 
-# Consultas SELECT
+## Consultas SELECT
 
 Los repositories utilizan consultas SQL:
 
@@ -87,7 +95,7 @@ para recuperar información.
 
 ---
 
-# fetchall()
+## fetchall()
 
 Se utiliza cuando esperamos múltiples registros.
 
@@ -101,7 +109,7 @@ Devuelve una lista.
 
 ---
 
-# fetchone()
+## fetchone()
 
 Se utiliza cuando esperamos un único registro.
 
@@ -113,7 +121,7 @@ coin = repository.find_by_id("bitcoin")
 
 ---
 
-# ORDER BY
+## ORDER BY
 
 El historial de precios utiliza:
 
@@ -125,7 +133,7 @@ para mostrar los registros más recientes primero.
 
 ---
 
-# Arquitectura actual
+## Arquitectura actual
 
 ```text
 Service

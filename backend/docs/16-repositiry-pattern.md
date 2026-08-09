@@ -1,5 +1,13 @@
 # Módulo 16 - Repository Pattern y persistencia de datos
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Qué problema resuelve un Repository?
 
 Un Repository es una capa que separa el acceso a datos del resto de la aplicación.

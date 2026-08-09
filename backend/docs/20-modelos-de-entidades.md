@@ -1,5 +1,13 @@
 # Módulo 20 - Modelos de entidades
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## Objetivo
 
 En este módulo creamos las representaciones Python de las tablas principales de la base de datos.
@@ -8,7 +16,7 @@ Los modelos permiten trabajar con objetos en lugar de manejar datos sueltos.
 
 ---
 
-# ¿Qué es un modelo?
+## ¿Qué es un modelo?
 
 Un modelo es una clase que representa una entidad del sistema.
 
@@ -30,7 +38,7 @@ Ambos representan el mismo concepto desde distintas capas.
 
 ---
 
-# Relación entre SQL y Python
+## Relación entre SQL y Python
 
 Una tabla:
 
@@ -59,7 +67,7 @@ Cada columna pasa a ser un atributo.
 
 ---
 
-# Modelo User
+## Modelo User
 
 Representa a los usuarios registrados en la aplicación.
 
@@ -73,7 +81,7 @@ Contiene:
 
 ---
 
-# Modelo Favorite
+## Modelo Favorite
 
 Representa la relación entre un usuario y una moneda.
 
@@ -93,7 +101,7 @@ Coin
 
 ---
 
-# Modelo PriceHistory
+## Modelo PriceHistory
 
 Representa el histórico de precios de una moneda.
 
@@ -109,7 +117,7 @@ bitcoin
 
 ---
 
-# Separación de responsabilidades
+## Separación de responsabilidades
 
 Los modelos solamente representan información.
 
@@ -123,9 +131,9 @@ Para eso existen otras capas.
 
 ---
 
-# Arquitectura actual
+## Arquitectura actual
 
-```
+```text
 API
 
 ↓
@@ -149,7 +157,7 @@ Cada capa tiene una responsabilidad concreta.
 
 ---
 
-# Beneficios
+## Beneficios
 
 Esta separación permite:
 

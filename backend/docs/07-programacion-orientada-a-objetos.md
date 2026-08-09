@@ -1,5 +1,13 @@
 # Módulo 7 - Programación Orientada a Objetos (POO)
 
+> **Estado**: TERMINADO
+> **Proyecto**: Crypto Tracker - Backend
+> **Capa**: Backend / API REST
+> **Fecha**: 2026-08-09
+
+---
+
+
 ## ¿Qué es la Programación Orientada a Objetos?
 
 La Programación Orientada a Objetos (POO) es una forma de organizar el código agrupando datos y comportamientos relacionados dentro de estructuras llamadas clases.
@@ -17,7 +25,7 @@ En Crypto Tracker una moneda puede ser representada como un objeto que contiene:
 
 ---
 
-# ¿Qué es una clase?
+## ¿Qué es una clase?
 
 Una clase es una plantilla o modelo que define cómo será un objeto.
 
@@ -36,7 +44,7 @@ Es similar al plano de una casa. El plano describe cómo será la casa, pero tod
 
 ---
 
-# ¿Qué es un objeto?
+## ¿Qué es un objeto?
 
 Un objeto es una instancia creada a partir de una clase.
 
@@ -62,7 +70,7 @@ Ambos objetos pertenecen a la misma clase, pero pueden tener diferentes datos.
 
 ---
 
-# Diferencia entre clase y objeto
+## Diferencia entre clase y objeto
 
 ## Clase
 
@@ -91,7 +99,7 @@ Representa una moneda específica creada utilizando esa estructura.
 
 Una forma sencilla de recordarlo:
 
-```
+```text
 Clase
 ↓
 Modelo o plantilla
@@ -103,7 +111,7 @@ Elemento creado a partir del modelo
 
 ---
 
-# ¿Qué es `__init__`?
+## ¿Qué es `__init__`?
 
 `__init__` es un método especial que Python ejecuta automáticamente cuando se crea un objeto.
 
@@ -135,7 +143,7 @@ y guarda esos valores dentro del objeto.
 
 ---
 
-# ¿Qué es `self`?
+## ¿Qué es `self`?
 
 `self` representa al objeto actual.
 
@@ -166,7 +174,7 @@ bitcoin.name = "Bitcoin"
 
 ---
 
-# ¿Qué es un atributo?
+## ¿Qué es un atributo?
 
 Un atributo es una característica o dato almacenado dentro de un objeto.
 
@@ -215,7 +223,7 @@ con el valor:
 
 ---
 
-# ¿Qué es un método?
+## ¿Qué es un método?
 
 Un método es una función que pertenece a una clase.
 
@@ -240,7 +248,7 @@ ejecuta el comportamiento definido dentro de la clase.
 
 ---
 
-# Ejemplo aplicado a Crypto Tracker
+## Ejemplo aplicado a Crypto Tracker
 
 Una moneda puede representarse así:
 
@@ -287,7 +295,7 @@ Precio: $100000
 
 ---
 
-# ¿Cuándo utilizar una clase?
+## ¿Cuándo utilizar una clase?
 
 No todo debe ser una clase.
 
@@ -309,7 +317,7 @@ Usaremos clases para:
 
 ---
 
-# ¿Cuándo utilizar una función?
+## ¿Cuándo utilizar una función?
 
 Una función es mejor cuando necesitamos realizar una acción simple que no necesita guardar estado.
 
@@ -324,7 +332,7 @@ No necesitamos una clase porque solamente transforma un dato.
 
 ---
 
-# Regla utilizada en el proyecto
+## Regla utilizada en el proyecto
 
 Para Crypto Tracker seguiremos esta organización:
 
@@ -337,7 +345,7 @@ Para Crypto Tracker seguiremos esta organización:
 
 ---
 
-# Relación con JavaScript
+## Relación con JavaScript
 
 La POO existe también en JavaScript.
 
@@ -371,7 +379,7 @@ La diferencia está principalmente en la sintaxis.
 
 ---
 
-# Importancia para Crypto Tracker
+## Importancia para Crypto Tracker
 
 La POO nos permitirá crear una arquitectura más organizada.
 
