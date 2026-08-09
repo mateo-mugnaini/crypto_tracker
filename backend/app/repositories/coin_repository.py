@@ -65,6 +65,7 @@ class CoinRepository:
         query = """
         SELECT *
         FROM coins
+        ORDER BY market_cap_rank ASC
         """
 
         cursor.execute(query)

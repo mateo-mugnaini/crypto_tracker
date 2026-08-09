@@ -48,3 +48,11 @@ class CoinService:
             coins.append(coin)
 
         return coins
+
+    def get_all_coins(self) -> list[dict]:
+
+        return self.repository.find_all()
+
+    def get_coin(self, coin_id: str) -> dict | None:
+
+        return self.repository.find_by_id(coin_id)
