@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from app.models.favorite import Favorite
 
 from app.container import Container
 
@@ -17,6 +18,7 @@ def root():
     return {"success": True, "message": "Crypto Tracker API funcionando."}
 
 
+# COINS
 @app.get("/coins")
 def get_all_coins():
 
@@ -39,3 +41,30 @@ def update_coin(coin_id: str):
 def sync_coins():
 
     return container.coin_controller.sync_coins()
+
+
+# FAVORITE
+
+
+@app.post("/favorites")
+def add_favorite(user_id: int, coin_id: str):
+    favorite = Favorite(user_id, coin_id)
+
+    return container.favorite_controller.add_favorite(favorite)
+
+
+@app.delete("/favorites/{coin_id}")
+def remove_favorite(user_id: int, coin_id: str):
+    return container.favorite_controller.remove_favorite(user_id, coin_id)
+
+
+@app.get("/favorites")
+def get_favorites(user_id: int):
+
+    return container.favorite_controller.get_favorites(user_id)
+
+
+@app.get("/favorites/details")
+def get_favorites_with_coin_data(user_id: int):
+
+    return container.favorite_controller.get_favorites_with_coin_data(user_id)

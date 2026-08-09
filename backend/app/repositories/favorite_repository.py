@@ -99,7 +99,6 @@ class FavoriteRepository:
 
         query = """
         SELECT
-            f.user_id,
             f.coin_id,
             c.symbol,
             c.name,
