@@ -20,7 +20,11 @@ class CoinController:
 
         except CoinGeckoException as error:
 
-            return {"success": False, "message": str(error), "data": None}
+            return {
+                "success": False,
+                "message": str(error),
+                "data": None,
+            }
 
     def sync_coins(self):
 
@@ -36,7 +40,11 @@ class CoinController:
 
         except CoinGeckoException as error:
 
-            return {"success": False, "message": str(error), "data": None}
+            return {
+                "success": False,
+                "message": str(error),
+                "data": None,
+            }
 
     def get_all_coins(self):
 
@@ -52,9 +60,13 @@ class CoinController:
 
         coin = self.service.get_coin(coin_id)
 
-        if not coin:
+        if coin is None:
 
-            return {"success": False, "message": "La moneda no existe.", "data": None}
+            return {
+                "success": False,
+                "message": "Moneda no encontrada.",
+                "data": None,
+            }
 
         return {
             "success": True,

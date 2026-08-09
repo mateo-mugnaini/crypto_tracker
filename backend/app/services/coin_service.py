@@ -28,7 +28,10 @@ class CoinService:
     def sync_coins(self) -> list[Coin]:
 
         data = self.api_client.get_market_coins(
-            vs_currency="usd", per_page=10, page=1, order="market_cap_desc"
+            vs_currency="usd",
+            per_page=10,
+            page=1,
+            order="market_cap_desc",
         )
 
         if not data:
