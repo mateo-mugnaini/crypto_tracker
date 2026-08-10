@@ -1,37 +1,44 @@
 from datetime import datetime
 
-from app.exceptions.api_exception import CoinGeckoException
 from app.models.price_history import PriceHistory
+from app.repositories.price_history_repository import PriceHistoryRepository
 
 
 class PriceHistoryService:
 
-    def __init__(self, repository, api_client):
-        self.repository = repository
-        self.api_client = api_client
+    def __init__(
+        self,
+        price_history_repository: PriceHistoryRepository,
+    ):
+        self.price_history_repository = price_history_repository
 
-    def update_price(self, coin_id: str) -> PriceHistory:
+    def save_price(
+        self,
+        coin_id: str,
+        price: float,
+    ) -> PriceHistory:
 
-        data = self.api_client.get_coin(coin_id)
-
-        if not data:
-            raise CoinGeckoException(f"No se pudo obtener la moneda '{coin_id}'.")
-
-        try:
-            price = data["market_data"]["current_price"]["usd"]
-        except KeyError:
-            raise CoinGeckoException(f"No se encontró el precio USD para '{coin_id}'.")
-
-        history = PriceHistory(
+        price_history = PriceHistory(
             id=None,
             coin_id=coin_id,
             price=price,
             recorded_at=datetime.now(),
         )
 
-        self.repository.save(history)
+        return self.price_history_repository.save(price_history)
 
-        return history
+    def get_history(
+        self,
+        coin_id: str,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
+    ) -> list[PriceHistory]:
 
-    def get_history(self, coin_id: str):
-        return self.repository.find_by_coin(coin_id)
+        if start_date is not None and end_date is not None and start_date > end_date:
+            raise ValueError("start_date cannot be greater than end_date")
+
+        return self.price_history_repository.get_by_coin_id_and_date_range(
+            coin_id=coin_id,
+            start_date=start_date,
+            end_date=end_date,
+        )

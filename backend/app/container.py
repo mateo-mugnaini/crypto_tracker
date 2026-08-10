@@ -32,7 +32,7 @@ class Container:
             self.favorite_repository, self.user_repository, self.coin_repository
         )
         self.price_history_service = PriceHistoryService(
-            self.price_history_repository, self.api_client
+            self.price_history_repository,
         )
 
         # CONTROLLERS

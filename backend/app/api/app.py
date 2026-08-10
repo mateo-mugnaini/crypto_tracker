@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Path
+from datetime import datetime, date, time
 
 from app.container import Container
 from app.models.favorite import Favorite
@@ -21,7 +22,8 @@ container = Container()
 @app.get("/")
 def root():
 
-    return {"success": True, "message": "Crypto Tracker API funcionando."}
+    # return {"success": True, "message": "Crypto Tracker API funcionando."}
+    return {"success": True, "message": "Hola mundo♥"}
 
 
 # ============================================================
@@ -108,10 +110,27 @@ def update_coin_price(
 
 @app.get("/coins/{coin_id}/price-history")
 def get_price_history(
-    coin_id: str = Path(
-        ...,
-        min_length=1,
-        description="ID de la criptomoneda en CoinGecko",
-    )
+    coin_id: str,
+    start_date: date | None = None,
+    end_date: date | None = None,
 ):
-    return container.price_history_controller.get_history(coin_id)
+    start_datetime = None
+    end_datetime = None
+
+    if start_date is not None:
+        start_datetime = datetime.combine(
+            start_date,
+            time.min,
+        )
+
+    if end_date is not None:
+        end_datetime = datetime.combine(
+            end_date,
+            time.max,
+        )
+
+    return container.price_history_controller.get_history(
+        coin_id=coin_id,
+        start_date=start_datetime,
+        end_date=end_datetime,
+    )
