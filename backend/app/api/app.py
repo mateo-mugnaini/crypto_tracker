@@ -1,10 +1,11 @@
 from typing import Literal
 
-from fastapi import FastAPI, Path, Query
+from fastapi import Body, FastAPI, Path, Query
 from datetime import date
 
 from app.container import Container
 from app.models.favorite import Favorite
+from app.schemas.favorite import FavoriteCreateRequest
 
 app = FastAPI(
     title="Crypto Tracker API",
@@ -69,9 +70,11 @@ def update_coin(
 
 
 @app.post("/favorites")
-def add_favorite(user_id: int, coin_id: str):
+def add_favorite(
+    request: FavoriteCreateRequest = Body(...),
+):
 
-    favorite = Favorite(user_id, coin_id)
+    favorite = Favorite(request.user_id, request.coin_id)
 
     return container.favorite_controller.add_favorite(favorite)
 

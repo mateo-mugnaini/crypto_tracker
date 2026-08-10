@@ -58,9 +58,9 @@ Si la documentación contradice el código, el código actual tiene prioridad. R
 El estado oficial actual es:
 
 ```text
-Módulos 00–46: terminados históricamente
-Módulo 47: terminado — agregaciones temporales
-Módulo siguiente: 48 — Pydantic Request Models
+Módulos 00–47: terminados históricamente
+Módulo 48: terminado — Pydantic Request Models
+Módulo siguiente: 49 — Response Models
 ```
 
 No regreses a un módulo anterior salvo que exista un bug, una regresión, una dependencia faltante o una mejora arquitectónica justificada.
@@ -701,20 +701,21 @@ M44 — Ordenamiento de Price History       TERMINADO
 M45 — Estadísticas de Price History       TERMINADO
 M46 — Variaciones de precio               TERMINADO
 M47 — Agregaciones temporales             TERMINADO
-M48 — Pydantic Request Models             SIGUIENTE
+M48 — Pydantic Request Models             TERMINADO
+M49 — Response Models                     SIGUIENTE
 ```
 
-El Módulo 48 debe centrarse en:
+El Módulo 49 debe centrarse en:
 
-- Request Models;
-- `BaseModel`;
-- request body;
-- tipos;
-- validación automática;
-- separación entre HTTP y lógica interna;
-- modelos de entrada.
+- `response_model`;
+- modelos de salida;
+- serialización;
+- contratos de API;
+- ocultamiento de campos internos;
+- separación entre modelos internos y modelos HTTP;
+- documentación automática mediante OpenAPI.
 
-No adelantes Response Models del M49.
+No adelantes Status Codes del M50.
 
 ---
 
