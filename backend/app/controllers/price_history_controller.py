@@ -30,11 +30,16 @@ class PriceHistoryController:
         end_date: date | None = None,
         min_price: float | None = None,
         max_price: float | None = None,
-    ):
+        limit: int = 20,
+        offset: int = 0,
+    ) -> list[PriceHistory]:
+
         return self.price_history_service.get_price_history(
             coin_id=coin_id,
             start_date=start_date,
             end_date=end_date,
             min_price=min_price,
             max_price=max_price,
+            limit=limit,
+            offset=offset,
         )

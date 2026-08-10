@@ -34,13 +34,23 @@ class PriceHistoryService:
         end_date: date | None = None,
         min_price: float | None = None,
         max_price: float | None = None,
+        limit: int = 20,
+        offset: int = 0,
     ) -> list[PriceHistory]:
 
-        if start_date is not None and end_date is not None and start_date > end_date:
-            raise ValueError("start_date cannot be greater than end_date")
+        if start_date is not None and end_date is not None:
+            if start_date > end_date:
+                raise ValueError("start_date cannot be greater than end_date")
 
-        if min_price is not None and max_price is not None and min_price > max_price:
-            raise ValueError("min_price cannot be greater than max_price")
+        if min_price is not None and max_price is not None:
+            if min_price > max_price:
+                raise ValueError("min_price cannot be greater than max_price")
+
+        if limit <= 0:
+            raise ValueError("limit must be greater than 0")
+
+        if offset < 0:
+            raise ValueError("offset cannot be negative")
 
         start_datetime = None
 
@@ -64,4 +74,6 @@ class PriceHistoryService:
             end_date=end_datetime,
             min_price=min_price,
             max_price=max_price,
+            limit=limit,
+            offset=offset,
         )

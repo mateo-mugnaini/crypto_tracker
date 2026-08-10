@@ -110,11 +110,26 @@ def update_coin_price(
 
 @app.get("/coins/{coin_id}/price-history")
 def get_price_history(
-    coin_id: str,
+    coin_id: str = Path(
+        ...,
+        min_length=1,
+        description="ID de la criptomoneda",
+        ), 
     start_date: date | None = None,
     end_date: date | None = None,
     min_price: float | None = Query(default=None, ge=0),
     max_price: float | None = Query(default=None, ge=0),
+    limit: int = Query(
+        default=20,
+        ge=1,
+        le=100,
+        description="Cantidad máxima de registros",
+    ),
+    offset: int = Query(
+        default=0,
+        ge=0,
+        description="Cantidad de registros a omitir",
+    ),
 ):
     return container.price_history_controller.get_price_history(
         coin_id=coin_id,
@@ -122,4 +137,6 @@ def get_price_history(
         end_date=end_date,
         min_price=min_price,
         max_price=max_price,
-    )
+        limit=limit,
+        offset=offset,
+)

@@ -18,7 +18,9 @@ def test_get_price_history_without_filters():
 
     service.get_price_history.return_value = []
 
-    result = controller.get_price_history(coin_id="bitcoin")
+    result = controller.get_price_history(
+        coin_id="bitcoin",
+    )
 
     assert result == []
 
@@ -28,30 +30,34 @@ def test_get_price_history_without_filters():
         end_date=None,
         min_price=None,
         max_price=None,
+        limit=20,
+        offset=0,
     )
 
 
-def test_get_price_history_with_price_filters():
+def test_get_price_history_with_pagination():
     controller, service = create_controller()
 
     service.get_price_history.return_value = []
 
     controller.get_price_history(
         coin_id="bitcoin",
-        min_price=64000,
-        max_price=65000,
+        limit=10,
+        offset=20,
     )
 
     service.get_price_history.assert_called_once_with(
         coin_id="bitcoin",
         start_date=None,
         end_date=None,
-        min_price=64000,
-        max_price=65000,
+        min_price=None,
+        max_price=None,
+        limit=10,
+        offset=20,
     )
 
 
-def test_get_price_history_with_all_filters():
+def test_get_price_history_with_filters_and_pagination():
     controller, service = create_controller()
 
     service.get_price_history.return_value = []
@@ -62,6 +68,8 @@ def test_get_price_history_with_all_filters():
         end_date=date(2026, 8, 8),
         min_price=64000,
         max_price=65000,
+        limit=10,
+        offset=20,
     )
 
     service.get_price_history.assert_called_once_with(
@@ -70,12 +78,13 @@ def test_get_price_history_with_all_filters():
         end_date=date(2026, 8, 8),
         min_price=64000,
         max_price=65000,
+        limit=10,
+        offset=20,
     )
 
 
 if __name__ == "__main__":
     test_get_price_history_without_filters()
-    test_get_price_history_with_price_filters()
-    test_get_price_history_with_all_filters()
-
+    test_get_price_history_with_pagination()
+    test_get_price_history_with_filters_and_pagination()
     print("All price history controller tests passed.")

@@ -12,11 +12,11 @@ class PriceHistoryRepository:
 
         query = """
             INSERT INTO price_history(
-                coin_id, 
+                coin_id,
                 price,
                 recorded_at
             )
-            VALUES (%s,%s,%s)
+            VALUES (%s, %s, %s)
         """
 
         values = (
@@ -45,6 +45,8 @@ class PriceHistoryRepository:
         end_date: datetime | None = None,
         min_price: float | None = None,
         max_price: float | None = None,
+        limit: int | None = None,
+        offset: int = 0,
     ) -> list[PriceHistory]:
 
         connection = get_connection()
@@ -60,24 +62,36 @@ class PriceHistoryRepository:
             WHERE coin_id = %s
         """
 
+        params = [coin_id]
+
+        if start_date is not None:
+            query += " AND recorded_at >= %s"
+            params.append(start_date)
+
+        if end_date is not None:
+            query += " AND recorded_at <= %s"
+            params.append(end_date)
+
+        if min_price is not None:
+            query += " AND price >= %s"
+            params.append(min_price)
+
+        if max_price is not None:
+            query += " AND price <= %s"
+            params.append(max_price)
+
+        query += """
+            ORDER BY recorded_at ASC, id ASC
+        """
+
+        if limit is not None:
+            query += " LIMIT %s"
+            params.append(limit)
+
+            query += " OFFSET %s"
+            params.append(offset)
+
         try:
-            params = [coin_id]
-
-            if start_date is not None:
-                query += " AND recorded_at >= %s"
-                params.append(start_date)
-            if end_date is not None:
-                query += " AND recorded_at <= %s"
-                params.append(end_date)
-            if min_price is not None:
-                query += " AND price >= %s"
-                params.append(min_price)
-            if max_price is not None:
-                query += " AND price <= %s"
-                params.append(max_price)
-
-            query += " ORDER BY recorded_at ASC"
-
             cursor.execute(query, params)
 
             rows = cursor.fetchall()
