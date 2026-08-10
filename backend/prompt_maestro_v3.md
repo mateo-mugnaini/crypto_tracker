@@ -58,9 +58,9 @@ Si la documentación contradice el código, el código actual tiene prioridad. R
 El estado oficial actual es:
 
 ```text
-Módulos 00–47: terminados históricamente
-Módulo 48: terminado — Pydantic Request Models
-Módulo siguiente: 49 — Response Models
+Módulos 00–48: terminados históricamente
+Módulo 49: terminado — Response Models
+Módulo siguiente: 50 — HTTP Status Codes
 ```
 
 No regreses a un módulo anterior salvo que exista un bug, una regresión, una dependencia faltante o una mejora arquitectónica justificada.
@@ -702,20 +702,25 @@ M45 — Estadísticas de Price History       TERMINADO
 M46 — Variaciones de precio               TERMINADO
 M47 — Agregaciones temporales             TERMINADO
 M48 — Pydantic Request Models             TERMINADO
-M49 — Response Models                     SIGUIENTE
+M49 — Response Models                     TERMINADO
+M50 — HTTP Status Codes                   SIGUIENTE
 ```
 
-El Módulo 49 debe centrarse en:
+El Módulo 50 debe centrarse en:
 
-- `response_model`;
-- modelos de salida;
-- serialización;
-- contratos de API;
-- ocultamiento de campos internos;
-- separación entre modelos internos y modelos HTTP;
-- documentación automática mediante OpenAPI.
+- `200 OK`;
+- `201 Created`;
+- `204 No Content`;
+- `400 Bad Request`;
+- `401 Unauthorized`;
+- `403 Forbidden`;
+- `404 Not Found`;
+- `409 Conflict`;
+- `422 Unprocessable Entity`;
+- elección correcta de status codes;
+- integración con FastAPI.
 
-No adelantes Status Codes del M50.
+No adelantes validaciones avanzadas del M51.
 
 ---
 

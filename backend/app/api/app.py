@@ -5,7 +5,16 @@ from datetime import date
 
 from app.container import Container
 from app.models.favorite import Favorite
-from app.schemas.favorite import FavoriteCreateRequest
+from app.schemas.favorite import (
+    FavoriteActionResponse,
+    FavoriteCreateRequest,
+)
+from app.schemas.price_history import (
+    PriceHistoryAggregationResponse,
+    PriceHistoryResponse,
+    PriceHistoryStatisticsResponse,
+    PriceHistoryVariationResponse,
+)
 
 app = FastAPI(
     title="Crypto Tracker API",
@@ -69,7 +78,7 @@ def update_coin(
 # ============================================================
 
 
-@app.post("/favorites")
+@app.post("/favorites", response_model=FavoriteActionResponse)
 def add_favorite(
     request: FavoriteCreateRequest = Body(...),
 ):
@@ -113,7 +122,10 @@ def update_coin_price(
     return container.price_history_controller.update_price(coin_id)
 
 
-@app.get("/coins/{coin_id}/price-history")
+@app.get(
+    "/coins/{coin_id}/price-history",
+    response_model=list[PriceHistoryResponse],
+)
 def get_price_history(
     coin_id: str = Path(
         ...,
@@ -157,7 +169,10 @@ def get_price_history(
     )
 
 
-@app.get("/coins/{coin_id}/price-history/statistics")
+@app.get(
+    "/coins/{coin_id}/price-history/statistics",
+    response_model=PriceHistoryStatisticsResponse,
+)
 def get_price_statistics(
     coin_id: str = Path(
         ...,
@@ -168,7 +183,10 @@ def get_price_statistics(
     return container.price_history_controller.get_price_statistics(coin_id)
 
 
-@app.get("/coins/{coin_id}/price-history/variation")
+@app.get(
+    "/coins/{coin_id}/price-history/variation",
+    response_model=PriceHistoryVariationResponse,
+)
 def get_price_variation(
     coin_id: str = Path(
         ...,
@@ -185,7 +203,10 @@ def get_price_variation(
     )
 
 
-@app.get("/coins/{coin_id}/price-history/aggregations")
+@app.get(
+    "/coins/{coin_id}/price-history/aggregations",
+    response_model=list[PriceHistoryAggregationResponse],
+)
 def get_price_aggregations(
     coin_id: str = Path(
         ...,

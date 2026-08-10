@@ -12,3 +12,8 @@ class FavoriteCreateRequest(BaseModel):
         min_length=1,
         description="Identificador de CoinGecko de la moneda",
     )
+
+
+class FavoriteActionResponse(BaseModel):
+    success: bool
+    message: str
