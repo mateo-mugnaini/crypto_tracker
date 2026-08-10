@@ -7,9 +7,16 @@ from app.services.coin_service import CoinService
 class FakeRepository:
     def __init__(self):
         self.saved = []
+        self.updated = []
+
+    def exists(self, coin_id):
+        return False
 
     def save(self, coin):
         self.saved.append(coin)
+
+    def update(self, coin):
+        self.updated.append(coin)
 
 
 class FakeApiClient:
@@ -27,10 +34,10 @@ class CoinServiceTest(unittest.TestCase):
         repository = FakeRepository()
         api_client = FakeApiClient(
             {
-                "id": "usdt",
-                "symbol": "usdt",
-                "name": "Dolar Cripto",
-                "market_cap_rank": 2,
+                "id": "bitcoin",
+                "symbol": "btc",
+                "name": "Bitcoin",
+                "market_cap_rank": 1,
             }
         )
 

@@ -4,6 +4,10 @@ from app.models.price_history import PriceHistory
 from app.repositories.price_history_repository import PriceHistoryRepository
 
 
+VALID_SORT_FIELDS = {"recorded_at", "price"}
+VALID_SORT_ORDERS = {"asc", "desc"}
+
+
 class PriceHistoryService:
 
     def __init__(
@@ -36,6 +40,8 @@ class PriceHistoryService:
         max_price: float | None = None,
         limit: int = 20,
         offset: int = 0,
+        sort_by: str = "recorded_at",
+        sort_order: str = "asc",
     ) -> list[PriceHistory]:
 
         if start_date is not None and end_date is not None:
@@ -51,6 +57,16 @@ class PriceHistoryService:
 
         if offset < 0:
             raise ValueError("offset cannot be negative")
+
+        sort_by = sort_by.lower()
+
+        if sort_by not in VALID_SORT_FIELDS:
+            raise ValueError("sort_by must be one of: recorded_at, price")
+
+        sort_order = sort_order.lower()
+
+        if sort_order not in VALID_SORT_ORDERS:
+            raise ValueError("sort_order must be one of: asc, desc")
 
         start_datetime = None
 
@@ -76,4 +92,6 @@ class PriceHistoryService:
             max_price=max_price,
             limit=limit,
             offset=offset,
+            sort_by=sort_by,
+            sort_order=sort_order,
         )

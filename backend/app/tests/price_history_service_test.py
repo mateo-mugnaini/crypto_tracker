@@ -41,6 +41,8 @@ def test_get_price_history_without_filters():
         max_price=None,
         limit=20,
         offset=0,
+        sort_by="recorded_at",
+        sort_order="asc",
     )
 
 
@@ -62,6 +64,8 @@ def test_get_price_history_with_min_price():
         max_price=None,
         limit=20,
         offset=0,
+        sort_by="recorded_at",
+        sort_order="asc",
     )
 
 
@@ -83,6 +87,8 @@ def test_get_price_history_with_max_price():
         max_price=65000,
         limit=20,
         offset=0,
+        sort_by="recorded_at",
+        sort_order="asc",
     )
 
 
@@ -105,6 +111,8 @@ def test_get_price_history_with_price_range():
         max_price=65000,
         limit=20,
         offset=0,
+        sort_by="recorded_at",
+        sort_order="asc",
     )
 
 
@@ -127,6 +135,8 @@ def test_get_price_history_with_pagination():
         max_price=None,
         limit=10,
         offset=20,
+        sort_by="recorded_at",
+        sort_order="asc",
     )
 
 
@@ -143,6 +153,8 @@ def test_get_price_history_with_filters_and_pagination():
         max_price=65000,
         limit=10,
         offset=20,
+        sort_by="recorded_at",
+        sort_order="asc",
     )
 
     repository.find_by_coin_id.assert_called_once_with(
@@ -153,6 +165,8 @@ def test_get_price_history_with_filters_and_pagination():
         max_price=65000,
         limit=10,
         offset=20,
+        sort_by="recorded_at",
+        sort_order="asc",
     )
 
 
@@ -226,6 +240,88 @@ def test_get_price_history_rejects_negative_offset():
     repository.find_by_coin_id.assert_not_called()
 
 
+def test_get_price_history_with_price_desc_sorting():
+    service, repository = create_service()
+
+    repository.find_by_coin_id.return_value = []
+
+    service.get_price_history(
+        coin_id="bitcoin",
+        sort_by="price",
+        sort_order="desc",
+    )
+
+    repository.find_by_coin_id.assert_called_once_with(
+        coin_id="bitcoin",
+        start_date=None,
+        end_date=None,
+        min_price=None,
+        max_price=None,
+        limit=20,
+        offset=0,
+        sort_by="price",
+        sort_order="desc",
+    )
+
+
+def test_get_price_history_normalizes_sorting_values():
+    service, repository = create_service()
+
+    repository.find_by_coin_id.return_value = []
+
+    service.get_price_history(
+        coin_id="bitcoin",
+        sort_by="PRICE",
+        sort_order="DESC",
+    )
+
+    repository.find_by_coin_id.assert_called_once_with(
+        coin_id="bitcoin",
+        start_date=None,
+        end_date=None,
+        min_price=None,
+        max_price=None,
+        limit=20,
+        offset=0,
+        sort_by="price",
+        sort_order="desc",
+    )
+
+
+def test_get_price_history_rejects_invalid_sort_by():
+    service, repository = create_service()
+
+    try:
+        service.get_price_history(
+            coin_id="bitcoin",
+            sort_by="price; DROP TABLE price_history",
+        )
+
+        assert False, "Expected ValueError"
+
+    except ValueError as error:
+        assert str(error) == "sort_by must be one of: recorded_at, price"
+
+    repository.find_by_coin_id.assert_not_called()
+
+
+def test_get_price_history_rejects_invalid_sort_order():
+    service, repository = create_service()
+
+    try:
+        service.get_price_history(
+            coin_id="bitcoin",
+            sort_order="descending",
+        )
+
+        assert False, "Expected ValueError"
+
+    except ValueError as error:
+        assert str(error) == "sort_order must be one of: asc, desc"
+
+    repository.find_by_coin_id.assert_not_called()
+
+
 if __name__ == "__main__":
     test_get_price_history_without_filters()
     test_get_price_history_with_min_price()
@@ -237,5 +333,9 @@ if __name__ == "__main__":
     test_get_price_history_rejects_invalid_date_range()
     test_get_price_history_rejects_invalid_limit()
     test_get_price_history_rejects_negative_offset()
+    test_get_price_history_with_price_desc_sorting()
+    test_get_price_history_normalizes_sorting_values()
+    test_get_price_history_rejects_invalid_sort_by()
+    test_get_price_history_rejects_invalid_sort_order()
 
     print("All price history service tests passed.")

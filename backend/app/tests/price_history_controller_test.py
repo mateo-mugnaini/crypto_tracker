@@ -32,6 +32,8 @@ def test_get_price_history_without_filters():
         max_price=None,
         limit=20,
         offset=0,
+        sort_by="recorded_at",
+        sort_order="asc",
     )
 
 
@@ -54,6 +56,8 @@ def test_get_price_history_with_pagination():
         max_price=None,
         limit=10,
         offset=20,
+        sort_by="recorded_at",
+        sort_order="asc",
     )
 
 
@@ -70,6 +74,8 @@ def test_get_price_history_with_filters_and_pagination():
         max_price=65000,
         limit=10,
         offset=20,
+        sort_by="recorded_at",
+        sort_order="asc",
     )
 
     service.get_price_history.assert_called_once_with(
@@ -80,11 +86,37 @@ def test_get_price_history_with_filters_and_pagination():
         max_price=65000,
         limit=10,
         offset=20,
+        sort_by="recorded_at",
+        sort_order="asc",
     )
 
+
+def test_get_price_history_with_sorting():
+    controller, service = create_controller()
+
+    service.get_price_history.return_value = []
+
+    controller.get_price_history(
+        coin_id="bitcoin",
+        sort_by="price",
+        sort_order="desc",
+    )
+
+    service.get_price_history.assert_called_once_with(
+        coin_id="bitcoin",
+        start_date=None,
+        end_date=None,
+        min_price=None,
+        max_price=None,
+        limit=20,
+        offset=0,
+        sort_by="price",
+        sort_order="desc",
+    )
 
 if __name__ == "__main__":
     test_get_price_history_without_filters()
     test_get_price_history_with_pagination()
     test_get_price_history_with_filters_and_pagination()
+    test_get_price_history_with_sorting()
     print("All price history controller tests passed.")

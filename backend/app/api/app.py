@@ -1,3 +1,5 @@
+from typing import Literal
+
 from fastapi import FastAPI, Path, Query
 from datetime import date
 
@@ -130,6 +132,14 @@ def get_price_history(
         ge=0,
         description="Cantidad de registros a omitir",
     ),
+    sort_by: Literal["recorded_at", "price"] = Query(
+        default="recorded_at",
+        description="Campo de ordenamiento permitido",
+    ),
+    sort_order: Literal["asc", "desc"] = Query(
+        default="asc",
+        description="Dirección de ordenamiento permitida",
+    ),
 ):
     return container.price_history_controller.get_price_history(
         coin_id=coin_id,
@@ -139,4 +149,6 @@ def get_price_history(
         max_price=max_price,
         limit=limit,
         offset=offset,
-)
+        sort_by=sort_by,
+        sort_order=sort_order,
+    )

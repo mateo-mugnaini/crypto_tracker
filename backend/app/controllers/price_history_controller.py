@@ -32,6 +32,8 @@ class PriceHistoryController:
         max_price: float | None = None,
         limit: int = 20,
         offset: int = 0,
+        sort_by: str = "recorded_at",
+        sort_order: str = "asc",
     ) -> list[PriceHistory]:
 
         return self.price_history_service.get_price_history(
@@ -42,4 +44,6 @@ class PriceHistoryController:
             max_price=max_price,
             limit=limit,
             offset=offset,
+            sort_by=sort_by,
+            sort_order=sort_order,
         )

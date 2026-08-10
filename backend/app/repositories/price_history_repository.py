@@ -4,7 +4,34 @@ from app.models.price_history import PriceHistory
 from app.database.connection import get_connection
 
 
+SORTABLE_FIELDS = {
+    "recorded_at": "recorded_at",
+    "price": "price",
+}
+
+SORT_DIRECTIONS = {
+    "asc": "ASC",
+    "desc": "DESC",
+}
+
+
 class PriceHistoryRepository:
+
+    @staticmethod
+    def _get_sorting_sql(sort_by: str, sort_order: str) -> tuple[str, str]:
+        """Translate public sorting values into trusted SQL fragments."""
+
+        column = SORTABLE_FIELDS.get(sort_by)
+
+        if column is None:
+            raise ValueError("sort_by must be one of: recorded_at, price")
+
+        direction = SORT_DIRECTIONS.get(sort_order)
+
+        if direction is None:
+            raise ValueError("sort_order must be one of: asc, desc")
+
+        return column, direction
 
     def save(self, price_history: PriceHistory) -> PriceHistory:
         connection = get_connection()
@@ -47,7 +74,14 @@ class PriceHistoryRepository:
         max_price: float | None = None,
         limit: int | None = None,
         offset: int = 0,
+        sort_by: str = "recorded_at",
+        sort_order: str = "asc",
     ) -> list[PriceHistory]:
+
+        sort_column, sort_direction = self._get_sorting_sql(
+            sort_by=sort_by,
+            sort_order=sort_order,
+        )
 
         connection = get_connection()
         cursor = connection.cursor(dictionary=True)
@@ -80,9 +114,7 @@ class PriceHistoryRepository:
             query += " AND price <= %s"
             params.append(max_price)
 
-        query += """
-            ORDER BY recorded_at ASC, id ASC
-        """
+        query += f" ORDER BY {sort_column} {sort_direction}, id ASC"
 
         if limit is not None:
             query += " LIMIT %s"
