@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date, time
 
 from app.models.price_history import PriceHistory
 from app.repositories.price_history_repository import PriceHistoryRepository
@@ -27,18 +27,41 @@ class PriceHistoryService:
 
         return self.price_history_repository.save(price_history)
 
-    def get_history(
+    def get_price_history(
         self,
         coin_id: str,
-        start_date: datetime | None = None,
-        end_date: datetime | None = None,
+        start_date: date | None = None,
+        end_date: date | None = None,
+        min_price: float | None = None,
+        max_price: float | None = None,
     ) -> list[PriceHistory]:
 
         if start_date is not None and end_date is not None and start_date > end_date:
             raise ValueError("start_date cannot be greater than end_date")
 
-        return self.price_history_repository.get_by_coin_id_and_date_range(
+        if min_price is not None and max_price is not None and min_price > max_price:
+            raise ValueError("min_price cannot be greater than max_price")
+
+        start_datetime = None
+
+        if start_date is not None:
+            start_datetime = datetime.combine(
+                start_date,
+                time.min,
+            )
+
+        end_datetime = None
+
+        if end_date is not None:
+            end_datetime = datetime.combine(
+                end_date,
+                time.max,
+            )
+
+        return self.price_history_repository.find_by_coin_id(
             coin_id=coin_id,
-            start_date=start_date,
-            end_date=end_date,
+            start_date=start_datetime,
+            end_date=end_datetime,
+            min_price=min_price,
+            max_price=max_price,
         )

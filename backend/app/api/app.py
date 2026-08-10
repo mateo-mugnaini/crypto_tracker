@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Path
-from datetime import datetime, date, time
+from fastapi import FastAPI, Path, Query
+from datetime import date
 
 from app.container import Container
 from app.models.favorite import Favorite
@@ -113,24 +113,13 @@ def get_price_history(
     coin_id: str,
     start_date: date | None = None,
     end_date: date | None = None,
+    min_price: float | None = Query(default=None, ge=0),
+    max_price: float | None = Query(default=None, ge=0),
 ):
-    start_datetime = None
-    end_datetime = None
-
-    if start_date is not None:
-        start_datetime = datetime.combine(
-            start_date,
-            time.min,
-        )
-
-    if end_date is not None:
-        end_datetime = datetime.combine(
-            end_date,
-            time.max,
-        )
-
-    return container.price_history_controller.get_history(
+    return container.price_history_controller.get_price_history(
         coin_id=coin_id,
-        start_date=start_datetime,
-        end_date=end_datetime,
+        start_date=start_date,
+        end_date=end_date,
+        min_price=min_price,
+        max_price=max_price,
     )

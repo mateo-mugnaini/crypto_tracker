@@ -585,7 +585,7 @@ def get_price_history(
         description="ID de la criptomoneda en CoinGecko",
     )
 ):
-    return container.price_history_controller.get_history(coin_id)
+    return container.price_history_controller.get_price_history(coin_id)
 ```
 
 No deben coexistir dos handlers con el mismo método HTTP y path.

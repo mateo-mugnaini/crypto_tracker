@@ -11,7 +11,7 @@ class PriceHistoryRepository:
         cursor = connection.cursor()
 
         query = """
-            INSERT INTO price_history(}
+            INSERT INTO price_history(
                 coin_id, 
                 price,
                 recorded_at
@@ -38,49 +38,13 @@ class PriceHistoryRepository:
             cursor.close()
             connection.close()
 
-    def get_by_coin_id(
-        self,
-        coin_id: str,
-    ) -> list[PriceHistory]:
-
-        connection = get_connection()
-        cursor = connection.cursor(dictionary=True)
-
-        query = """
-            SELECT
-                id,
-                coin_id,
-                price,
-                recorded_at
-            FROM price_history
-            WHERE coin_id = %s
-            ORDER BY recorded_at ASC
-        """
-
-        try:
-            cursor.execute(query, (coin_id,))
-
-            rows = cursor.fetchall()
-
-            return [
-                PriceHistory(
-                    id=row["id"],
-                    coin_id=row["coin_id"],
-                    price=row["price"],
-                    recorded_at=row["recorded_at"],
-                )
-                for row in rows
-            ]
-
-        finally:
-            cursor.close()
-            connection.close()
-
-    def get_by_coin_id_and_date_range(
+    def find_by_coin_id(
         self,
         coin_id: str,
         start_date: datetime | None = None,
         end_date: datetime | None = None,
+        min_price: float | None = None,
+        max_price: float | None = None,
     ) -> list[PriceHistory]:
 
         connection = get_connection()
@@ -96,25 +60,25 @@ class PriceHistoryRepository:
             WHERE coin_id = %s
         """
 
-        parameters = [coin_id]
-
-        if start_date is not None:
-            query += """
-                AND recorded_at >= %s
-            """
-            parameters.append(start_date)
-
-        if end_date is not None:
-            query += """
-                AND recorded_at >= %s
-            """
-            parameters.append(end_date)
-        query += """
-            ORDER BY recorded_at ASC
-        """
-
         try:
-            cursor.execute(query, tuple(parameters))
+            params = [coin_id]
+
+            if start_date is not None:
+                query += " AND recorded_at >= %s"
+                params.append(start_date)
+            if end_date is not None:
+                query += " AND recorded_at <= %s"
+                params.append(end_date)
+            if min_price is not None:
+                query += " AND price >= %s"
+                params.append(min_price)
+            if max_price is not None:
+                query += " AND price <= %s"
+                params.append(max_price)
+
+            query += " ORDER BY recorded_at ASC"
+
+            cursor.execute(query, params)
 
             rows = cursor.fetchall()
 
@@ -127,6 +91,7 @@ class PriceHistoryRepository:
                 )
                 for row in rows
             ]
+
         finally:
             cursor.close()
             connection.close()

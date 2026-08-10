@@ -94,7 +94,7 @@ Eso es exactamente lo que vamos a resolver.
 Una implementación incorrecta sería poner SQL directamente en FastAPI:
 
 @app.get("/coins/{coin_id}/price-history")
-def get_history(coin_id):
+def get_price_history(coin_id):
 cursor.execute(...)
 
 Esto mezclaría:
@@ -484,13 +484,13 @@ El service no necesita saber como se contruye el SQL.
 Antes teníamos conceptualmente:
 
 ```py
-get_history(coin_id)
+get_price_history(coin_id)
 ```
 
 Ahora:
 
 ```py
-get_history(
+get_price_history(
     coin_id,
     start_date,
     end_date

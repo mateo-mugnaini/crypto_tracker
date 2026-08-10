@@ -1,86 +1,190 @@
-from datetime import datetime
+from datetime import date, datetime
+from unittest.mock import Mock
 
+from app.models.price_history import PriceHistory
+from app.repositories.price_history_repository import PriceHistoryRepository
 from app.services.price_history_service import PriceHistoryService
 
 
-class FakePriceHistoryRepository:
+def create_service():
+    repository = Mock(spec=PriceHistoryRepository)
 
-    def __init__(self):
-        self.received_coin_id = None
-        self.received_start_date = None
-        self.received_end_date = None
+    service = PriceHistoryService(price_history_repository=repository)
 
-    def get_by_coin_id_and_date_range(
-        self,
-        coin_id,
+    return service, repository
+
+
+def test_get_price_history_without_filters():
+    service, repository = create_service()
+
+    expected = [
+        PriceHistory(
+            id=1,
+            coin_id="bitcoin",
+            price=65000,
+            recorded_at=datetime(2026, 8, 8, 10, 0, 0),
+        )
+    ]
+
+    repository.find_by_coin_id.return_value = expected
+
+    result = service.get_price_history(coin_id="bitcoin")
+
+    assert result == expected
+
+    repository.find_by_coin_id.assert_called_once_with(
+        coin_id="bitcoin",
         start_date=None,
         end_date=None,
-    ):
-        self.received_coin_id = coin_id
-        self.received_start_date = start_date
-        self.received_end_date = end_date
-
-        return []
-
-
-def test_get_history_with_date_range():
-    repository = FakePriceHistoryRepository()
-    service = PriceHistoryService(repository)
-
-    start_date = datetime(2026, 8, 1)
-    end_date = datetime(2026, 8, 9)
-
-    result = service.get_history(
-        coin_id="bitcoin",
-        start_date=start_date,
-        end_date=end_date,
+        min_price=None,
+        max_price=None,
     )
 
-    assert result == []
 
-    assert repository.received_coin_id == "bitcoin"
-    assert repository.received_start_date == start_date
-    assert repository.received_end_date == end_date
+def test_get_price_history_with_min_price():
+    service, repository = create_service()
 
+    repository.find_by_coin_id.return_value = []
 
-def test_get_history_without_dates():
-    repository = FakePriceHistoryRepository()
-    service = PriceHistoryService(repository)
-
-    result = service.get_history(
+    service.get_price_history(
         coin_id="bitcoin",
+        min_price=64000,
     )
 
-    assert result == []
+    repository.find_by_coin_id.assert_called_once_with(
+        coin_id="bitcoin",
+        start_date=None,
+        end_date=None,
+        min_price=64000,
+        max_price=None,
+    )
 
-    assert repository.received_coin_id == "bitcoin"
-    assert repository.received_start_date is None
-    assert repository.received_end_date is None
+
+def test_get_price_history_with_max_price():
+    service, repository = create_service()
+
+    repository.find_by_coin_id.return_value = []
+
+    service.get_price_history(
+        coin_id="bitcoin",
+        max_price=65000,
+    )
+
+    repository.find_by_coin_id.assert_called_once_with(
+        coin_id="bitcoin",
+        start_date=None,
+        end_date=None,
+        min_price=None,
+        max_price=65000,
+    )
 
 
-def test_get_history_with_invalid_date_range():
-    repository = FakePriceHistoryRepository()
-    service = PriceHistoryService(repository)
+def test_get_price_history_with_price_range():
+    service, repository = create_service()
 
-    start_date = datetime(2026, 8, 10)
-    end_date = datetime(2026, 8, 1)
+    repository.find_by_coin_id.return_value = []
+
+    service.get_price_history(
+        coin_id="bitcoin",
+        min_price=64000,
+        max_price=65000,
+    )
+
+    repository.find_by_coin_id.assert_called_once_with(
+        coin_id="bitcoin",
+        start_date=None,
+        end_date=None,
+        min_price=64000,
+        max_price=65000,
+    )
+
+
+def test_get_price_history_rejects_invalid_price_range():
+    service, repository = create_service()
 
     try:
-        service.get_history(
+        service.get_price_history(
             coin_id="bitcoin",
-            start_date=start_date,
-            end_date=end_date,
+            min_price=65000,
+            max_price=64000,
         )
 
-        raise AssertionError("Expected ValueError was not raised")
+        assert False, "Expected ValueError"
+
+    except ValueError as error:
+        assert str(error) == ("min_price cannot be greater than max_price")
+
+    repository.find_by_coin_id.assert_not_called()
+
+
+def test_get_price_history_with_date_range():
+    service, repository = create_service()
+
+    repository.find_by_coin_id.return_value = []
+
+    service.get_price_history(
+        coin_id="bitcoin",
+        start_date=date(2026, 8, 7),
+        end_date=date(2026, 8, 8),
+    )
+
+    repository.find_by_coin_id.assert_called_once_with(
+        coin_id="bitcoin",
+        start_date=datetime(2026, 8, 7, 0, 0, 0),
+        end_date=datetime(2026, 8, 8, 23, 59, 59, 999999),
+        min_price=None,
+        max_price=None,
+    )
+
+
+def test_get_price_history_rejects_invalid_date_range():
+    service, repository = create_service()
+
+    try:
+        service.get_price_history(
+            coin_id="bitcoin",
+            start_date=date(2026, 8, 8),
+            end_date=date(2026, 8, 7),
+        )
+
+        assert False, "Expected ValueError"
 
     except ValueError as error:
         assert str(error) == ("start_date cannot be greater than end_date")
 
+    repository.find_by_coin_id.assert_not_called()
+
+
+def test_get_price_history_combines_date_and_price_filters():
+    service, repository = create_service()
+
+    repository.find_by_coin_id.return_value = []
+
+    service.get_price_history(
+        coin_id="bitcoin",
+        start_date=date(2026, 8, 7),
+        end_date=date(2026, 8, 8),
+        min_price=64000,
+        max_price=65000,
+    )
+
+    repository.find_by_coin_id.assert_called_once_with(
+        coin_id="bitcoin",
+        start_date=datetime(2026, 8, 7, 0, 0, 0),
+        end_date=datetime(2026, 8, 8, 23, 59, 59, 999999),
+        min_price=64000,
+        max_price=65000,
+    )
+
 
 if __name__ == "__main__":
-    test_get_history_with_date_range()
-    test_get_history_without_dates()
-    test_get_history_with_invalid_date_range()
+    test_get_price_history_without_filters()
+    test_get_price_history_with_min_price()
+    test_get_price_history_with_max_price()
+    test_get_price_history_with_price_range()
+    test_get_price_history_rejects_invalid_price_range()
+    test_get_price_history_with_date_range()
+    test_get_price_history_rejects_invalid_date_range()
+    test_get_price_history_combines_date_and_price_filters()
 
-    print("PriceHistoryService tests passed.")
+    print("All price history service tests passed.")

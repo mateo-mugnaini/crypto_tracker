@@ -1,65 +1,81 @@
-from datetime import datetime
+from datetime import date
+from unittest.mock import Mock
 
 from app.controllers.price_history_controller import PriceHistoryController
+from app.services.price_history_service import PriceHistoryService
 
 
-class FakePriceHistoryService:
+def create_controller():
+    service = Mock(spec=PriceHistoryService)
 
-    def __init__(self):
-        self.received_coin_id = None
-        self.received_start_date = None
-        self.received_end_date = None
+    controller = PriceHistoryController(price_history_service=service)
 
-    def get_history(
-        self,
-        coin_id,
+    return controller, service
+
+
+def test_get_price_history_without_filters():
+    controller, service = create_controller()
+
+    service.get_price_history.return_value = []
+
+    result = controller.get_price_history(coin_id="bitcoin")
+
+    assert result == []
+
+    service.get_price_history.assert_called_once_with(
+        coin_id="bitcoin",
         start_date=None,
         end_date=None,
-    ):
-        self.received_coin_id = coin_id
-        self.received_start_date = start_date
-        self.received_end_date = end_date
-
-        return []
-
-
-def test_controller_get_history_with_date_range():
-    service = FakePriceHistoryService()
-    controller = PriceHistoryController(service)
-
-    start_date = datetime(2026, 8, 1)
-    end_date = datetime(2026, 8, 9)
-
-    result = controller.get_history(
-        coin_id="bitcoin",
-        start_date=start_date,
-        end_date=end_date,
+        min_price=None,
+        max_price=None,
     )
 
-    assert result == []
 
-    assert service.received_coin_id == "bitcoin"
-    assert service.received_start_date == start_date
-    assert service.received_end_date == end_date
+def test_get_price_history_with_price_filters():
+    controller, service = create_controller()
 
+    service.get_price_history.return_value = []
 
-def test_controller_get_history_without_dates():
-    service = FakePriceHistoryService()
-    controller = PriceHistoryController(service)
-
-    result = controller.get_history(
+    controller.get_price_history(
         coin_id="bitcoin",
+        min_price=64000,
+        max_price=65000,
     )
 
-    assert result == []
+    service.get_price_history.assert_called_once_with(
+        coin_id="bitcoin",
+        start_date=None,
+        end_date=None,
+        min_price=64000,
+        max_price=65000,
+    )
 
-    assert service.received_coin_id == "bitcoin"
-    assert service.received_start_date is None
-    assert service.received_end_date is None
+
+def test_get_price_history_with_all_filters():
+    controller, service = create_controller()
+
+    service.get_price_history.return_value = []
+
+    controller.get_price_history(
+        coin_id="bitcoin",
+        start_date=date(2026, 8, 7),
+        end_date=date(2026, 8, 8),
+        min_price=64000,
+        max_price=65000,
+    )
+
+    service.get_price_history.assert_called_once_with(
+        coin_id="bitcoin",
+        start_date=date(2026, 8, 7),
+        end_date=date(2026, 8, 8),
+        min_price=64000,
+        max_price=65000,
+    )
 
 
 if __name__ == "__main__":
-    test_controller_get_history_with_date_range()
-    test_controller_get_history_without_dates()
+    test_get_price_history_without_filters()
+    test_get_price_history_with_price_filters()
+    test_get_price_history_with_all_filters()
 
-    print("PriceHistoryController tests passed.")
+    print("All price history controller tests passed.")
