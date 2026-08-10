@@ -50,3 +50,15 @@ class PriceHistoryController:
 
     def get_price_statistics(self, coin_id: str) -> dict:
         return self.price_history_service.get_price_statistics(coin_id)
+
+    def get_price_variation(
+        self,
+        coin_id: str,
+        start_date: date | None = None,
+        end_date: date | None = None,
+    ) -> dict:
+        return self.price_history_service.get_price_variation(
+            coin_id=coin_id,
+            start_date=start_date,
+            end_date=end_date,
+        )

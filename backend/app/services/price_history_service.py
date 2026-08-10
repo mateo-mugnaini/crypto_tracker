@@ -121,3 +121,70 @@ class PriceHistoryService:
             return None
 
         return float(value)
+
+    def get_price_variation(
+        self,
+        coin_id: str,
+        start_date: date | None = None,
+        end_date: date | None = None,
+    ) -> dict:
+        coin_id = coin_id.strip()
+
+        if not coin_id:
+            raise ValueError("coin_id cannot be empty")
+
+        if start_date is not None and end_date is not None:
+            if start_date > end_date:
+                raise ValueError("start_date cannot be greater than end_date")
+
+        start_datetime = None
+
+        if start_date is not None:
+            start_datetime = datetime.combine(start_date, time.min)
+
+        end_datetime = None
+
+        if end_date is not None:
+            end_datetime = datetime.combine(end_date, time.max)
+
+        prices = self.price_history_repository.get_initial_and_final_prices(
+            coin_id=coin_id,
+            start_date=start_datetime,
+            end_date=end_datetime,
+        )
+
+        initial_price = self._to_float_or_none(prices["initial_price"])
+        final_price = self._to_float_or_none(prices["final_price"])
+
+        if initial_price is None or final_price is None:
+            return {
+                "coin_id": coin_id,
+                "initial_price": initial_price,
+                "final_price": final_price,
+                "absolute_change": None,
+                "percentage_change": None,
+                "trend": None,
+            }
+
+        absolute_change = final_price - initial_price
+
+        percentage_change = None
+
+        if initial_price != 0:
+            percentage_change = (absolute_change / initial_price) * 100
+
+        if absolute_change > 0:
+            trend = "up"
+        elif absolute_change < 0:
+            trend = "down"
+        else:
+            trend = "unchanged"
+
+        return {
+            "coin_id": coin_id,
+            "initial_price": initial_price,
+            "final_price": final_price,
+            "absolute_change": absolute_change,
+            "percentage_change": percentage_change,
+            "trend": trend,
+        }

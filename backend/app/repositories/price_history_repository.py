@@ -163,3 +163,61 @@ class PriceHistoryRepository:
         finally:
             cursor.close()
             connection.close()
+
+    def get_initial_and_final_prices(
+        self,
+        coin_id: str,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
+    ) -> dict:
+        connection = get_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        conditions = ["coin_id = %s"]
+        params = [coin_id]
+
+        if start_date is not None:
+            conditions.append("recorded_at >= %s")
+            params.append(start_date)
+
+        if end_date is not None:
+            conditions.append("recorded_at <= %s")
+            params.append(end_date)
+
+        where_clause = " AND ".join(conditions)
+
+        initial_query = f"""
+            SELECT price, recorded_at
+            FROM price_history
+            WHERE {where_clause}
+            ORDER BY recorded_at ASC, id ASC
+            LIMIT 1
+        """
+
+        final_query = f"""
+            SELECT price, recorded_at
+            FROM price_history
+            WHERE {where_clause}
+            ORDER BY recorded_at DESC, id DESC
+            LIMIT 1
+        """
+
+        try:
+            cursor.execute(initial_query, tuple(params))
+            initial_row = cursor.fetchone()
+
+            cursor.execute(final_query, tuple(params))
+            final_row = cursor.fetchone()
+
+            return {
+                "initial_price": (
+                    initial_row["price"] if initial_row is not None else None
+                ),
+                "final_price": (
+                    final_row["price"] if final_row is not None else None
+                ),
+            }
+
+        finally:
+            cursor.close()
+            connection.close()

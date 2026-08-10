@@ -163,3 +163,20 @@ def get_price_statistics(
     )
 ):
     return container.price_history_controller.get_price_statistics(coin_id)
+
+
+@app.get("/coins/{coin_id}/price-history/variation")
+def get_price_variation(
+    coin_id: str = Path(
+        ...,
+        min_length=1,
+        description="ID de la criptomoneda",
+    ),
+    start_date: date | None = None,
+    end_date: date | None = None,
+):
+    return container.price_history_controller.get_price_variation(
+        coin_id=coin_id,
+        start_date=start_date,
+        end_date=end_date,
+    )
