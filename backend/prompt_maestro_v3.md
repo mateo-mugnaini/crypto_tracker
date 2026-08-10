@@ -58,9 +58,9 @@ Si la documentación contradice el código, el código actual tiene prioridad. R
 El estado oficial actual es:
 
 ```text
-Módulos 00–43: terminados históricamente
-Módulo 44: terminado — ordenamiento de Price History
-Módulo siguiente: 45 — estadísticas de Price History
+Módulos 00–44: terminados históricamente
+Módulo 45: terminado — estadísticas de Price History
+Módulo siguiente: 46 — variaciones de precio
 ```
 
 No regreses a un módulo anterior salvo que exista un bug, una regresión, una dependencia faltante o una mejora arquitectónica justificada.
@@ -698,21 +698,21 @@ Los documentos anteriores son registros históricos. No los reescribas sin neces
 
 ```text
 M44 — Ordenamiento de Price History       TERMINADO
-M45 — Estadísticas de Price History       SIGUIENTE
+M45 — Estadísticas de Price History       TERMINADO
+M46 — Variaciones de precio               SIGUIENTE
 ```
 
-El Módulo 45 debe centrarse en:
+El Módulo 46 debe centrarse en:
 
-- `MIN`;
-- `MAX`;
-- `AVG`;
-- `COUNT`;
-- estadísticas de precio;
-- consultas agregadas;
-- Service para estadísticas;
-- endpoints específicos.
+- precio inicial y precio final;
+- diferencia absoluta;
+- diferencia porcentual;
+- subidas y bajadas;
+- variaciones positivas y negativas;
+- cálculo en Service;
+- endpoints para variaciones.
 
-No adelantes variaciones de precio del M46 ni agregaciones temporales del M47.
+No adelantes agregaciones temporales del M47.
 
 ---
 

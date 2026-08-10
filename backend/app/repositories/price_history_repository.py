@@ -141,3 +141,25 @@ class PriceHistoryRepository:
         finally:
             cursor.close()
             connection.close()
+
+    def get_statistics_by_coin_id(self, coin_id: str) -> dict:
+        connection = get_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = """
+            SELECT
+                COUNT(*) AS count,
+                MIN(price) AS min_price,
+                MAX(price) AS max_price,
+                AVG(price) AS average_price
+            FROM price_history
+            WHERE coin_id = %s
+        """
+
+        try:
+            cursor.execute(query, (coin_id,))
+            return cursor.fetchone()
+
+        finally:
+            cursor.close()
+            connection.close()

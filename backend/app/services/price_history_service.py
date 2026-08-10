@@ -95,3 +95,29 @@ class PriceHistoryService:
             sort_by=sort_by,
             sort_order=sort_order,
         )
+
+    def get_price_statistics(self, coin_id: str) -> dict:
+        coin_id = coin_id.strip()
+
+        if not coin_id:
+            raise ValueError("coin_id cannot be empty")
+
+        row = self.price_history_repository.get_statistics_by_coin_id(coin_id)
+
+        if row is None:
+            raise ValueError("statistics query returned no result")
+
+        return {
+            "coin_id": coin_id,
+            "count": int(row["count"]),
+            "min_price": self._to_float_or_none(row["min_price"]),
+            "max_price": self._to_float_or_none(row["max_price"]),
+            "average_price": self._to_float_or_none(row["average_price"]),
+        }
+
+    @staticmethod
+    def _to_float_or_none(value) -> float | None:
+        if value is None:
+            return None
+
+        return float(value)

@@ -152,3 +152,14 @@ def get_price_history(
         sort_by=sort_by,
         sort_order=sort_order,
     )
+
+
+@app.get("/coins/{coin_id}/price-history/statistics")
+def get_price_statistics(
+    coin_id: str = Path(
+        ...,
+        min_length=1,
+        description="ID de la criptomoneda",
+    )
+):
+    return container.price_history_controller.get_price_statistics(coin_id)

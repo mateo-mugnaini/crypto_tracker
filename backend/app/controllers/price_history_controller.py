@@ -47,3 +47,6 @@ class PriceHistoryController:
             sort_by=sort_by,
             sort_order=sort_order,
         )
+
+    def get_price_statistics(self, coin_id: str) -> dict:
+        return self.price_history_service.get_price_statistics(coin_id)
