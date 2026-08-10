@@ -14,6 +14,15 @@ SORT_DIRECTIONS = {
     "desc": "DESC",
 }
 
+AGGREGATION_PERIODS = {
+    "hour": "DATE_FORMAT(recorded_at, '%Y-%m-%d %H:00:00')",
+    "day": "DATE(recorded_at)",
+    "week": (
+        "DATE_SUB(DATE(recorded_at), "
+        "INTERVAL WEEKDAY(recorded_at) DAY)"
+    ),
+}
+
 
 class PriceHistoryRepository:
 
@@ -32,6 +41,15 @@ class PriceHistoryRepository:
             raise ValueError("sort_order must be one of: asc, desc")
 
         return column, direction
+
+    @staticmethod
+    def _get_aggregation_period_sql(period: str) -> str:
+        expression = AGGREGATION_PERIODS.get(period)
+
+        if expression is None:
+            raise ValueError("period must be one of: hour, day, week")
+
+        return expression
 
     def save(self, price_history: PriceHistory) -> PriceHistory:
         connection = get_connection()
@@ -217,6 +235,52 @@ class PriceHistoryRepository:
                     final_row["price"] if final_row is not None else None
                 ),
             }
+
+        finally:
+            cursor.close()
+            connection.close()
+
+    def get_price_aggregations(
+        self,
+        coin_id: str,
+        period: str,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
+    ) -> list[dict]:
+        period_expression = self._get_aggregation_period_sql(period)
+
+        connection = get_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        conditions = ["coin_id = %s"]
+        params = [coin_id]
+
+        if start_date is not None:
+            conditions.append("recorded_at >= %s")
+            params.append(start_date)
+
+        if end_date is not None:
+            conditions.append("recorded_at <= %s")
+            params.append(end_date)
+
+        where_clause = " AND ".join(conditions)
+
+        query = f"""
+            SELECT
+                {period_expression} AS period,
+                AVG(price) AS average_price,
+                MIN(price) AS min_price,
+                MAX(price) AS max_price,
+                COUNT(*) AS count
+            FROM price_history
+            WHERE {where_clause}
+            GROUP BY {period_expression}
+            ORDER BY {period_expression} ASC
+        """
+
+        try:
+            cursor.execute(query, tuple(params))
+            return cursor.fetchall()
 
         finally:
             cursor.close()

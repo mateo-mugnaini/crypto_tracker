@@ -6,6 +6,7 @@ from app.repositories.price_history_repository import PriceHistoryRepository
 
 VALID_SORT_FIELDS = {"recorded_at", "price"}
 VALID_SORT_ORDERS = {"asc", "desc"}
+VALID_AGGREGATION_PERIODS = {"hour", "day", "week"}
 
 
 class PriceHistoryService:
@@ -188,3 +189,54 @@ class PriceHistoryService:
             "percentage_change": percentage_change,
             "trend": trend,
         }
+
+    def get_price_aggregations(
+        self,
+        coin_id: str,
+        period: str = "day",
+        start_date: date | None = None,
+        end_date: date | None = None,
+    ) -> list[dict]:
+        coin_id = coin_id.strip()
+
+        if not coin_id:
+            raise ValueError("coin_id cannot be empty")
+
+        period = period.lower()
+
+        if period not in VALID_AGGREGATION_PERIODS:
+            raise ValueError("period must be one of: hour, day, week")
+
+        if start_date is not None and end_date is not None:
+            if start_date > end_date:
+                raise ValueError("start_date cannot be greater than end_date")
+
+        start_datetime = None
+
+        if start_date is not None:
+            start_datetime = datetime.combine(start_date, time.min)
+
+        end_datetime = None
+
+        if end_date is not None:
+            end_datetime = datetime.combine(end_date, time.max)
+
+        rows = self.price_history_repository.get_price_aggregations(
+            coin_id=coin_id,
+            period=period,
+            start_date=start_datetime,
+            end_date=end_datetime,
+        )
+
+        return [
+            {
+                "period": str(row["period"]),
+                "average_price": self._to_float_or_none(
+                    row["average_price"]
+                ),
+                "min_price": self._to_float_or_none(row["min_price"]),
+                "max_price": self._to_float_or_none(row["max_price"]),
+                "count": int(row["count"]),
+            }
+            for row in rows
+        ]

@@ -62,3 +62,17 @@ class PriceHistoryController:
             start_date=start_date,
             end_date=end_date,
         )
+
+    def get_price_aggregations(
+        self,
+        coin_id: str,
+        period: str = "day",
+        start_date: date | None = None,
+        end_date: date | None = None,
+    ) -> list[dict]:
+        return self.price_history_service.get_price_aggregations(
+            coin_id=coin_id,
+            period=period,
+            start_date=start_date,
+            end_date=end_date,
+        )

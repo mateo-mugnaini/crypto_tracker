@@ -58,9 +58,9 @@ Si la documentación contradice el código, el código actual tiene prioridad. R
 El estado oficial actual es:
 
 ```text
-Módulos 00–45: terminados históricamente
-Módulo 46: terminado — variaciones de precio
-Módulo siguiente: 47 — agregaciones temporales
+Módulos 00–46: terminados históricamente
+Módulo 47: terminado — agregaciones temporales
+Módulo siguiente: 48 — Pydantic Request Models
 ```
 
 No regreses a un módulo anterior salvo que exista un bug, una regresión, una dependencia faltante o una mejora arquitectónica justificada.
@@ -700,21 +700,21 @@ Los documentos anteriores son registros históricos. No los reescribas sin neces
 M44 — Ordenamiento de Price History       TERMINADO
 M45 — Estadísticas de Price History       TERMINADO
 M46 — Variaciones de precio               TERMINADO
-M47 — Agregaciones temporales             SIGUIENTE
+M47 — Agregaciones temporales             TERMINADO
+M48 — Pydantic Request Models             SIGUIENTE
 ```
 
-El Módulo 47 debe centrarse en:
+El Módulo 48 debe centrarse en:
 
-- agregaciones por hora, día y semana;
-- `GROUP BY`;
-- funciones SQL;
-- precio promedio por período;
-- precio mínimo por período;
-- precio máximo por período;
-- cantidad de registros por período;
-- análisis temporal.
+- Request Models;
+- `BaseModel`;
+- request body;
+- tipos;
+- validación automática;
+- separación entre HTTP y lógica interna;
+- modelos de entrada.
 
-No adelantes los Pydantic Request Models del M48.
+No adelantes Response Models del M49.
 
 ---
 

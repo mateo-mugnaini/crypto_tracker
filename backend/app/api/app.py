@@ -180,3 +180,25 @@ def get_price_variation(
         start_date=start_date,
         end_date=end_date,
     )
+
+
+@app.get("/coins/{coin_id}/price-history/aggregations")
+def get_price_aggregations(
+    coin_id: str = Path(
+        ...,
+        min_length=1,
+        description="ID de la criptomoneda",
+    ),
+    period: Literal["hour", "day", "week"] = Query(
+        default="day",
+        description="Periodo de agregación",
+    ),
+    start_date: date | None = None,
+    end_date: date | None = None,
+):
+    return container.price_history_controller.get_price_aggregations(
+        coin_id=coin_id,
+        period=period,
+        start_date=start_date,
+        end_date=end_date,
+    )
