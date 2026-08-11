@@ -1,16 +1,13 @@
-from typing import Literal
-
-from fastapi import Body, FastAPI, Path, Query, Response, status
-from datetime import date
+from fastapi import Body, Depends, FastAPI, Path, Response, status
 
 from app.container import Container
 from app.models.favorite import Favorite
-from app.schemas.favorite import (
-    FavoriteActionResponse,
-    FavoriteCreateRequest,
-)
+from app.schemas.favorite import FavoriteActionResponse, FavoriteCreateRequest
 from app.schemas.price_history import (
+    PriceHistoryAggregationQueryParams,
     PriceHistoryAggregationResponse,
+    PriceHistoryDateRangeQueryParams,
+    PriceHistoryQueryParams,
     PriceHistoryResponse,
     PriceHistoryStatisticsResponse,
     PriceHistoryVariationResponse,
@@ -61,7 +58,7 @@ def _get_delete_favorite_status_code(result: dict) -> int:
 def root():
 
     # return {"success": True, "message": "Crypto Tracker API funcionando."}
-    return {"success": True, "message": "Hola mundo♥"}
+    return {"success": True, "message": "Hola mundoâ™¥"}
 
 
 # ============================================================
@@ -188,41 +185,19 @@ def get_price_history(
         ...,
         min_length=1,
         description="ID de la criptomoneda",
-        ), 
-    start_date: date | None = None,
-    end_date: date | None = None,
-    min_price: float | None = Query(default=None, ge=0),
-    max_price: float | None = Query(default=None, ge=0),
-    limit: int = Query(
-        default=20,
-        ge=1,
-        le=100,
-        description="Cantidad máxima de registros",
     ),
-    offset: int = Query(
-        default=0,
-        ge=0,
-        description="Cantidad de registros a omitir",
-    ),
-    sort_by: Literal["recorded_at", "price"] = Query(
-        default="recorded_at",
-        description="Campo de ordenamiento permitido",
-    ),
-    sort_order: Literal["asc", "desc"] = Query(
-        default="asc",
-        description="Dirección de ordenamiento permitida",
-    ),
+    filters: PriceHistoryQueryParams = Depends(),
 ):
     return container.price_history_controller.get_price_history(
         coin_id=coin_id,
-        start_date=start_date,
-        end_date=end_date,
-        min_price=min_price,
-        max_price=max_price,
-        limit=limit,
-        offset=offset,
-        sort_by=sort_by,
-        sort_order=sort_order,
+        start_date=filters.start_date,
+        end_date=filters.end_date,
+        min_price=filters.min_price,
+        max_price=filters.max_price,
+        limit=filters.limit,
+        offset=filters.offset,
+        sort_by=filters.sort_by,
+        sort_order=filters.sort_order,
     )
 
 
@@ -252,13 +227,12 @@ def get_price_variation(
         min_length=1,
         description="ID de la criptomoneda",
     ),
-    start_date: date | None = None,
-    end_date: date | None = None,
+    filters: PriceHistoryDateRangeQueryParams = Depends(),
 ):
     return container.price_history_controller.get_price_variation(
         coin_id=coin_id,
-        start_date=start_date,
-        end_date=end_date,
+        start_date=filters.start_date,
+        end_date=filters.end_date,
     )
 
 
@@ -273,16 +247,11 @@ def get_price_aggregations(
         min_length=1,
         description="ID de la criptomoneda",
     ),
-    period: Literal["hour", "day", "week"] = Query(
-        default="day",
-        description="Periodo de agregación",
-    ),
-    start_date: date | None = None,
-    end_date: date | None = None,
+    filters: PriceHistoryAggregationQueryParams = Depends(),
 ):
     return container.price_history_controller.get_price_aggregations(
         coin_id=coin_id,
-        period=period,
-        start_date=start_date,
-        end_date=end_date,
+        period=filters.period,
+        start_date=filters.start_date,
+        end_date=filters.end_date,
     )

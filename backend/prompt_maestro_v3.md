@@ -61,7 +61,8 @@ El estado oficial actual es:
 Módulos 00–48: terminados históricamente
 Módulo 49: terminado — Response Models
 Módulo 50: terminado — HTTP Status Codes
-Módulo siguiente: 51 — Validación avanzada y reglas cruzadas
+Módulo 51: terminado — Validación avanzada y reglas cruzadas
+Módulo siguiente: 52 — Excepciones propias y HTTPException
 ```
 
 No regreses a un módulo anterior salvo que exista un bug, una regresión, una dependencia faltante o una mejora arquitectónica justificada.
@@ -705,24 +706,20 @@ M47 — Agregaciones temporales             TERMINADO
 M48 — Pydantic Request Models             TERMINADO
 M49 — Response Models                     TERMINADO
 M50 — HTTP Status Codes                   TERMINADO
-M51 — Validación avanzada y reglas cruzadas SIGUIENTE
+M51 — Validación avanzada y reglas cruzadas TERMINADO
+M52 — Excepciones propias y HTTPException SIGUIENTE
 ```
 
-El Módulo 50 debe centrarse en:
+El Módulo 52 debe centrarse en:
 
-- `200 OK`;
-- `201 Created`;
-- `204 No Content`;
-- `400 Bad Request`;
-- `401 Unauthorized`;
-- `403 Forbidden`;
-- `404 Not Found`;
-- `409 Conflict`;
-- `422 Unprocessable Entity`;
-- elección correcta de status codes;
-- integración con FastAPI.
+- excepciones propias;
+- `HTTPException`;
+- handlers globales;
+- errores de negocio;
+- respuestas consistentes;
+- separación entre HTTP e interno.
 
-No adelantes validaciones avanzadas del M51.
+No adelantes dependencias avanzadas del M53.
 
 ---
 

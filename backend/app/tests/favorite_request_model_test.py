@@ -13,6 +13,15 @@ def test_favorite_request_model_accepts_valid_body():
     assert request.coin_id == "bitcoin"
 
 
+def test_favorite_request_model_normalizes_coin_id_to_lowercase():
+    request = FavoriteCreateRequest(
+        user_id=1,
+        coin_id=" Bitcoin ",
+    )
+
+    assert request.coin_id == "bitcoin"
+
+
 def test_favorite_request_model_rejects_non_positive_user_id():
     try:
         FavoriteCreateRequest(
@@ -37,6 +46,20 @@ def test_favorite_request_model_rejects_empty_coin_id():
         assert "at least 1 character" in str(error)
 
 
+def test_favorite_request_model_rejects_extra_fields():
+    try:
+        FavoriteCreateRequest(
+            user_id=1,
+            coin_id="bitcoin",
+            unexpected_field="value",
+        )
+        assert False, "Expected ValidationError"
+
+    except ValidationError as error:
+        assert "unexpected_field" in str(error)
+        assert "extra_forbidden" in str(error) or "Extra inputs are not permitted" in str(error)
+
+
 def test_favorite_request_model_requires_all_fields():
     try:
         FavoriteCreateRequest()
@@ -49,7 +72,9 @@ def test_favorite_request_model_requires_all_fields():
 
 if __name__ == "__main__":
     test_favorite_request_model_accepts_valid_body()
+    test_favorite_request_model_normalizes_coin_id_to_lowercase()
     test_favorite_request_model_rejects_non_positive_user_id()
     test_favorite_request_model_rejects_empty_coin_id()
+    test_favorite_request_model_rejects_extra_fields()
     test_favorite_request_model_requires_all_fields()
     print("All favorite request model tests passed.")
