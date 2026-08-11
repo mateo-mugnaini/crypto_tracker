@@ -60,7 +60,8 @@ El estado oficial actual es:
 ```text
 Módulos 00–48: terminados históricamente
 Módulo 49: terminado — Response Models
-Módulo siguiente: 50 — HTTP Status Codes
+Módulo 50: terminado — HTTP Status Codes
+Módulo siguiente: 51 — Validación avanzada y reglas cruzadas
 ```
 
 No regreses a un módulo anterior salvo que exista un bug, una regresión, una dependencia faltante o una mejora arquitectónica justificada.
@@ -703,7 +704,8 @@ M46 — Variaciones de precio               TERMINADO
 M47 — Agregaciones temporales             TERMINADO
 M48 — Pydantic Request Models             TERMINADO
 M49 — Response Models                     TERMINADO
-M50 — HTTP Status Codes                   SIGUIENTE
+M50 — HTTP Status Codes                   TERMINADO
+M51 — Validación avanzada y reglas cruzadas SIGUIENTE
 ```
 
 El Módulo 50 debe centrarse en:

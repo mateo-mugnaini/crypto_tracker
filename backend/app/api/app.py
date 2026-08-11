@@ -1,6 +1,6 @@
 from typing import Literal
 
-from fastapi import Body, FastAPI, Path, Query
+from fastapi import Body, FastAPI, Path, Query, Response, status
 from datetime import date
 
 from app.container import Container
@@ -26,6 +26,32 @@ app = FastAPI(
 container = Container()
 
 
+def _get_create_favorite_status_code(result: dict) -> int:
+
+    message = str(result.get("message", "")).lower()
+
+    if result.get("success"):
+        return status.HTTP_201_CREATED
+
+    if "usuario no existe" in message or "moneda no existe" in message:
+        return status.HTTP_404_NOT_FOUND
+
+    return status.HTTP_409_CONFLICT
+
+
+def _get_delete_favorite_status_code(result: dict) -> int:
+
+    message = str(result.get("message", "")).lower()
+
+    if result.get("success"):
+        return status.HTTP_204_NO_CONTENT
+
+    if "favoritos" in message:
+        return status.HTTP_404_NOT_FOUND
+
+    return status.HTTP_404_NOT_FOUND
+
+
 # ============================================================
 # ROOT
 # ============================================================
@@ -43,7 +69,7 @@ def root():
 # ============================================================
 
 
-@app.get("/coins")
+@app.get("/coins", status_code=status.HTTP_200_OK)
 def get_all_coins():
 
     return container.coin_controller.get_all_coins()
@@ -55,7 +81,7 @@ def sync_coins():
     return container.coin_controller.sync_coins()
 
 
-@app.get("/coins/{coin_id}")
+@app.get("/coins/{coin_id}", status_code=status.HTTP_200_OK)
 def get_coin(
     coin_id: str = Path(..., min_length=1, description="ID de la criptomoneda")
 ):
@@ -78,29 +104,59 @@ def update_coin(
 # ============================================================
 
 
-@app.post("/favorites", response_model=FavoriteActionResponse)
+@app.post(
+    "/favorites",
+    response_model=FavoriteActionResponse,
+    status_code=status.HTTP_201_CREATED,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "description": "El usuario o la moneda no existe.",
+        },
+        status.HTTP_409_CONFLICT: {
+            "description": "El favorito ya existe.",
+        },
+    },
+)
 def add_favorite(
+    response: Response,
     request: FavoriteCreateRequest = Body(...),
 ):
 
     favorite = Favorite(request.user_id, request.coin_id)
 
-    return container.favorite_controller.add_favorite(favorite)
+    result = container.favorite_controller.add_favorite(favorite)
+    response.status_code = _get_create_favorite_status_code(result)
+
+    return result
 
 
-@app.delete("/favorites/{coin_id}")
-def remove_favorite(user_id: int, coin_id: str):
+@app.delete(
+    "/favorites/{coin_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "description": "El favorito no existe.",
+        },
+    },
+)
+def remove_favorite(user_id: int, coin_id: str, response: Response):
 
-    return container.favorite_controller.remove_favorite(user_id, coin_id)
+    result = container.favorite_controller.remove_favorite(user_id, coin_id)
+    response.status_code = _get_delete_favorite_status_code(result)
+
+    if result.get("success"):
+        return None
+
+    return result
 
 
-@app.get("/favorites")
+@app.get("/favorites", status_code=status.HTTP_200_OK)
 def get_favorites(user_id: int):
 
     return container.favorite_controller.get_favorites(user_id)
 
 
-@app.get("/favorites/details")
+@app.get("/favorites/details", status_code=status.HTTP_200_OK)
 def get_favorites_with_coin_data(user_id: int):
 
     return container.favorite_controller.get_favorites_with_coin_data(user_id)
@@ -124,6 +180,7 @@ def update_coin_price(
 
 @app.get(
     "/coins/{coin_id}/price-history",
+    status_code=status.HTTP_200_OK,
     response_model=list[PriceHistoryResponse],
 )
 def get_price_history(
@@ -171,6 +228,7 @@ def get_price_history(
 
 @app.get(
     "/coins/{coin_id}/price-history/statistics",
+    status_code=status.HTTP_200_OK,
     response_model=PriceHistoryStatisticsResponse,
 )
 def get_price_statistics(
@@ -185,6 +243,7 @@ def get_price_statistics(
 
 @app.get(
     "/coins/{coin_id}/price-history/variation",
+    status_code=status.HTTP_200_OK,
     response_model=PriceHistoryVariationResponse,
 )
 def get_price_variation(
@@ -205,6 +264,7 @@ def get_price_variation(
 
 @app.get(
     "/coins/{coin_id}/price-history/aggregations",
+    status_code=status.HTTP_200_OK,
     response_model=list[PriceHistoryAggregationResponse],
 )
 def get_price_aggregations(
