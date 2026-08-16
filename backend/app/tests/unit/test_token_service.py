@@ -15,3 +15,8 @@ def test_token_service_creates_jwt_with_user_subject():
 
     payload = jwt.decode(token, secret, algorithms=["HS256"])
     assert payload["sub"] == "7"
+
+
+def test_token_service_rejects_short_secret():
+    with pytest.raises(RuntimeError, match="al menos 32"):
+        TokenService("short")
