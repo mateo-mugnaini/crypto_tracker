@@ -103,13 +103,19 @@ Los endpoints de favoritos documentan este contrato con `ErrorResponse` en OpenA
 
 Se crearon tests para verificar la jerarquía de excepciones, las excepciones lanzadas por `FavoriteService` y las respuestas HTTP 404, 409 y 502 a través de `TestClient`.
 
-Ejecución realizada:
+Ejecuciones realizadas dentro de `.venv`:
 
 ```powershell
-python -m unittest app.tests.domain_exception_test app.tests.http_status_codes_test app.tests.service_test
+.\.venv\Scripts\python.exe -m unittest app.tests.domain_exception_test app.tests.http_status_codes_test app.tests.service_test
+.\.venv\Scripts\python.exe -m unittest discover -s app/tests -p "*_test.py"
 ```
 
-Resultado: los tests que no requieren FastAPI se ejecutaron correctamente, pero la ejecución completa quedó bloqueada porque el intérprete activo no tiene instalado `fastapi` (`ModuleNotFoundError`). No se marca como aprobada la prueba de handlers hasta ejecutar el comando dentro del entorno virtual con las dependencias instaladas.
+Resultados:
+
+- Pruebas específicas del módulo y regresión de `CoinService`: 12 tests aprobados.
+- Suite completa descubierta: 28 tests aprobados.
+
+FastAPI emitió una advertencia deprecada de Starlette sobre `TestClient` y `httpx`; no afectó el resultado de los tests y se tratará como mantenimiento de dependencias en un módulo posterior.
 
 ## Cómo verificar
 
