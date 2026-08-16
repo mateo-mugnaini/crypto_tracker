@@ -6,7 +6,10 @@ from fastapi.responses import JSONResponse
 from app.api.dependencies import (
     get_coin_controller,
     get_favorite_controller,
+    get_price_history_aggregation_query_params,
     get_price_history_controller,
+    get_price_history_date_range_query_params,
+    get_price_history_query_params,
 )
 from app.container import Container
 from app.controllers.coin_controller import CoinController
@@ -231,7 +234,7 @@ def get_price_history(
         min_length=1,
         description="ID de la criptomoneda",
     ),
-    filters: PriceHistoryQueryParams = Depends(),
+    filters: PriceHistoryQueryParams = Depends(get_price_history_query_params),
     controller: PriceHistoryController = Depends(get_price_history_controller),
 ):
     return controller.get_price_history(
@@ -274,7 +277,9 @@ def get_price_variation(
         min_length=1,
         description="ID de la criptomoneda",
     ),
-    filters: PriceHistoryDateRangeQueryParams = Depends(),
+    filters: PriceHistoryDateRangeQueryParams = Depends(
+        get_price_history_date_range_query_params
+    ),
     controller: PriceHistoryController = Depends(get_price_history_controller),
 ):
     return controller.get_price_variation(
@@ -295,7 +300,9 @@ def get_price_aggregations(
         min_length=1,
         description="ID de la criptomoneda",
     ),
-    filters: PriceHistoryAggregationQueryParams = Depends(),
+    filters: PriceHistoryAggregationQueryParams = Depends(
+        get_price_history_aggregation_query_params
+    ),
     controller: PriceHistoryController = Depends(get_price_history_controller),
 ):
     return controller.get_price_aggregations(
