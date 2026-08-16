@@ -14,6 +14,7 @@ class Settings:
         self.mysql_user = os.getenv("MYSQL_USER")
         self.mysql_password = os.getenv("MYSQL_PASSWORD")
         self.mysql_database = os.getenv("MYSQL_DATABASE")
+        self.mysql_test_database = os.getenv("MYSQL_TEST_DATABASE")
 
 
 settings = Settings()

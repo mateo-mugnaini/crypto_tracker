@@ -6,6 +6,9 @@ from app.exceptions.api_exception import CoinGeckoException
 from app.services.coin_service import CoinService
 
 
+pytestmark = pytest.mark.unit
+
+
 @pytest.fixture
 def repository():
     return Mock()

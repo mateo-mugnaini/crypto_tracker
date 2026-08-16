@@ -2,7 +2,6 @@ from datetime import datetime
 from unittest.mock import Mock
 
 import pytest
-from fastapi.testclient import TestClient
 
 import app.api.app as api_app
 from app.api.dependencies import (
@@ -11,16 +10,10 @@ from app.api.dependencies import (
     get_price_history_controller,
 )
 
-
-@pytest.fixture
-def client():
-    with TestClient(api_app.app) as test_client:
-        yield test_client
-
-    api_app.app.dependency_overrides.clear()
+pytestmark = pytest.mark.api
 
 
-def test_post_favorites_returns_201_and_normalizes_request_body(client):
+def test_post_favorites_returns_201_and_normalizes_request_body(api_client):
     controller = Mock()
     controller.add_favorite.return_value = {
         "success": True,
@@ -28,7 +21,7 @@ def test_post_favorites_returns_201_and_normalizes_request_body(client):
     }
     api_app.app.dependency_overrides[get_favorite_controller] = lambda: controller
 
-    response = client.post(
+    response = api_client.post(
         "/favorites",
         json={"user_id": 1, "coin_id": " BITCOIN "},
     )
@@ -43,11 +36,11 @@ def test_post_favorites_returns_201_and_normalizes_request_body(client):
     assert favorite.coin_id == "bitcoin"
 
 
-def test_post_favorites_returns_422_before_calling_controller_for_invalid_body(client):
+def test_post_favorites_returns_422_before_calling_controller_for_invalid_body(api_client):
     controller = Mock()
     api_app.app.dependency_overrides[get_favorite_controller] = lambda: controller
 
-    response = client.post(
+    response = api_client.post(
         "/favorites",
         json={"user_id": 0, "coin_id": "bitcoin"},
     )
@@ -57,7 +50,7 @@ def test_post_favorites_returns_422_before_calling_controller_for_invalid_body(c
     controller.add_favorite.assert_not_called()
 
 
-def test_delete_favorites_returns_204_without_response_body(client):
+def test_delete_favorites_returns_204_without_response_body(api_client):
     controller = Mock()
     controller.remove_favorite.return_value = {
         "success": True,
@@ -65,14 +58,14 @@ def test_delete_favorites_returns_204_without_response_body(client):
     }
     api_app.app.dependency_overrides[get_favorite_controller] = lambda: controller
 
-    response = client.delete("/favorites/bitcoin?user_id=1")
+    response = api_client.delete("/favorites/bitcoin?user_id=1")
 
     assert response.status_code == 204
     assert response.content == b""
     controller.remove_favorite.assert_called_once_with(1, "bitcoin")
 
 
-def test_get_coins_returns_controller_contract(client):
+def test_get_coins_returns_controller_contract(api_client):
     controller = Mock()
     controller.get_all_coins.return_value = {
         "success": True,
@@ -81,14 +74,14 @@ def test_get_coins_returns_controller_contract(client):
     }
     api_app.app.dependency_overrides[get_coin_controller] = lambda: controller
 
-    response = client.get("/coins")
+    response = api_client.get("/coins")
 
     assert response.status_code == 200
     assert response.json()["data"] == [{"id": "bitcoin"}]
     controller.get_all_coins.assert_called_once_with()
 
 
-def test_get_price_history_serializes_response_and_passes_validated_filters(client):
+def test_get_price_history_serializes_response_and_passes_validated_filters(api_client):
     controller = Mock()
     controller.get_price_history.return_value = [
         {
@@ -100,7 +93,7 @@ def test_get_price_history_serializes_response_and_passes_validated_filters(clie
     ]
     api_app.app.dependency_overrides[get_price_history_controller] = lambda: controller
 
-    response = client.get(
+    response = api_client.get(
         "/coins/bitcoin/price-history?limit=10&offset=5&sort_by=PRICE&sort_order=DESC"
     )
 
@@ -126,11 +119,11 @@ def test_get_price_history_serializes_response_and_passes_validated_filters(clie
     )
 
 
-def test_get_price_history_returns_422_for_invalid_query_before_controller(client):
+def test_get_price_history_returns_422_for_invalid_query_before_controller(api_client):
     controller = Mock()
     api_app.app.dependency_overrides[get_price_history_controller] = lambda: controller
 
-    response = client.get("/coins/bitcoin/price-history?limit=0")
+    response = api_client.get("/coins/bitcoin/price-history?limit=0")
 
     assert response.status_code == 422
     assert response.json()["detail"][0]["loc"] == ["query", "limit"]

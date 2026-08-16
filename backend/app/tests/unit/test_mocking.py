@@ -1,9 +1,13 @@
 from unittest.mock import MagicMock, Mock, patch
 
+import pytest
 import requests
 
 from app.api.coingecko_client import CoinGeckoClient
 from app.repositories.coin_repository import CoinRepository
+
+
+pytestmark = pytest.mark.unit
 
 
 @patch("app.api.coingecko_client.requests.get")

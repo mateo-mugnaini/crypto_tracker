@@ -12,6 +12,9 @@ from app.models.favorite import Favorite
 from app.services.favorite_service import FavoriteService
 
 
+pytestmark = pytest.mark.unit
+
+
 @pytest.fixture
 def repositories():
     return Mock(), Mock(), Mock()
