@@ -1,7 +1,17 @@
+from contextlib import asynccontextmanager
+
 from fastapi import Body, Depends, FastAPI, Path, status
 from fastapi.responses import JSONResponse
 
+from app.api.dependencies import (
+    get_coin_controller,
+    get_favorite_controller,
+    get_price_history_controller,
+)
 from app.container import Container
+from app.controllers.coin_controller import CoinController
+from app.controllers.favorite_controller import FavoriteController
+from app.controllers.price_history_controller import PriceHistoryController
 from app.exceptions.api_exception import CoinGeckoException
 from app.exceptions.domain_exception import (
     CoinNotFoundException,
@@ -22,14 +32,18 @@ from app.schemas.price_history import (
     PriceHistoryVariationResponse,
 )
 
+@asynccontextmanager
+async def lifespan(application: FastAPI):
+    application.state.container = Container()
+    yield
+
+
 app = FastAPI(
     title="Crypto Tracker API",
     description="API para gestionar criptomonedas, favoritos y ver el historial de precios",
     version="1.0.0",
+    lifespan=lifespan,
 )
-
-
-container = Container()
 
 
 def _error_response(status_code: int, code: str, message: str) -> JSONResponse:
@@ -87,33 +101,39 @@ def root():
 
 
 @app.get("/coins", status_code=status.HTTP_200_OK)
-def get_all_coins():
+def get_all_coins(
+    controller: CoinController = Depends(get_coin_controller),
+):
 
-    return container.coin_controller.get_all_coins()
+    return controller.get_all_coins()
 
 
 @app.post("/coins/sync")
-def sync_coins():
+def sync_coins(
+    controller: CoinController = Depends(get_coin_controller),
+):
 
-    return container.coin_controller.sync_coins()
+    return controller.sync_coins()
 
 
 @app.get("/coins/{coin_id}", status_code=status.HTTP_200_OK)
 def get_coin(
-    coin_id: str = Path(..., min_length=1, description="ID de la criptomoneda")
+    coin_id: str = Path(..., min_length=1, description="ID de la criptomoneda"),
+    controller: CoinController = Depends(get_coin_controller),
 ):
 
-    return container.coin_controller.get_coin(coin_id)
+    return controller.get_coin(coin_id)
 
 
 @app.post("/coins/{coin_id}")
 def update_coin(
     coin_id: str = Path(
         ..., min_length=1, description="ID de la criptomoneda en CoinGecko"
-    )
+    ),
+    controller: CoinController = Depends(get_coin_controller),
 ):
 
-    return container.coin_controller.update_coin(coin_id)
+    return controller.update_coin(coin_id)
 
 
 # ============================================================
@@ -136,11 +156,14 @@ def update_coin(
         },
     },
 )
-def add_favorite(request: FavoriteCreateRequest = Body(...)):
+def add_favorite(
+    request: FavoriteCreateRequest = Body(...),
+    controller: FavoriteController = Depends(get_favorite_controller),
+):
 
     favorite = Favorite(request.user_id, request.coin_id)
 
-    return container.favorite_controller.add_favorite(favorite)
+    return controller.add_favorite(favorite)
 
 
 @app.delete(
@@ -153,21 +176,31 @@ def add_favorite(request: FavoriteCreateRequest = Body(...)):
         },
     },
 )
-def remove_favorite(user_id: int, coin_id: str):
-    container.favorite_controller.remove_favorite(user_id, coin_id)
+def remove_favorite(
+    user_id: int,
+    coin_id: str,
+    controller: FavoriteController = Depends(get_favorite_controller),
+):
+    controller.remove_favorite(user_id, coin_id)
     return None
 
 
 @app.get("/favorites", status_code=status.HTTP_200_OK)
-def get_favorites(user_id: int):
+def get_favorites(
+    user_id: int,
+    controller: FavoriteController = Depends(get_favorite_controller),
+):
 
-    return container.favorite_controller.get_favorites(user_id)
+    return controller.get_favorites(user_id)
 
 
 @app.get("/favorites/details", status_code=status.HTTP_200_OK)
-def get_favorites_with_coin_data(user_id: int):
+def get_favorites_with_coin_data(
+    user_id: int,
+    controller: FavoriteController = Depends(get_favorite_controller),
+):
 
-    return container.favorite_controller.get_favorites_with_coin_data(user_id)
+    return controller.get_favorites_with_coin_data(user_id)
 
 
 # ============================================================
@@ -181,9 +214,10 @@ def update_coin_price(
         ...,
         min_length=1,
         description="ID de la criptomoneda en CoinGecko",
-    )
+    ),
+    controller: PriceHistoryController = Depends(get_price_history_controller),
 ):
-    return container.price_history_controller.update_price(coin_id)
+    return controller.update_price(coin_id)
 
 
 @app.get(
@@ -198,8 +232,9 @@ def get_price_history(
         description="ID de la criptomoneda",
     ),
     filters: PriceHistoryQueryParams = Depends(),
+    controller: PriceHistoryController = Depends(get_price_history_controller),
 ):
-    return container.price_history_controller.get_price_history(
+    return controller.get_price_history(
         coin_id=coin_id,
         start_date=filters.start_date,
         end_date=filters.end_date,
@@ -222,9 +257,10 @@ def get_price_statistics(
         ...,
         min_length=1,
         description="ID de la criptomoneda",
-    )
+    ),
+    controller: PriceHistoryController = Depends(get_price_history_controller),
 ):
-    return container.price_history_controller.get_price_statistics(coin_id)
+    return controller.get_price_statistics(coin_id)
 
 
 @app.get(
@@ -239,8 +275,9 @@ def get_price_variation(
         description="ID de la criptomoneda",
     ),
     filters: PriceHistoryDateRangeQueryParams = Depends(),
+    controller: PriceHistoryController = Depends(get_price_history_controller),
 ):
-    return container.price_history_controller.get_price_variation(
+    return controller.get_price_variation(
         coin_id=coin_id,
         start_date=filters.start_date,
         end_date=filters.end_date,
@@ -259,8 +296,9 @@ def get_price_aggregations(
         description="ID de la criptomoneda",
     ),
     filters: PriceHistoryAggregationQueryParams = Depends(),
+    controller: PriceHistoryController = Depends(get_price_history_controller),
 ):
-    return container.price_history_controller.get_price_aggregations(
+    return controller.get_price_aggregations(
         coin_id=coin_id,
         period=filters.period,
         start_date=filters.start_date,

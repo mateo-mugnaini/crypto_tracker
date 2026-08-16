@@ -27,7 +27,7 @@ class Container:
         self.price_history_repository = PriceHistoryRepository()
 
         # SERVICES
-        self.coin_serivice = CoinService(self.coin_repository, self.api_client)
+        self.coin_service = CoinService(self.coin_repository, self.api_client)
         self.favorite_service = FavoriteService(
             self.favorite_repository, self.user_repository, self.coin_repository
         )
@@ -36,7 +36,7 @@ class Container:
         )
 
         # CONTROLLERS
-        self.coin_controller = CoinController(self.coin_serivice)
+        self.coin_controller = CoinController(self.coin_service)
         self.favorite_controller = FavoriteController(self.favorite_service)
         self.price_history_controller = PriceHistoryController(
             self.price_history_service
