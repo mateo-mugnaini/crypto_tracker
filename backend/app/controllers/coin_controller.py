@@ -1,4 +1,4 @@
-from app.exceptions.api_exception import CoinGeckoException
+from app.exceptions.domain_exception import CoinNotFoundException
 
 
 class CoinController:
@@ -7,44 +7,22 @@ class CoinController:
         self.service = service
 
     def update_coin(self, coin_id):
+        coin = self.service.update_coin(coin_id)
 
-        try:
-
-            coin = self.service.update_coin(coin_id)
-
-            return {
-                "success": True,
-                "message": "Moneda sincronizada correctamente.",
-                "data": coin,
-            }
-
-        except CoinGeckoException as error:
-
-            return {
-                "success": False,
-                "message": str(error),
-                "data": None,
-            }
+        return {
+            "success": True,
+            "message": "Moneda sincronizada correctamente.",
+            "data": coin,
+        }
 
     def sync_coins(self):
+        coins = self.service.sync_coins()
 
-        try:
-
-            coins = self.service.sync_coins()
-
-            return {
-                "success": True,
-                "message": "Monedas sincronizadas correctamente.",
-                "data": coins,
-            }
-
-        except CoinGeckoException as error:
-
-            return {
-                "success": False,
-                "message": str(error),
-                "data": None,
-            }
+        return {
+            "success": True,
+            "message": "Monedas sincronizadas correctamente.",
+            "data": coins,
+        }
 
     def get_all_coins(self):
 
@@ -62,11 +40,7 @@ class CoinController:
 
         if coin is None:
 
-            return {
-                "success": False,
-                "message": "Moneda no encontrada.",
-                "data": None,
-            }
+            raise CoinNotFoundException("Moneda no encontrada.")
 
         return {
             "success": True,

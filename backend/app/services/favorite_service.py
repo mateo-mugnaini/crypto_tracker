@@ -1,3 +1,11 @@
+from app.exceptions.domain_exception import (
+    UserNotFoundException,
+    CoinNotFoundException,
+    FavoriteAlreadyExistsException,
+    FavoriteNotFoundException
+)
+
+
 class FavoriteService:
 
     def __init__(self, favorite_repository, user_repository, coin_repository):
@@ -8,13 +16,13 @@ class FavoriteService:
     def add_favorite(self, favorite):
 
         if not self.user_repository.exists(favorite.user_id):
-            return False, "El usuario no existe."
+            raise UserNotFoundException("El usuario no existe.")
 
         if not self.coin_repository.exists(favorite.coin_id):
-            return False, "La moneda no existe."
+            raise CoinNotFoundException("La moneda no existe.")
 
         if self.favorite_repository.exists(favorite.user_id, favorite.coin_id):
-            return False, "La moneda ya está en favoritos."
+            raise FavoriteAlreadyExistsException("La moneda ya está en favoritos.")
 
         self.favorite_repository.save(favorite)
 
@@ -23,7 +31,7 @@ class FavoriteService:
     def remove_favorite(self, user_id, coin_id):
 
         if not self.favorite_repository.exists(user_id, coin_id):
-            return False, "La moneda no está en favoritos."
+            raise FavoriteNotFoundException("La moneda no se encuentra en favoritos.")
 
         self.favorite_repository.delete(user_id, coin_id)
 
@@ -32,13 +40,13 @@ class FavoriteService:
     def get_favorites(self, user_id):
 
         if not self.user_repository.exists(user_id):
-            return False, "El usuario no existe."
+            raise UserNotFoundException("El usuario no existe.")
 
         return True, self.favorite_repository.find_all_by_user(user_id)
 
     def get_favorites_with_coin_data(self, user_id):
 
         if not self.user_repository.exists(user_id):
-            return False, "El usuario no existe."
+            raise UserNotFoundException("El usuario no existe.")
 
         return True, self.favorite_repository.find_all_with_coin_data(user_id)

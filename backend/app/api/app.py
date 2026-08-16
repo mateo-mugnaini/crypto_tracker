@@ -1,7 +1,16 @@
-from fastapi import Body, Depends, FastAPI, Path, Response, status
+from fastapi import Body, Depends, FastAPI, Path, status
+from fastapi.responses import JSONResponse
 
 from app.container import Container
+from app.exceptions.api_exception import CoinGeckoException
+from app.exceptions.domain_exception import (
+    CoinNotFoundException,
+    FavoriteAlreadyExistsException,
+    FavoriteNotFoundException,
+    UserNotFoundException,
+)
 from app.models.favorite import Favorite
+from app.schemas.error import ErrorResponse
 from app.schemas.favorite import FavoriteActionResponse, FavoriteCreateRequest
 from app.schemas.price_history import (
     PriceHistoryAggregationQueryParams,
@@ -23,30 +32,41 @@ app = FastAPI(
 container = Container()
 
 
-def _get_create_favorite_status_code(result: dict) -> int:
-
-    message = str(result.get("message", "")).lower()
-
-    if result.get("success"):
-        return status.HTTP_201_CREATED
-
-    if "usuario no existe" in message or "moneda no existe" in message:
-        return status.HTTP_404_NOT_FOUND
-
-    return status.HTTP_409_CONFLICT
+def _error_response(status_code: int, code: str, message: str) -> JSONResponse:
+    return JSONResponse(
+        status_code=status_code,
+        content={"detail": {"code": code, "message": message}},
+    )
 
 
-def _get_delete_favorite_status_code(result: dict) -> int:
+@app.exception_handler(UserNotFoundException)
+@app.exception_handler(CoinNotFoundException)
+@app.exception_handler(FavoriteNotFoundException)
+async def not_found_exception_handler(_, exc):
+    codes = {
+        UserNotFoundException: "user_not_found",
+        CoinNotFoundException: "coin_not_found",
+        FavoriteNotFoundException: "favorite_not_found",
+    }
+    return _error_response(status.HTTP_404_NOT_FOUND, codes[type(exc)], str(exc))
 
-    message = str(result.get("message", "")).lower()
 
-    if result.get("success"):
-        return status.HTTP_204_NO_CONTENT
+@app.exception_handler(FavoriteAlreadyExistsException)
+async def favorite_already_exists_exception_handler(_, exc):
+    return _error_response(
+        status.HTTP_409_CONFLICT,
+        "favorite_already_exists",
+        str(exc),
+    )
 
-    if "favoritos" in message:
-        return status.HTTP_404_NOT_FOUND
 
-    return status.HTTP_404_NOT_FOUND
+@app.exception_handler(CoinGeckoException)
+async def coingecko_exception_handler(_, exc):
+    return _error_response(
+        status.HTTP_502_BAD_GATEWAY,
+        "coingecko_unavailable",
+        str(exc),
+    )
 
 
 # ============================================================
@@ -108,23 +128,19 @@ def update_coin(
     responses={
         status.HTTP_404_NOT_FOUND: {
             "description": "El usuario o la moneda no existe.",
+            "model": ErrorResponse,
         },
         status.HTTP_409_CONFLICT: {
             "description": "El favorito ya existe.",
+            "model": ErrorResponse,
         },
     },
 )
-def add_favorite(
-    response: Response,
-    request: FavoriteCreateRequest = Body(...),
-):
+def add_favorite(request: FavoriteCreateRequest = Body(...)):
 
     favorite = Favorite(request.user_id, request.coin_id)
 
-    result = container.favorite_controller.add_favorite(favorite)
-    response.status_code = _get_create_favorite_status_code(result)
-
-    return result
+    return container.favorite_controller.add_favorite(favorite)
 
 
 @app.delete(
@@ -133,18 +149,13 @@ def add_favorite(
     responses={
         status.HTTP_404_NOT_FOUND: {
             "description": "El favorito no existe.",
+            "model": ErrorResponse,
         },
     },
 )
-def remove_favorite(user_id: int, coin_id: str, response: Response):
-
-    result = container.favorite_controller.remove_favorite(user_id, coin_id)
-    response.status_code = _get_delete_favorite_status_code(result)
-
-    if result.get("success"):
-        return None
-
-    return result
+def remove_favorite(user_id: int, coin_id: str):
+    container.favorite_controller.remove_favorite(user_id, coin_id)
+    return None
 
 
 @app.get("/favorites", status_code=status.HTTP_200_OK)
