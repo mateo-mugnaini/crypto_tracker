@@ -160,6 +160,18 @@ def test_get_price_history_returns_422_for_invalid_query_before_controller(api_c
     controller.get_price_history.assert_not_called()
 
 
+def test_price_history_rejects_sql_injection_attempt_in_sorting(api_client):
+    controller = Mock()
+    api_app.app.dependency_overrides[get_price_history_controller] = lambda: controller
+
+    response = api_client.get(
+        "/coins/bitcoin/price-history?sort_by=price%3B%20DROP%20TABLE%20price_history"
+    )
+
+    assert response.status_code == 422
+    controller.get_price_history.assert_not_called()
+
+
 def test_register_user_returns_safe_response_without_password_hash(api_client):
     controller = Mock()
     controller.register_user.return_value = {
