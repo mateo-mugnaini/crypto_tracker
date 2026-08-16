@@ -9,6 +9,7 @@ from app.api.dependencies import (
     get_favorite_controller,
     get_price_history_controller,
     get_user_controller,
+    get_current_user,
 )
 from app.exceptions.domain_exception import EmailAlreadyExistsException
 
@@ -22,6 +23,7 @@ def test_post_favorites_returns_201_and_normalizes_request_body(api_client):
         "message": "Favorito agregado correctamente.",
     }
     api_app.app.dependency_overrides[get_favorite_controller] = lambda: controller
+    api_app.app.dependency_overrides[get_current_user] = lambda: {"id": 1}
 
     response = api_client.post(
         "/favorites",
@@ -41,6 +43,7 @@ def test_post_favorites_returns_201_and_normalizes_request_body(api_client):
 def test_post_favorites_returns_422_before_calling_controller_for_invalid_body(api_client):
     controller = Mock()
     api_app.app.dependency_overrides[get_favorite_controller] = lambda: controller
+    api_app.app.dependency_overrides[get_current_user] = lambda: {"id": 1}
 
     response = api_client.post(
         "/favorites",
@@ -59,12 +62,37 @@ def test_delete_favorites_returns_204_without_response_body(api_client):
         "message": "Favorito eliminado correctamente.",
     }
     api_app.app.dependency_overrides[get_favorite_controller] = lambda: controller
+    api_app.app.dependency_overrides[get_current_user] = lambda: {"id": 1}
 
     response = api_client.delete("/favorites/bitcoin?user_id=1")
 
     assert response.status_code == 204
     assert response.content == b""
     controller.remove_favorite.assert_called_once_with(1, "bitcoin")
+
+
+def test_favorites_returns_403_when_token_user_does_not_own_resource(api_client):
+    api_app.app.dependency_overrides[get_current_user] = lambda: {"id": 2}
+
+    response = api_client.get("/favorites?user_id=1")
+
+    assert response.status_code == 403
+    assert response.json()["detail"]["code"] == "forbidden"
+
+
+@pytest.mark.parametrize(
+    ("method", "url", "kwargs"),
+    [
+        ("post", "/favorites", {"json": {"user_id": 1, "coin_id": "bitcoin"}}),
+        ("delete", "/favorites/bitcoin?user_id=1", {}),
+        ("get", "/favorites?user_id=1", {}),
+        ("get", "/favorites/details?user_id=1", {}),
+    ],
+)
+def test_all_favorite_endpoints_require_bearer_token(api_client, method, url, kwargs):
+    response = getattr(api_client, method)(url, **kwargs)
+
+    assert response.status_code == 401
 
 
 def test_get_coins_returns_controller_contract(api_client):
@@ -167,15 +195,9 @@ def test_register_user_returns_409_for_duplicate_email(api_client):
     assert response.json()["detail"]["code"] == "email_already_exists"
 
 
-def test_login_returns_public_user_data(api_client):
+def test_login_returns_bearer_access_token(api_client):
     controller = Mock()
-    controller.login.return_value = {
-        "id": 1,
-        "username": "mateo",
-        "email": "mateo@example.test",
-        "password_hash": "hidden",
-        "created_at": "2026-08-16T12:00:00",
-    }
+    controller.login.return_value = "jwt-token"
     api_app.app.dependency_overrides[get_user_controller] = lambda: controller
 
     response = api_client.post(
@@ -184,8 +206,7 @@ def test_login_returns_public_user_data(api_client):
     )
 
     assert response.status_code == 200
-    assert response.json()["email"] == "mateo@example.test"
-    assert "password_hash" not in response.json()
+    assert response.json() == {"access_token": "jwt-token", "token_type": "bearer"}
 
 
 def test_login_returns_401_for_invalid_credentials(api_client):
@@ -202,3 +223,25 @@ def test_login_returns_401_for_invalid_credentials(api_client):
 
     assert response.status_code == 401
     assert response.json()["detail"]["code"] == "invalid_credentials"
+
+
+def test_users_me_returns_current_user_without_password_hash(api_client):
+    api_app.app.dependency_overrides[get_current_user] = lambda: {
+        "id": 1,
+        "username": "mateo",
+        "email": "mateo@example.test",
+        "password_hash": "hidden",
+        "created_at": "2026-08-16T12:00:00",
+    }
+
+    response = api_client.get("/users/me")
+
+    assert response.status_code == 200
+    assert response.json()["id"] == 1
+    assert "password_hash" not in response.json()
+
+
+def test_users_me_requires_bearer_token(api_client):
+    response = api_client.get("/users/me")
+
+    assert response.status_code == 401

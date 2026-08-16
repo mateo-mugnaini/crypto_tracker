@@ -18,3 +18,6 @@ class TokenService:
             self.secret_key,
             algorithm=self.algorithm,
         )
+
+    def decode_access_token(self, token: str) -> dict:
+        return jwt.decode(token, self.secret_key, algorithms=[self.algorithm])

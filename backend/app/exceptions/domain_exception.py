@@ -17,6 +17,10 @@ class InvalidCredentialsException(DomainException):
     """Las credenciales no son válidas."""
 
 
+class ForbiddenOperationException(DomainException):
+    """El usuario no tiene permiso para realizar la operación."""
+
+
 class CoinNotFoundException(DomainException):
     """La moneda no existe."""
 

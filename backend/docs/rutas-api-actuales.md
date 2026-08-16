@@ -23,10 +23,10 @@ Base local habitual: `http://127.0.0.1:8000`
 
 | Método   | Ruta                                     | Descripción                                                                               |
 | -------- | ---------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `POST`   | `/favorites`                             | Agrega una moneda a los favoritos de un usuario. Recibe `user_id` y `coin_id` en el body. |
-| `DELETE` | `/favorites/{coin_id}?user_id={user_id}` | Elimina una moneda de los favoritos del usuario indicado. Devuelve `204` si tiene éxito.  |
-| `GET`    | `/favorites?user_id={user_id}`           | Obtiene las relaciones de favoritos de un usuario.                                        |
-| `GET`    | `/favorites/details?user_id={user_id}`   | Obtiene los favoritos junto con datos de cada moneda.                                     |
+| `POST`   | `/favorites`                             | Requiere Bearer; agrega un favorito solo si el `user_id` coincide con el token. |
+| `DELETE` | `/favorites/{coin_id}?user_id={user_id}` | Requiere Bearer; elimina únicamente favoritos propios. |
+| `GET`    | `/favorites?user_id={user_id}`           | Requiere Bearer; obtiene favoritos únicamente del usuario autenticado. |
+| `GET`    | `/favorites/details?user_id={user_id}`   | Requiere Bearer; obtiene detalles de favoritos propios. |
 
 ## Users
 
@@ -34,6 +34,7 @@ Base local habitual: `http://127.0.0.1:8000`
 | ------ | ----------------- | ----------------------------------------------------------------------------------------------- |
 | `POST` | `/users/register` | Registra un usuario. Recibe username, email y password; persiste solo el hash y no lo devuelve. |
 | `POST` | `/users/login` | Verifica email y password; devuelve un access token JWT Bearer si las credenciales son válidas. |
+| `GET` | `/users/me` | Devuelve el usuario identificado por el token Bearer enviado en Authorization. |
 
 ## Price History
 
@@ -51,6 +52,8 @@ Base local habitual: `http://127.0.0.1:8000`
 | -----: | ----------------------------------------- |
 |  `404` | Usuario, moneda o favorito inexistente.   |
 |  `409` | Favorito duplicado o email ya registrado. |
+|  `401` | Token Bearer ausente, inválido o expirado. |
+|  `403` | El usuario intenta operar sobre recursos de otro usuario. |
 |  `422` | Body, path o query params inválidos.      |
 |  `502` | Fallo al comunicarse con CoinGecko.       |
 

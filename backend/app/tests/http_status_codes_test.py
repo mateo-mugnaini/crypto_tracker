@@ -5,7 +5,7 @@ from fastapi.routing import APIRoute
 from fastapi.testclient import TestClient
 
 import app.api.app as api_app
-from app.api.dependencies import get_coin_controller, get_favorite_controller
+from app.api.dependencies import get_coin_controller, get_current_user, get_favorite_controller
 from app.exceptions.api_exception import CoinGeckoException
 from app.exceptions.domain_exception import (
     FavoriteAlreadyExistsException,
@@ -25,6 +25,7 @@ def _find_route(path: str, method: str) -> APIRoute:
 class HTTPStatusCodesTest(unittest.TestCase):
     def setUp(self):
         self.client = TestClient(api_app.app)
+        api_app.app.dependency_overrides[get_current_user] = lambda: {"id": 1}
 
     def tearDown(self):
         api_app.app.dependency_overrides.clear()

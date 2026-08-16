@@ -1,6 +1,8 @@
 from datetime import date
 
-from fastapi import Depends, Query, Request
+import jwt
+from fastapi import Depends, HTTPException, Query, Request, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 
@@ -14,6 +16,9 @@ from app.schemas.price_history import (
     PriceHistoryDateRangeQueryParams,
     PriceHistoryQueryParams,
 )
+
+
+bearer_scheme = HTTPBearer(auto_error=False)
 
 
 def get_container(request: Request) -> Container:
@@ -43,6 +48,26 @@ def get_user_controller(
     container: Container = Depends(get_container),
 ) -> UserController:
     return container.user_controller
+
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+    container: Container = Depends(get_container),
+):
+    if credentials is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token requerido.")
+
+    try:
+        payload = container.token_service.decode_access_token(credentials.credentials)
+        user_id = int(payload["sub"])
+    except (jwt.InvalidTokenError, KeyError, TypeError, ValueError):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido.")
+
+    user = container.user_repository.find_by_id(user_id)
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido.")
+
+    return user
 
 
 def _validated_query_model(model_class, values):

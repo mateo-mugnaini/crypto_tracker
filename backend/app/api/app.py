@@ -11,6 +11,7 @@ from app.api.dependencies import (
     get_price_history_date_range_query_params,
     get_price_history_query_params,
     get_user_controller,
+    get_current_user,
 )
 from app.container import Container
 from app.controllers.coin_controller import CoinController
@@ -22,6 +23,7 @@ from app.exceptions.domain_exception import (
     CoinNotFoundException,
     EmailAlreadyExistsException,
     InvalidCredentialsException,
+    ForbiddenOperationException,
     FavoriteAlreadyExistsException,
     FavoriteNotFoundException,
     UserNotFoundException,
@@ -98,6 +100,16 @@ async def invalid_credentials_exception_handler(_, exc):
         "invalid_credentials",
         str(exc),
     )
+
+
+@app.exception_handler(ForbiddenOperationException)
+async def forbidden_operation_exception_handler(_, exc):
+    return _error_response(status.HTTP_403_FORBIDDEN, "forbidden", str(exc))
+
+
+def _ensure_user_ownership(requested_user_id: int, current_user: dict) -> None:
+    if requested_user_id != current_user["id"]:
+        raise ForbiddenOperationException("No tienes permiso para operar sobre este usuario.")
 
 
 @app.exception_handler(CoinGeckoException)
@@ -185,7 +197,9 @@ def update_coin(
 def add_favorite(
     request: FavoriteCreateRequest = Body(...),
     controller: FavoriteController = Depends(get_favorite_controller),
+    current_user: dict = Depends(get_current_user),
 ):
+    _ensure_user_ownership(request.user_id, current_user)
 
     favorite = Favorite(request.user_id, request.coin_id)
 
@@ -206,7 +220,9 @@ def remove_favorite(
     user_id: int,
     coin_id: str,
     controller: FavoriteController = Depends(get_favorite_controller),
+    current_user: dict = Depends(get_current_user),
 ):
+    _ensure_user_ownership(user_id, current_user)
     controller.remove_favorite(user_id, coin_id)
     return None
 
@@ -215,7 +231,9 @@ def remove_favorite(
 def get_favorites(
     user_id: int,
     controller: FavoriteController = Depends(get_favorite_controller),
+    current_user: dict = Depends(get_current_user),
 ):
+    _ensure_user_ownership(user_id, current_user)
 
     return controller.get_favorites(user_id)
 
@@ -224,7 +242,9 @@ def get_favorites(
 def get_favorites_with_coin_data(
     user_id: int,
     controller: FavoriteController = Depends(get_favorite_controller),
+    current_user: dict = Depends(get_current_user),
 ):
+    _ensure_user_ownership(user_id, current_user)
 
     return controller.get_favorites_with_coin_data(user_id)
 
@@ -257,6 +277,11 @@ def login_user(
     controller: UserController = Depends(get_user_controller),
 ):
     return {"access_token": controller.login(request.email, request.password), "token_type": "bearer"}
+
+
+@app.get("/users/me", response_model=UserResponse)
+def get_current_user_profile(current_user: dict = Depends(get_current_user)):
+    return current_user
 
 
 # ============================================================
