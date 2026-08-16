@@ -6,6 +6,7 @@ from app.exceptions.api_exception import (
 from app.exceptions.domain_exception import (
     CoinNotFoundException,
     DomainException,
+    EmailAlreadyExistsException,
     FavoriteAlreadyExistsException,
     FavoriteNotFoundException,
     UserNotFoundException,
@@ -16,6 +17,7 @@ __all__ = [
     "CoinGeckoException",
     "CoinNotFoundException",
     "DomainException",
+    "EmailAlreadyExistsException",
     "ExternalServiceException",
     "FavoriteAlreadyExistsException",
     "FavoriteNotFoundException",

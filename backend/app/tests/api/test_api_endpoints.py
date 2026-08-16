@@ -8,7 +8,9 @@ from app.api.dependencies import (
     get_coin_controller,
     get_favorite_controller,
     get_price_history_controller,
+    get_user_controller,
 )
+from app.exceptions.domain_exception import EmailAlreadyExistsException
 
 pytestmark = pytest.mark.api
 
@@ -128,3 +130,38 @@ def test_get_price_history_returns_422_for_invalid_query_before_controller(api_c
     assert response.status_code == 422
     assert response.json()["detail"][0]["loc"] == ["query", "limit"]
     controller.get_price_history.assert_not_called()
+
+
+def test_register_user_returns_safe_response_without_password_hash(api_client):
+    controller = Mock()
+    controller.register_user.return_value = {
+        "id": 1,
+        "username": "mateo",
+        "email": "mateo@example.test",
+        "password_hash": "must-not-leak",
+        "created_at": "2026-08-16T12:00:00",
+    }
+    api_app.app.dependency_overrides[get_user_controller] = lambda: controller
+
+    response = api_client.post(
+        "/users/register",
+        json={"username": "mateo", "email": "MATEO@EXAMPLE.TEST", "password": "secure-pass"},
+    )
+
+    assert response.status_code == 201
+    assert response.json()["email"] == "mateo@example.test"
+    assert "password_hash" not in response.json()
+
+
+def test_register_user_returns_409_for_duplicate_email(api_client):
+    controller = Mock()
+    controller.register_user.side_effect = EmailAlreadyExistsException("El email ya está registrado.")
+    api_app.app.dependency_overrides[get_user_controller] = lambda: controller
+
+    response = api_client.post(
+        "/users/register",
+        json={"username": "mateo", "email": "mateo@example.test", "password": "secure-pass"},
+    )
+
+    assert response.status_code == 409
+    assert response.json()["detail"]["code"] == "email_already_exists"

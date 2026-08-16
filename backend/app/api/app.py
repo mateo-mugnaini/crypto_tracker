@@ -10,14 +10,17 @@ from app.api.dependencies import (
     get_price_history_controller,
     get_price_history_date_range_query_params,
     get_price_history_query_params,
+    get_user_controller,
 )
 from app.container import Container
 from app.controllers.coin_controller import CoinController
 from app.controllers.favorite_controller import FavoriteController
 from app.controllers.price_history_controller import PriceHistoryController
+from app.controllers.user_controller import UserController
 from app.exceptions.api_exception import CoinGeckoException
 from app.exceptions.domain_exception import (
     CoinNotFoundException,
+    EmailAlreadyExistsException,
     FavoriteAlreadyExistsException,
     FavoriteNotFoundException,
     UserNotFoundException,
@@ -34,6 +37,7 @@ from app.schemas.price_history import (
     PriceHistoryStatisticsResponse,
     PriceHistoryVariationResponse,
 )
+from app.schemas.user import UserRegisterRequest, UserResponse
 
 @asynccontextmanager
 async def lifespan(application: FastAPI):
@@ -73,6 +77,15 @@ async def favorite_already_exists_exception_handler(_, exc):
     return _error_response(
         status.HTTP_409_CONFLICT,
         "favorite_already_exists",
+        str(exc),
+    )
+
+
+@app.exception_handler(EmailAlreadyExistsException)
+async def email_already_exists_exception_handler(_, exc):
+    return _error_response(
+        status.HTTP_409_CONFLICT,
+        "email_already_exists",
         str(exc),
     )
 
@@ -204,6 +217,24 @@ def get_favorites_with_coin_data(
 ):
 
     return controller.get_favorites_with_coin_data(user_id)
+
+
+# ============================================================
+# USERS
+# ============================================================
+
+
+@app.post(
+    "/users/register",
+    status_code=status.HTTP_201_CREATED,
+    response_model=UserResponse,
+    responses={status.HTTP_409_CONFLICT: {"model": ErrorResponse}},
+)
+def register_user(
+    request: UserRegisterRequest,
+    controller: UserController = Depends(get_user_controller),
+):
+    return controller.register_user(request.username, request.email, request.password)
 
 
 # ============================================================

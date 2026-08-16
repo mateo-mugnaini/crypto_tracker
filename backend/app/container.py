@@ -8,10 +8,13 @@ from app.repositories.price_history_repository import PriceHistoryRepository
 from app.services.coin_service import CoinService
 from app.services.favorite_service import FavoriteService
 from app.services.price_history_service import PriceHistoryService
+from app.services.user_service import UserService
+from app.security.password_hasher import PasswordHasher
 
 from app.controllers.coin_controller import CoinController
 from app.controllers.favorite_controller import FavoriteController
 from app.controllers.price_history_controller import PriceHistoryController
+from app.controllers.user_controller import UserController
 
 
 class Container:
@@ -25,6 +28,7 @@ class Container:
         self.user_repository = UserRepository()
         self.favorite_repository = FavoriteRepository()
         self.price_history_repository = PriceHistoryRepository()
+        self.password_hasher = PasswordHasher()
 
         # SERVICES
         self.coin_service = CoinService(self.coin_repository, self.api_client)
@@ -34,6 +38,7 @@ class Container:
         self.price_history_service = PriceHistoryService(
             self.price_history_repository,
         )
+        self.user_service = UserService(self.user_repository, self.password_hasher)
 
         # CONTROLLERS
         self.coin_controller = CoinController(self.coin_service)
@@ -41,3 +46,4 @@ class Container:
         self.price_history_controller = PriceHistoryController(
             self.price_history_service
         )
+        self.user_controller = UserController(self.user_service)

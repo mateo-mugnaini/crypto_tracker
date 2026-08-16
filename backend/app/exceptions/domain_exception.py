@@ -9,6 +9,10 @@ class UserNotFoundException(DomainException):
     """El usuario no existe."""
 
 
+class EmailAlreadyExistsException(DomainException):
+    """El email ya pertenece a un usuario."""
+
+
 class CoinNotFoundException(DomainException):
     """La moneda no existe."""
 

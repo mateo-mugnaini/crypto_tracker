@@ -25,14 +25,16 @@ class UserRepository:
         )
         """
 
-        cursor.execute(
-            query, (user.username, user.email, user.password_hash, user.created_at)
-        )
-
-        connection.commit()
-
-        cursor.close()
-        connection.close()
+        try:
+            cursor.execute(
+                query, (user.username, user.email, user.password_hash, user.created_at)
+            )
+            connection.commit()
+            user.id = cursor.lastrowid
+            return user
+        finally:
+            cursor.close()
+            connection.close()
 
     def find_all(self):
         connection = get_connection()
@@ -93,6 +95,24 @@ class UserRepository:
 
         cursor.close()
 
+        connection.close()
+
+        return result is not None
+
+    def exists_by_email(self, email: str) -> bool:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        query = """
+        SELECT 1
+        FROM users
+        WHERE email = %s
+        LIMIT 1
+        """
+
+        cursor.execute(query, (email,))
+        result = cursor.fetchone()
+        cursor.close()
         connection.close()
 
         return result is not None

@@ -8,6 +8,7 @@ from app.container import Container
 from app.controllers.coin_controller import CoinController
 from app.controllers.favorite_controller import FavoriteController
 from app.controllers.price_history_controller import PriceHistoryController
+from app.controllers.user_controller import UserController
 from app.schemas.price_history import (
     PriceHistoryAggregationQueryParams,
     PriceHistoryDateRangeQueryParams,
@@ -36,6 +37,12 @@ def get_price_history_controller(
     container: Container = Depends(get_container),
 ) -> PriceHistoryController:
     return container.price_history_controller
+
+
+def get_user_controller(
+    container: Container = Depends(get_container),
+) -> UserController:
+    return container.user_controller
 
 
 def _validated_query_model(model_class, values):
