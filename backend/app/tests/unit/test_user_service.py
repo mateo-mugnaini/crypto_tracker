@@ -4,6 +4,7 @@ from unittest.mock import Mock
 import pytest
 
 from app.exceptions.domain_exception import EmailAlreadyExistsException
+from app.exceptions.domain_exception import InvalidCredentialsException
 from app.models.user import User
 from app.services.user_service import UserService
 
@@ -58,3 +59,25 @@ def test_register_user_hashes_password_before_persisting():
     assert user.password_hash == "scrypt-hash"
     hasher.hash.assert_called_once_with("plain-password")
     repository.save.assert_called_once_with(user)
+
+
+def test_authenticate_returns_user_when_password_is_valid():
+    repository = Mock()
+    hasher = Mock()
+    repository.find_by_email.return_value = {"id": 1, "password_hash": "hash"}
+    hasher.verify.return_value = True
+    service = UserService(repository, hasher)
+
+    assert service.authenticate("mateo@example.test", "secure-pass")["id"] == 1
+
+
+@pytest.mark.parametrize("user", [None, {"id": 1, "password_hash": "hash"}])
+def test_authenticate_rejects_unknown_user_or_wrong_password(user):
+    repository = Mock()
+    hasher = Mock()
+    repository.find_by_email.return_value = user
+    hasher.verify.return_value = False
+    service = UserService(repository, hasher)
+
+    with pytest.raises(InvalidCredentialsException):
+        service.authenticate("mateo@example.test", "wrong-pass")

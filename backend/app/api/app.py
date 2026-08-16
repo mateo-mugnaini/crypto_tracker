@@ -21,6 +21,7 @@ from app.exceptions.api_exception import CoinGeckoException
 from app.exceptions.domain_exception import (
     CoinNotFoundException,
     EmailAlreadyExistsException,
+    InvalidCredentialsException,
     FavoriteAlreadyExistsException,
     FavoriteNotFoundException,
     UserNotFoundException,
@@ -37,7 +38,7 @@ from app.schemas.price_history import (
     PriceHistoryStatisticsResponse,
     PriceHistoryVariationResponse,
 )
-from app.schemas.user import UserRegisterRequest, UserResponse
+from app.schemas.user import TokenResponse, UserLoginRequest, UserRegisterRequest, UserResponse
 
 @asynccontextmanager
 async def lifespan(application: FastAPI):
@@ -86,6 +87,15 @@ async def email_already_exists_exception_handler(_, exc):
     return _error_response(
         status.HTTP_409_CONFLICT,
         "email_already_exists",
+        str(exc),
+    )
+
+
+@app.exception_handler(InvalidCredentialsException)
+async def invalid_credentials_exception_handler(_, exc):
+    return _error_response(
+        status.HTTP_401_UNAUTHORIZED,
+        "invalid_credentials",
         str(exc),
     )
 
@@ -235,6 +245,18 @@ def register_user(
     controller: UserController = Depends(get_user_controller),
 ):
     return controller.register_user(request.username, request.email, request.password)
+
+
+@app.post(
+    "/users/login",
+    response_model=TokenResponse,
+    responses={status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse}},
+)
+def login_user(
+    request: UserLoginRequest,
+    controller: UserController = Depends(get_user_controller),
+):
+    return {"access_token": controller.login(request.email, request.password), "token_type": "bearer"}
 
 
 # ============================================================

@@ -4,3 +4,6 @@ class UserController:
 
     def register_user(self, username: str, email: str, password: str):
         return self.service.register_user(username, email, password)
+
+    def login(self, email: str, password: str):
+        return self.service.login(email, password)

@@ -8,6 +8,7 @@ from app.exceptions.domain_exception import (
     DomainException,
     EmailAlreadyExistsException,
     FavoriteAlreadyExistsException,
+    InvalidCredentialsException,
     FavoriteNotFoundException,
     UserNotFoundException,
 )
@@ -20,6 +21,7 @@ __all__ = [
     "EmailAlreadyExistsException",
     "ExternalServiceException",
     "FavoriteAlreadyExistsException",
+    "InvalidCredentialsException",
     "FavoriteNotFoundException",
     "UserNotFoundException",
 ]

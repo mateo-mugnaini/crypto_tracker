@@ -116,3 +116,14 @@ class UserRepository:
         connection.close()
 
         return result is not None
+
+    def find_by_email(self, email: str):
+        connection = get_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        cursor.close()
+        connection.close()
+
+        return user

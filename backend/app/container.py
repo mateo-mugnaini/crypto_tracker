@@ -10,6 +10,8 @@ from app.services.favorite_service import FavoriteService
 from app.services.price_history_service import PriceHistoryService
 from app.services.user_service import UserService
 from app.security.password_hasher import PasswordHasher
+from app.security.token_service import TokenService
+from app.config.settings import settings
 
 from app.controllers.coin_controller import CoinController
 from app.controllers.favorite_controller import FavoriteController
@@ -29,6 +31,7 @@ class Container:
         self.favorite_repository = FavoriteRepository()
         self.price_history_repository = PriceHistoryRepository()
         self.password_hasher = PasswordHasher()
+        self.token_service = TokenService(settings.jwt_secret_key, settings.jwt_algorithm, settings.jwt_access_token_minutes)
 
         # SERVICES
         self.coin_service = CoinService(self.coin_repository, self.api_client)
@@ -38,7 +41,7 @@ class Container:
         self.price_history_service = PriceHistoryService(
             self.price_history_repository,
         )
-        self.user_service = UserService(self.user_repository, self.password_hasher)
+        self.user_service = UserService(self.user_repository, self.password_hasher, self.token_service)
 
         # CONTROLLERS
         self.coin_controller = CoinController(self.coin_service)

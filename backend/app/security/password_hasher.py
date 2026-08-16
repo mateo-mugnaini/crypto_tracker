@@ -20,18 +20,21 @@ class PasswordHasher:
         )
 
     def verify(self, password: str, password_hash: str) -> bool:
-        algorithm, n, r, p, salt, expected = password_hash.split("$")
-        if algorithm != "scrypt":
-            return False
+        try:
+            algorithm, n, r, p, salt, expected = password_hash.split("$")
+            if algorithm != "scrypt":
+                return False
 
-        derived_key = hashlib.scrypt(
-            password.encode("utf-8"),
-            salt=base64.b64decode(salt),
-            n=int(n),
-            r=int(r),
-            p=int(p),
-        )
-        return hmac.compare_digest(
-            derived_key,
-            base64.b64decode(expected),
-        )
+            derived_key = hashlib.scrypt(
+                password.encode("utf-8"),
+                salt=base64.b64decode(salt),
+                n=int(n),
+                r=int(r),
+                p=int(p),
+            )
+            return hmac.compare_digest(
+                derived_key,
+                base64.b64decode(expected),
+            )
+        except (TypeError, ValueError):
+            return False

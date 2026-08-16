@@ -1,0 +1,20 @@
+from datetime import datetime, timedelta, timezone
+
+import jwt
+
+
+class TokenService:
+    def __init__(self, secret_key: str, algorithm: str = "HS256", expires_minutes: int = 30):
+        if not secret_key:
+            raise RuntimeError("JWT_SECRET_KEY no está configurada.")
+        self.secret_key = secret_key
+        self.algorithm = algorithm
+        self.expires_minutes = expires_minutes
+
+    def create_access_token(self, user_id: int) -> str:
+        now = datetime.now(timezone.utc)
+        return jwt.encode(
+            {"sub": str(user_id), "iat": now, "exp": now + timedelta(minutes=self.expires_minutes)},
+            self.secret_key,
+            algorithm=self.algorithm,
+        )

@@ -15,6 +15,9 @@ class Settings:
         self.mysql_password = os.getenv("MYSQL_PASSWORD")
         self.mysql_database = os.getenv("MYSQL_DATABASE")
         self.mysql_test_database = os.getenv("MYSQL_TEST_DATABASE")
+        self.jwt_secret_key = os.getenv("JWT_SECRET_KEY")
+        self.jwt_algorithm = os.getenv("JWT_ALGORITHM", "HS256")
+        self.jwt_access_token_minutes = int(os.getenv("JWT_ACCESS_TOKEN_MINUTES", 30))
 
 
 settings = Settings()

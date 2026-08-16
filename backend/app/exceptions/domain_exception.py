@@ -13,6 +13,10 @@ class EmailAlreadyExistsException(DomainException):
     """El email ya pertenece a un usuario."""
 
 
+class InvalidCredentialsException(DomainException):
+    """Las credenciales no son válidas."""
+
+
 class CoinNotFoundException(DomainException):
     """La moneda no existe."""
 

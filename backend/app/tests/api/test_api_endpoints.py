@@ -165,3 +165,40 @@ def test_register_user_returns_409_for_duplicate_email(api_client):
 
     assert response.status_code == 409
     assert response.json()["detail"]["code"] == "email_already_exists"
+
+
+def test_login_returns_public_user_data(api_client):
+    controller = Mock()
+    controller.login.return_value = {
+        "id": 1,
+        "username": "mateo",
+        "email": "mateo@example.test",
+        "password_hash": "hidden",
+        "created_at": "2026-08-16T12:00:00",
+    }
+    api_app.app.dependency_overrides[get_user_controller] = lambda: controller
+
+    response = api_client.post(
+        "/users/login",
+        json={"email": "MATEO@EXAMPLE.TEST", "password": "secure-pass"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["email"] == "mateo@example.test"
+    assert "password_hash" not in response.json()
+
+
+def test_login_returns_401_for_invalid_credentials(api_client):
+    from app.exceptions.domain_exception import InvalidCredentialsException
+
+    controller = Mock()
+    controller.login.side_effect = InvalidCredentialsException("Email o password incorrectos.")
+    api_app.app.dependency_overrides[get_user_controller] = lambda: controller
+
+    response = api_client.post(
+        "/users/login",
+        json={"email": "mateo@example.test", "password": "wrong-pass"},
+    )
+
+    assert response.status_code == 401
+    assert response.json()["detail"]["code"] == "invalid_credentials"
