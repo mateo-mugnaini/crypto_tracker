@@ -21,7 +21,11 @@ from app.controllers.coin_controller import CoinController
 from app.controllers.favorite_controller import FavoriteController
 from app.controllers.price_history_controller import PriceHistoryController
 from app.controllers.user_controller import UserController
-from app.exceptions.api_exception import CoinGeckoException, RateLimitExceededException
+from app.exceptions.api_exception import (
+    AuthenticationException,
+    CoinGeckoException,
+    RateLimitExceededException,
+)
 from app.exceptions.domain_exception import (
     CoinNotFoundException,
     EmailAlreadyExistsException,
@@ -135,6 +139,16 @@ async def coingecko_exception_handler(_, exc):
         status.HTTP_502_BAD_GATEWAY,
         "coingecko_unavailable",
         str(exc),
+    )
+
+
+@app.exception_handler(AuthenticationException)
+async def authentication_exception_handler(_, exc):
+    return _error_response(
+        status.HTTP_401_UNAUTHORIZED,
+        exc.code,
+        str(exc),
+        headers={"WWW-Authenticate": "Bearer"},
     )
 
 

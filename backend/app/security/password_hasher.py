@@ -1,4 +1,5 @@
 import base64
+import binascii
 import hashlib
 import hmac
 import secrets
@@ -27,14 +28,14 @@ class PasswordHasher:
 
             derived_key = hashlib.scrypt(
                 password.encode("utf-8"),
-                salt=base64.b64decode(salt),
+                salt=base64.b64decode(salt, validate=True),
                 n=int(n),
                 r=int(r),
                 p=int(p),
             )
             return hmac.compare_digest(
                 derived_key,
-                base64.b64decode(expected),
+                base64.b64decode(expected, validate=True),
             )
-        except (TypeError, ValueError):
+        except (TypeError, ValueError, binascii.Error):
             return False

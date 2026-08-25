@@ -1,5 +1,6 @@
 from app.exceptions.api_exception import (
     AppException,
+    AuthenticationException,
     CoinGeckoException,
     ExternalServiceException,
     RateLimitExceededException,
@@ -16,6 +17,7 @@ from app.exceptions.domain_exception import (
 
 __all__ = [
     "AppException",
+    "AuthenticationException",
     "CoinGeckoException",
     "CoinNotFoundException",
     "DomainException",

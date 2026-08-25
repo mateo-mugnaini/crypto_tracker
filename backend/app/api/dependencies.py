@@ -1,7 +1,7 @@
 from datetime import date
 
 import jwt
-from fastapi import Depends, HTTPException, Query, Request, status
+from fastapi import Depends, Query, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
@@ -13,7 +13,7 @@ from app.controllers.price_history_controller import PriceHistoryController
 from app.controllers.user_controller import UserController
 from app.api.rate_limiter import InMemoryRateLimiter
 from app.config.settings import settings
-from app.exceptions.api_exception import RateLimitExceededException
+from app.exceptions.api_exception import AuthenticationException, RateLimitExceededException
 from app.schemas.price_history import (
     PriceHistoryAggregationQueryParams,
     PriceHistoryDateRangeQueryParams,
@@ -71,17 +71,26 @@ def get_current_user(
     container: Container = Depends(get_container),
 ):
     if credentials is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token requerido.")
+        raise AuthenticationException(
+            code="authentication_required",
+            message="Token Bearer requerido.",
+        )
 
     try:
         payload = container.token_service.decode_access_token(credentials.credentials)
         user_id = int(payload["sub"])
     except (jwt.InvalidTokenError, KeyError, TypeError, ValueError):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido.")
+        raise AuthenticationException(
+            code="invalid_access_token",
+            message="Token inválido.",
+        )
 
     user = container.user_repository.find_by_id(user_id)
     if user is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido.")
+        raise AuthenticationException(
+            code="invalid_access_token",
+            message="Token inválido.",
+        )
 
     return user
 
