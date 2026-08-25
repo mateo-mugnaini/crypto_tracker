@@ -186,6 +186,28 @@ def test_price_history_rejects_sql_injection_attempt_in_sorting(api_client):
     controller.get_price_history.assert_not_called()
 
 
+def test_post_price_returns_saved_current_price(api_client):
+    controller = Mock()
+    controller.update_price.return_value = {
+        "id": 7,
+        "coin_id": "bitcoin",
+        "price": 65000.25,
+        "recorded_at": datetime(2026, 8, 25, 12, 0),
+    }
+    api_app.app.dependency_overrides[get_price_history_controller] = lambda: controller
+
+    response = api_client.post("/coins/bitcoin/price")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "id": 7,
+        "coin_id": "bitcoin",
+        "price": 65000.25,
+        "recorded_at": "2026-08-25T12:00:00",
+    }
+    controller.update_price.assert_called_once_with("bitcoin")
+
+
 def test_register_user_returns_safe_response_without_password_hash(api_client):
     controller = Mock()
     controller.register_user.return_value = {

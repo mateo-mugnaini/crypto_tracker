@@ -17,6 +17,10 @@ El backend incluye:
 
 El frontend vive en una carpeta independiente del repositorio (`../frontend`).
 
+El roadmap backend llegó a M92: el backend está verificado localmente y el
+frontend continúa pendiente de implementación porque su carpeta todavía está
+vacía.
+
 ## Requisitos
 
 - Python 3.13 o superior.
@@ -304,7 +308,7 @@ pytest -m api
 pytest -m integration
 ```
 
-Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con el esquema compatible. La suite actual se ejecuta con 164 pruebas exitosas en el entorno del proyecto; puede aparecer una advertencia de compatibilidad entre Starlette y la versión instalada de `httpx`.
+Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con el esquema compatible. La suite actual se ejecuta con 168 pruebas exitosas en el entorno del proyecto; puede aparecer una advertencia de compatibilidad entre Starlette y la versión instalada de `httpx`.
 
 ## Documentación del proyecto
 
@@ -327,12 +331,15 @@ Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con
 - [`docs/87-integracion-frontend.md`](docs/87-integracion-frontend.md): contrato para consumir la API desde el frontend y estado actual de `frontend/`.
 - [`docs/88-auth-frontend.md`](docs/88-auth-frontend.md): flujo de registro, login, JWT Bearer y sesión frontend.
 - [`docs/89-errores-frontend.md`](docs/89-errores-frontend.md): formatos de error, validaciones, reintentos y diagnóstico para la UI.
+- [`docs/90-paginacion-filtros-ui.md`](docs/90-paginacion-filtros-ui.md): contrato de paginación, filtros y ordenamiento del historial para la UI.
+- [`docs/91-charts.md`](docs/91-charts.md): contrato de estadísticas, variaciones y agregaciones para gráficos.
+- [`docs/92-integracion-final.md`](docs/92-integracion-final.md): auditoría y cierre del backend, incluyendo la ruta de actualización de precio.
 - [`CHANGELOG.md`](CHANGELOG.md): historial de cambios.
 - [`relevamiento.md`](relevamiento.md): análisis técnico histórico; puede contener observaciones de etapas anteriores y no sustituye la documentación de las rutas actuales.
 
 ## Limitaciones conocidas
 
 - No hay migraciones ni DDL automatizado para crear las tablas.
-- La ruta `POST /coins/{coin_id}/price` está declarada en `app/api/app.py`, pero el `PriceHistoryController` actual no expone el método `update_price`; debe corregirse antes de usar esa ruta.
+- La ruta `POST /coins/{coin_id}/price` obtiene el precio USD mediante CoinGecko `/simple/price` y lo persiste en `price_history`; requiere que la moneda exista localmente para respetar la foreign key.
 - El rate limiting actual es en memoria y por IP: sirve para desarrollo/educación, pero no coordina múltiples workers ni instancias.
 - Los errores de red de CoinGecko se registran con logging estructurado y se traducen a una respuesta de gateway cuando el servicio devuelve datos vacíos; todavía no existe correlación distribuida de requests.

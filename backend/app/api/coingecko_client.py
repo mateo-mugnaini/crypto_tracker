@@ -41,6 +41,35 @@ class CoinGeckoClient:
 
         return data if isinstance(data, dict) else {}
 
+    def get_current_price(
+        self,
+        coin_id: str,
+        vs_currency: str = "usd",
+    ) -> float | None:
+        data = self._request_json(
+            "/simple/price",
+            params={
+                "ids": coin_id,
+                "vs_currencies": vs_currency,
+            },
+        )
+
+        if not isinstance(data, dict):
+            return None
+
+        coin_data = data.get(coin_id)
+        if not isinstance(coin_data, dict):
+            return None
+
+        value = coin_data.get(vs_currency)
+        if value is None:
+            return None
+
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
     def _request_json(
         self,
         path: str,

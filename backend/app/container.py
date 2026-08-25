@@ -40,6 +40,7 @@ class Container:
         )
         self.price_history_service = PriceHistoryService(
             self.price_history_repository,
+            self.api_client,
         )
         self.user_service = UserService(self.user_repository, self.password_hasher, self.token_service)
 

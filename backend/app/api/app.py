@@ -529,9 +529,11 @@ def get_current_user_profile(current_user: dict = Depends(get_current_user)):
 
 @app.post(
     "/coins/{coin_id}/price",
+    response_model=PriceHistoryResponse,
     tags=["price-history"],
     summary="Registrar precio actual",
     description="Obtiene y registra el precio actual de una moneda.",
+    responses={status.HTTP_502_BAD_GATEWAY: {"model": ErrorResponse}},
 )
 def update_coin_price(
     coin_id: str = Path(

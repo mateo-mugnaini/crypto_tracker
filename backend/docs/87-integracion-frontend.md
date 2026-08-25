@@ -315,8 +315,8 @@ debe usar `*`.
 ## 10. Gaps conocidos
 
 - El frontend todavía no tiene stack elegido ni código implementado.
-- La ruta `POST /coins/{coin_id}/price` sigue declarada, pero el controller no
-  tiene `update_price`; no debe ser utilizada desde el cliente todavía.
+- La ruta `POST /coins/{coin_id}/price` fue completada en M92: consulta
+  CoinGecko `/simple/price` y persiste la observación actual.
 - No hay refresh token.
 - No hay contrato de WebSocket ni actualizaciones en tiempo real.
 - La paginación devuelve una lista, pero no un total global; el frontend debe

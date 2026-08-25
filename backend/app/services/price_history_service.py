@@ -1,5 +1,6 @@
 from datetime import datetime, date, time
 
+from app.exceptions.api_exception import CoinGeckoException
 from app.models.price_history import PriceHistory
 from app.repositories.price_history_repository import PriceHistoryRepository
 
@@ -14,8 +15,35 @@ class PriceHistoryService:
     def __init__(
         self,
         price_history_repository: PriceHistoryRepository,
+        api_client=None,
     ):
         self.price_history_repository = price_history_repository
+        self.api_client = api_client
+
+    def update_current_price(
+        self,
+        coin_id: str,
+        vs_currency: str = "usd",
+    ) -> PriceHistory:
+        normalized_coin_id = coin_id.strip().lower()
+
+        if not normalized_coin_id:
+            raise ValueError("coin_id cannot be empty")
+
+        if self.api_client is None:
+            raise RuntimeError("CoinGeckoClient no está configurado.")
+
+        price = self.api_client.get_current_price(
+            normalized_coin_id,
+            vs_currency=vs_currency,
+        )
+
+        if price is None:
+            raise CoinGeckoException(
+                f"No se pudo obtener el precio actual de '{normalized_coin_id}'."
+            )
+
+        return self.save_price(normalized_coin_id, price)
 
     def save_price(
         self,

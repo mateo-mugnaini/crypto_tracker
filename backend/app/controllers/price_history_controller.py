@@ -23,6 +23,9 @@ class PriceHistoryController:
             price=price,
         )
 
+    def update_price(self, coin_id: str) -> PriceHistory:
+        return self.price_history_service.update_current_price(coin_id)
+
     def get_price_history(
         self,
         coin_id: str,
