@@ -100,14 +100,28 @@ def test_get_coins_returns_controller_contract(api_client):
     controller.get_all_coins.return_value = {
         "success": True,
         "message": "Monedas obtenidas correctamente.",
-        "data": [{"id": "bitcoin"}],
+        "data": [
+            {
+                "id": "bitcoin",
+                "symbol": "btc",
+                "name": "Bitcoin",
+                "market_cap_rank": 1,
+            }
+        ],
     }
     api_app.app.dependency_overrides[get_coin_controller] = lambda: controller
 
     response = api_client.get("/coins")
 
     assert response.status_code == 200
-    assert response.json()["data"] == [{"id": "bitcoin"}]
+    assert response.json()["data"] == [
+        {
+            "id": "bitcoin",
+            "symbol": "btc",
+            "name": "Bitcoin",
+            "market_cap_rank": 1,
+        }
+    ]
     controller.get_all_coins.assert_called_once_with()
 
 

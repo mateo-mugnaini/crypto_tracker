@@ -38,6 +38,7 @@ from app.exceptions.domain_exception import (
     FavoriteNotFoundException,
     UserNotFoundException,
 )
+from app.api.health import check_database
 from app.logging_config import configure_logging
 from app.models.favorite import Favorite
 from app.observability import (
@@ -45,8 +46,15 @@ from app.observability import (
     reset_request_id,
     set_request_id,
 )
+from app.schemas.coin import CoinListResponseEnvelope, CoinResponseEnvelope
 from app.schemas.error import ErrorResponse
-from app.schemas.favorite import FavoriteActionResponse, FavoriteCreateRequest
+from app.schemas.favorite import (
+    FavoriteActionResponse,
+    FavoriteCreateRequest,
+    FavoriteDetailsListResponse,
+    FavoriteListResponse,
+)
+from app.schemas.health import HealthResponse
 from app.schemas.price_history import (
     PriceHistoryAggregationQueryParams,
     PriceHistoryAggregationResponse,
@@ -253,6 +261,46 @@ async def rate_limit_exception_handler(_, exc):
 
 
 @app.get(
+    "/health/live",
+    tags=["system"],
+    summary="Comprobar liveness",
+    response_model=HealthResponse,
+)
+def health_live():
+    """Indicate that the application process can serve HTTP requests."""
+    return {
+        "status": "ok",
+        "service": "crypto-tracker-api",
+    }
+
+
+@app.get(
+    "/health/ready",
+    tags=["system"],
+    summary="Comprobar readiness",
+    response_model=HealthResponse,
+    responses={status.HTTP_503_SERVICE_UNAVAILABLE: {"model": HealthResponse}},
+)
+def health_ready():
+    """Check that the application database is reachable."""
+    if not check_database():
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={
+                "status": "not_ready",
+                "service": "crypto-tracker-api",
+                "checks": {"database": "unavailable"},
+            },
+        )
+
+    return {
+        "status": "ready",
+        "service": "crypto-tracker-api",
+        "checks": {"database": "ok"},
+    }
+
+
+@app.get(
     "/",
     tags=["system"],
     summary="Comprobar disponibilidad",
@@ -272,6 +320,7 @@ def root():
 @app.get(
     "/coins",
     status_code=status.HTTP_200_OK,
+    response_model=CoinListResponseEnvelope,
     tags=["coins"],
     summary="Listar monedas locales",
     response_description="Monedas persistidas en la base local.",
@@ -285,6 +334,7 @@ def get_all_coins(
 
 @app.post(
     "/coins/sync",
+    response_model=CoinListResponseEnvelope,
     tags=["coins"],
     summary="Sincronizar monedas",
     description="Obtiene las monedas principales desde CoinGecko y las persiste localmente.",
@@ -300,6 +350,7 @@ def sync_coins(
 @app.get(
     "/coins/{coin_id}",
     status_code=status.HTTP_200_OK,
+    response_model=CoinResponseEnvelope,
     tags=["coins"],
     summary="Obtener una moneda local",
     responses={status.HTTP_404_NOT_FOUND: {"model": ErrorResponse}},
@@ -314,6 +365,7 @@ def get_coin(
 
 @app.post(
     "/coins/{coin_id}",
+    response_model=CoinResponseEnvelope,
     tags=["coins"],
     summary="Sincronizar una moneda",
     description="Obtiene una moneda concreta desde CoinGecko y actualiza su registro local.",
@@ -389,6 +441,7 @@ def remove_favorite(
 @app.get(
     "/favorites",
     status_code=status.HTTP_200_OK,
+    response_model=FavoriteListResponse,
     tags=["favorites"],
     summary="Listar favoritos propios",
 )
@@ -405,6 +458,7 @@ def get_favorites(
 @app.get(
     "/favorites/details",
     status_code=status.HTTP_200_OK,
+    response_model=FavoriteDetailsListResponse,
     tags=["favorites"],
     summary="Listar favoritos con datos de moneda",
 )

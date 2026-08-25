@@ -30,3 +30,20 @@ def test_openapi_documents_price_history_and_login_contracts(api_client):
     assert login_operation["summary"] == "Iniciar sesión"
     assert "401" in login_operation["responses"]
     assert "429" in login_operation["responses"]
+
+
+def test_openapi_exposes_typed_coin_and_favorite_envelopes(api_client):
+    schema = api_client.get("/openapi.json").json()
+
+    coins_operation = schema["paths"]["/coins"]["get"]
+    favorites_operation = schema["paths"]["/favorites"]["get"]
+
+    coin_schema = coins_operation["responses"]["200"]["content"][
+        "application/json"
+    ]["schema"]
+    favorite_schema = favorites_operation["responses"]["200"]["content"][
+        "application/json"
+    ]["schema"]
+
+    assert coin_schema["$ref"] == "#/components/schemas/CoinListResponseEnvelope"
+    assert favorite_schema["$ref"] == "#/components/schemas/FavoriteListResponse"

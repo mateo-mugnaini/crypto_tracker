@@ -135,6 +135,22 @@ python -m uvicorn app.api.app:app --reload --host 127.0.0.1 --port 8000
 
 La API quedará disponible en <http://127.0.0.1:8000>.
 
+Para staging o producción, ejecuta sin `--reload` y escucha en la interfaz de
+red correspondiente:
+
+```bash
+python -m uvicorn app.api.app:app --host 0.0.0.0 --port 8000 --workers 1
+```
+
+Actualmente se recomienda un worker porque el rate limiter y las métricas son
+locales al proceso. Consulta [`docs/86-preparacion-deployment.md`](docs/86-preparacion-deployment.md)
+antes de desplegar varias instancias o workers.
+
+Health checks:
+
+- <http://127.0.0.1:8000/health/live>: el proceso responde.
+- <http://127.0.0.1:8000/health/ready>: el proceso y MySQL están disponibles.
+
 Documentación interactiva:
 
 - Swagger UI: <http://127.0.0.1:8000/docs>
@@ -249,16 +265,19 @@ Estados relevantes:
 
 ```text
 app/
-├── api/             FastAPI, rutas, dependencias y cliente CoinGecko
+├── api/             FastAPI, rutas, health, dependencias y cliente CoinGecko
 ├── config/          Lectura de variables de entorno
 ├── controllers/     Adaptación entre HTTP y casos de uso
 ├── database/        Conexiones MySQL
 ├── exceptions/      Excepciones de dominio y de API
 ├── models/          Entidades del dominio
 ├── repositories/    Acceso SQL a MySQL
-├── schemas/         Validación de requests y responses con Pydantic
+├── schemas/         Contratos HTTP de requests y responses con Pydantic
 ├── security/        Hashing de contraseñas y JWT
 ├── services/        Lógica de negocio
+├── logging_config.py Logging JSON
+├── observability.py Request IDs y métricas internas
+├── container.py      Composition root
 └── tests/           Pruebas unitarias, API e integración
 ```
 
@@ -285,7 +304,7 @@ pytest -m api
 pytest -m integration
 ```
 
-Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con el esquema compatible. La suite actual se ejecuta con 160 pruebas exitosas en el entorno del proyecto; puede aparecer una advertencia de compatibilidad entre Starlette y la versión instalada de `httpx`.
+Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con el esquema compatible. La suite actual se ejecuta con 164 pruebas exitosas en el entorno del proyecto; puede aparecer una advertencia de compatibilidad entre Starlette y la versión instalada de `httpx`.
 
 ## Documentación del proyecto
 
@@ -302,6 +321,12 @@ Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con
 - [`docs/80-logging-estructurado.md`](docs/80-logging-estructurado.md): logging JSON seguro para runtime y requests HTTP.
 - [`docs/81-configuracion-por-entornos.md`](docs/81-configuracion-por-entornos.md): entornos y validación segura de producción.
 - [`docs/82-observabilidad.md`](docs/82-observabilidad.md): request IDs y métricas básicas por proceso.
+- [`docs/84-health-y-readiness.md`](docs/84-health-y-readiness.md): liveness y readiness de la API.
+- [`docs/85-estructura-final-backend.md`](docs/85-estructura-final-backend.md): estructura, capas y entrypoints finales.
+- [`docs/86-preparacion-deployment.md`](docs/86-preparacion-deployment.md): contrato de ejecución productiva, configuración y health checks.
+- [`docs/87-integracion-frontend.md`](docs/87-integracion-frontend.md): contrato para consumir la API desde el frontend y estado actual de `frontend/`.
+- [`docs/88-auth-frontend.md`](docs/88-auth-frontend.md): flujo de registro, login, JWT Bearer y sesión frontend.
+- [`docs/89-errores-frontend.md`](docs/89-errores-frontend.md): formatos de error, validaciones, reintentos y diagnóstico para la UI.
 - [`CHANGELOG.md`](CHANGELOG.md): historial de cambios.
 - [`relevamiento.md`](relevamiento.md): análisis técnico histórico; puede contener observaciones de etapas anteriores y no sustituye la documentación de las rutas actuales.
 

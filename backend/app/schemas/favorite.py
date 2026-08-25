@@ -30,3 +30,25 @@ class FavoriteCreateRequest(BaseModel):
 class FavoriteActionResponse(BaseModel):
     success: bool
     message: str
+
+
+class FavoriteResponse(BaseModel):
+    user_id: int
+    coin_id: str
+
+
+class FavoriteDetailsResponse(BaseModel):
+    coin_id: str
+    symbol: str
+    name: str
+    market_cap_rank: int | None = None
+
+
+class FavoriteListResponse(BaseModel):
+    success: bool
+    data: list[FavoriteResponse]
+
+
+class FavoriteDetailsListResponse(BaseModel):
+    success: bool
+    data: list[FavoriteDetailsResponse]
