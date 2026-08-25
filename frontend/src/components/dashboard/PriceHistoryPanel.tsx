@@ -2,11 +2,11 @@ import { useEffect, useState, type FormEvent } from "react";
 
 import { ApiError, api } from "../../api/client";
 import type {
-  Coin,
   PriceHistoryRecord,
   PriceHistoryStatistics,
   PriceHistoryVariation,
 } from "../../api/types";
+import { useMarket } from "../../features/market/MarketContext";
 import PriceHistoryChart from "./PriceHistoryChart";
 import styles from "./PriceHistoryPanel.module.css";
 
@@ -54,9 +54,14 @@ function getErrorMessage(caughtError: unknown) {
 }
 
 export default function PriceHistoryPanel() {
-  const [coins, setCoins] = useState<Coin[]>([]);
+  const {
+    coins,
+    error: coinError,
+    lastUpdated,
+    loadCoins,
+    status: marketStatus,
+  } = useMarket();
   const [selectedCoinId, setSelectedCoinId] = useState("");
-  const [coinError, setCoinError] = useState<string | null>(null);
   const [records, setRecords] = useState<PriceHistoryRecord[]>([]);
   const [statistics, setStatistics] = useState<PriceHistoryStatistics | null>(
     null,
@@ -66,22 +71,17 @@ export default function PriceHistoryPanel() {
   const [draftFilters, setDraftFilters] = useState<Filters>(initialFilters);
   const [page, setPage] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const [isCoinsLoading, setIsCoinsLoading] = useState(true);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
+  const isCoinsLoading = marketStatus === "idle" || marketStatus === "loading";
 
   useEffect(() => {
-    api
-      .getCoins()
-      .then((response) => {
-        setCoins(response.data);
-        setSelectedCoinId((current) => current || response.data[0]?.id || "");
-      })
-      .catch((caughtError) => {
-        setCoinError(getErrorMessage(caughtError));
-      })
-      .finally(() => setIsCoinsLoading(false));
-  }, []);
+    void loadCoins();
+  }, [loadCoins]);
+
+  useEffect(() => {
+    setSelectedCoinId((current) => current || coins[0]?.id || "");
+  }, [coins]);
 
   useEffect(() => {
     if (!selectedCoinId) {
@@ -131,7 +131,7 @@ export default function PriceHistoryPanel() {
     return () => {
       cancelled = true;
     };
-  }, [filters, page, selectedCoinId]);
+  }, [filters, lastUpdated, page, selectedCoinId]);
 
   function updateDraftFilter<Key extends keyof Filters>(
     key: Key,
@@ -170,7 +170,14 @@ export default function PriceHistoryPanel() {
         <span className={styles.pill}>Página {page + 1}</span>
       </div>
 
-      {coinError && <p className={styles.errorMessage}>{coinError}</p>}
+      {coinError && (
+        <div className={styles.errorState}>
+          <p className={styles.errorMessage}>{coinError}</p>
+          <button onClick={() => void loadCoins(true)} type="button">
+            Reintentar
+          </button>
+        </div>
+      )}
 
       <div className={styles.toolbar}>
         <label>

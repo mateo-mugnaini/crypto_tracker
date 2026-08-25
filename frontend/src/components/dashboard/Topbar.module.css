@@ -43,6 +43,16 @@
   background: rgba(21, 37, 60, 0.7);
 }
 
+.lastUpdated {
+  color: #8da0bb;
+  font-size: 0.72rem;
+}
+
+.autoRefresh {
+  color: #6be7c6;
+  font-size: 0.72rem;
+}
+
 .secondaryButton {
   border-radius: 12px;
   color: #b9c9dd;
@@ -55,6 +65,14 @@
   }
 
   .userChip {
+    display: none;
+  }
+
+  .lastUpdated {
+    display: none;
+  }
+
+  .autoRefresh {
     display: none;
   }
 }

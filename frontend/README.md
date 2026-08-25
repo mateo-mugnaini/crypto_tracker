@@ -20,6 +20,10 @@ Este primer módulo incluye:
 - favoritos propios con listado, alta y baja;
 - historial de precios con filtros, estadísticas, paginación y gráfico SVG;
 - comparación normalizada entre dos monedas;
+- cache compartido del mercado y refresco manual del dashboard;
+- actualización manual del precio por moneda;
+- polling opcional del mercado configurable por entorno;
+- polling consciente de visibilidad y con backoff ante errores;
 - manejo de errores de red y del contrato del backend.
 
 Todavía no incluye comparación entre monedas. Se
@@ -68,6 +72,8 @@ src/
 │   ├── ProtectedRoute.tsx  guard de rutas autenticadas
 │   └── PublicRoute.tsx     guard de rutas públicas
 ├── features/
+│   ├── market/
+│   │   └── MarketContext.tsx estado/cache del mercado
 │   └── favorites/
 │       └── FavoritesContext.tsx estado compartido de favoritos
 ├── components/
@@ -119,4 +125,8 @@ La documentación está en [`docs/01-scaffold-y-api.md`](docs/01-scaffold-y-api.
 [`docs/04-layout-y-favoritos.md`](docs/04-layout-y-favoritos.md) y
 [`docs/05-historial-y-filtros.md`](docs/05-historial-y-filtros.md) y
 [`docs/06-grafico-historial.md`](docs/06-grafico-historial.md) y
-[`docs/07-comparacion-monedas.md`](docs/07-comparacion-monedas.md).
+[`docs/07-comparacion-monedas.md`](docs/07-comparacion-monedas.md) y
+[`docs/08-cache-y-refresco.md`](docs/08-cache-y-refresco.md) y
+[`docs/09-actualizacion-manual-precios.md`](docs/09-actualizacion-manual-precios.md) y
+[`docs/10-polling-opcional.md`](docs/10-polling-opcional.md) y
+[`docs/11-polling-resiliente.md`](docs/11-polling-resiliente.md).

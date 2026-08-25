@@ -149,6 +149,13 @@ export const api = {
     return request<CoinListResponse>("/coins");
   },
 
+  updateCurrentPrice(coinId: string) {
+    return request<PriceHistoryRecord>(
+      `/coins/${encodeURIComponent(coinId)}/price`,
+      { method: "POST" },
+    );
+  },
+
   getFavoriteDetails(userId: number, token: string) {
     const query = new URLSearchParams({ user_id: String(userId) });
     return request<FavoriteDetailsListResponse>(

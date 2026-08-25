@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
 import { ApiError, api } from "../../api/client";
-import type { Coin, PriceHistoryRecord } from "../../api/types";
+import type { PriceHistoryRecord } from "../../api/types";
+import { useMarket } from "../../features/market/MarketContext";
 import ComparisonChart, {
   type ComparisonSeries,
 } from "./ComparisonChart";
@@ -31,29 +32,30 @@ function getPercentageChange(records: PriceHistoryRecord[]) {
 }
 
 export default function PriceComparisonPanel() {
-  const [coins, setCoins] = useState<Coin[]>([]);
+  const {
+    coins,
+    error: marketError,
+    lastUpdated,
+    loadCoins,
+    status: marketStatus,
+  } = useMarket();
   const [firstCoinId, setFirstCoinId] = useState("");
   const [secondCoinId, setSecondCoinId] = useState("");
   const [series, setSeries] = useState<ComparisonSeries[]>([]);
-  const [isCoinsLoading, setIsCoinsLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isCoinsLoading = marketStatus === "idle" || marketStatus === "loading";
 
   useEffect(() => {
-    api
-      .getCoins()
-      .then((response) => {
-        const availableCoins = response.data;
-        setCoins(availableCoins);
-        setFirstCoinId((current) => current || availableCoins[0]?.id || "");
-        setSecondCoinId(
-          (current) =>
-            current || availableCoins.find((coin) => coin.id !== availableCoins[0]?.id)?.id || "",
-        );
-      })
-      .catch((caughtError) => setError(getErrorMessage(caughtError)))
-      .finally(() => setIsCoinsLoading(false));
-  }, []);
+    void loadCoins();
+  }, [loadCoins]);
+
+  useEffect(() => {
+    setFirstCoinId((current) => current || coins[0]?.id || "");
+    setSecondCoinId(
+      (current) => current || coins.find((coin) => coin.id !== coins[0]?.id)?.id || "",
+    );
+  }, [coins]);
 
   useEffect(() => {
     if (!firstCoinId || !secondCoinId || firstCoinId === secondCoinId) {
@@ -109,7 +111,7 @@ export default function PriceComparisonPanel() {
     return () => {
       cancelled = true;
     };
-  }, [coins, firstCoinId, secondCoinId]);
+  }, [coins, firstCoinId, lastUpdated, secondCoinId]);
 
   function handleFirstCoinChange(value: string) {
     setFirstCoinId(value);
@@ -131,7 +133,16 @@ export default function PriceComparisonPanel() {
         <span className={styles.pill}>Últimos {HISTORY_LIMIT} registros</span>
       </div>
 
-      {error && <p className={styles.errorMessage}>{error}</p>}
+      {(marketError || error) && (
+        <div className={styles.errorState}>
+          <p className={styles.errorMessage}>{marketError || error}</p>
+          {marketError && (
+            <button onClick={() => void loadCoins(true)} type="button">
+              Reintentar
+            </button>
+          )}
+        </div>
+      )}
 
       <div className={styles.selectGrid}>
         <label>

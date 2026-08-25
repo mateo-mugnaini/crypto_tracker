@@ -51,6 +51,22 @@
   font-size: 0.9rem;
 }
 
+.errorState {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.successMessage {
+  margin: 0;
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  color: #baf8e8;
+  background: rgba(52, 173, 139, 0.16);
+  font-size: 0.9rem;
+}
+
 .coinGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -59,7 +75,7 @@
 
 .coinCard {
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: auto 1fr auto auto auto;
   align-items: center;
   gap: 0.75rem;
   border: 1px solid rgba(145, 169, 202, 0.14);
@@ -103,6 +119,20 @@
 .favoriteButton:hover,
 .favoriteActive {
   color: #6be7c6;
+}
+
+.updateButton {
+  border: 1px solid rgba(107, 231, 198, 0.3);
+  border-radius: 9px;
+  padding: 0.45rem 0.55rem;
+  color: #baf8e8;
+  background: rgba(107, 231, 198, 0.08);
+  font-size: 0.75rem;
+}
+
+.updateButton:hover {
+  border-color: #6be7c6;
+  background: rgba(107, 231, 198, 0.16);
 }
 
 @media (max-width: 760px) {

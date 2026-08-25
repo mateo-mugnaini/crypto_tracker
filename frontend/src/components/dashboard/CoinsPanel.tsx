@@ -1,29 +1,41 @@
 import { useEffect, useState } from "react";
 
 import { ApiError, api } from "../../api/client";
-import type { Coin } from "../../api/types";
 import { useFavorites } from "../../features/favorites/FavoritesContext";
+import { useMarket } from "../../features/market/MarketContext";
 import styles from "./CoinsPanel.module.css";
 
 export default function CoinsPanel() {
-  const [coins, setCoins] = useState<Coin[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { coins, error, loadCoins, refresh, status } = useMarket();
   const { isFavorite, toggleFavorite, updatingCoinIds } = useFavorites();
+  const [priceUpdatingCoinId, setPriceUpdatingCoinId] = useState<string | null>(null);
+  const [priceError, setPriceError] = useState<string | null>(null);
+  const [updatedCoinName, setUpdatedCoinName] = useState<string | null>(null);
+  const isLoading = status === "idle" || status === "loading";
 
   useEffect(() => {
-    api
-      .getCoins()
-      .then((response) => setCoins(response.data))
-      .catch((caughtError) => {
-        setError(
-          caughtError instanceof ApiError
-            ? caughtError.message
-            : "No se pudieron cargar las monedas.",
-        );
-      })
-      .finally(() => setIsLoading(false));
-  }, []);
+    void loadCoins();
+  }, [loadCoins]);
+
+  async function handlePriceUpdate(coinId: string, coinName: string) {
+    setPriceUpdatingCoinId(coinId);
+    setPriceError(null);
+    setUpdatedCoinName(null);
+
+    try {
+      await api.updateCurrentPrice(coinId);
+      setUpdatedCoinName(coinName);
+      await refresh();
+    } catch (caughtError) {
+      setPriceError(
+        caughtError instanceof ApiError
+          ? caughtError.message
+          : "No se pudo actualizar el precio.",
+      );
+    } finally {
+      setPriceUpdatingCoinId(null);
+    }
+  }
 
   return (
     <section className={styles.panel}>
@@ -36,7 +48,20 @@ export default function CoinsPanel() {
       </div>
 
       {isLoading && <p className={styles.muted}>Cargando monedas…</p>}
-      {error && <p className={styles.errorMessage}>{error}</p>}
+      {error && (
+        <div className={styles.errorState}>
+          <p className={styles.errorMessage}>{error}</p>
+          <button onClick={() => void loadCoins(true)} type="button">
+            Reintentar
+          </button>
+        </div>
+      )}
+      {priceError && <p className={styles.errorMessage}>{priceError}</p>}
+      {updatedCoinName && (
+        <p className={styles.successMessage}>
+          Precio de {updatedCoinName} actualizado y paneles refrescados.
+        </p>
+      )}
       {!isLoading && !error && coins.length === 0 && (
         <p className={styles.muted}>Todavia no hay monedas sincronizadas.</p>
       )}
@@ -69,6 +94,14 @@ export default function CoinsPanel() {
                 type="button"
               >
                 {favorite ? "★" : "☆"}
+              </button>
+              <button
+                className={styles.updateButton}
+                disabled={priceUpdatingCoinId === coin.id}
+                onClick={() => void handlePriceUpdate(coin.id, coin.name)}
+                type="button"
+              >
+                {priceUpdatingCoinId === coin.id ? "…" : "Precio"}
               </button>
             </article>
           );

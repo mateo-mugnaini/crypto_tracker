@@ -50,5 +50,5 @@ Resultado: TypeScript y Vite compilan correctamente.
 
 ## Próximo módulo
 
-- Estados avanzados de carga y refresco.
-- Optimización de consultas y cache del dashboard.
+- Integración del endpoint manual de actualización de precios.
+- Confirmación visual de registros nuevos.

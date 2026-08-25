@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import styles from "./App.module.css";
 import { FavoritesProvider } from "./features/favorites/FavoritesContext";
+import { MarketProvider } from "./features/market/MarketContext";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
@@ -39,7 +40,9 @@ export default function App() {
   return (
     <AuthProvider>
       <FavoritesProvider>
-        <AppContent />
+        <MarketProvider>
+          <AppContent />
+        </MarketProvider>
       </FavoritesProvider>
     </AuthProvider>
   );
