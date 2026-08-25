@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import Body, Depends, FastAPI, Path, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.dependencies import (
@@ -12,13 +13,15 @@ from app.api.dependencies import (
     get_price_history_query_params,
     get_user_controller,
     get_current_user,
+    get_login_rate_limit,
 )
 from app.container import Container
+from app.config.settings import settings
 from app.controllers.coin_controller import CoinController
 from app.controllers.favorite_controller import FavoriteController
 from app.controllers.price_history_controller import PriceHistoryController
 from app.controllers.user_controller import UserController
-from app.exceptions.api_exception import CoinGeckoException
+from app.exceptions.api_exception import CoinGeckoException, RateLimitExceededException
 from app.exceptions.domain_exception import (
     CoinNotFoundException,
     EmailAlreadyExistsException,
@@ -55,11 +58,25 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_allowed_origins,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
+)
 
-def _error_response(status_code: int, code: str, message: str) -> JSONResponse:
+
+def _error_response(
+    status_code: int,
+    code: str,
+    message: str,
+    headers: dict[str, str] | None = None,
+) -> JSONResponse:
     return JSONResponse(
         status_code=status_code,
         content={"detail": {"code": code, "message": message}},
+        headers=headers,
     )
 
 
@@ -118,6 +135,16 @@ async def coingecko_exception_handler(_, exc):
         status.HTTP_502_BAD_GATEWAY,
         "coingecko_unavailable",
         str(exc),
+    )
+
+
+@app.exception_handler(RateLimitExceededException)
+async def rate_limit_exception_handler(_, exc):
+    return _error_response(
+        status.HTTP_429_TOO_MANY_REQUESTS,
+        "rate_limit_exceeded",
+        str(exc),
+        headers={"Retry-After": str(exc.retry_after)},
     )
 
 
@@ -275,6 +302,7 @@ def register_user(
 def login_user(
     request: UserLoginRequest,
     controller: UserController = Depends(get_user_controller),
+    _: None = Depends(get_login_rate_limit),
 ):
     return {"access_token": controller.login(request.email, request.password), "token_type": "bearer"}
 

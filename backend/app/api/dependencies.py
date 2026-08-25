@@ -11,6 +11,9 @@ from app.controllers.coin_controller import CoinController
 from app.controllers.favorite_controller import FavoriteController
 from app.controllers.price_history_controller import PriceHistoryController
 from app.controllers.user_controller import UserController
+from app.api.rate_limiter import InMemoryRateLimiter
+from app.config.settings import settings
+from app.exceptions.api_exception import RateLimitExceededException
 from app.schemas.price_history import (
     PriceHistoryAggregationQueryParams,
     PriceHistoryDateRangeQueryParams,
@@ -19,6 +22,10 @@ from app.schemas.price_history import (
 
 
 bearer_scheme = HTTPBearer(auto_error=False)
+login_rate_limiter = InMemoryRateLimiter(
+    max_requests=settings.rate_limit_login_max_requests,
+    window_seconds=settings.rate_limit_login_window_seconds,
+)
 
 
 def get_container(request: Request) -> Container:
@@ -48,6 +55,15 @@ def get_user_controller(
     container: Container = Depends(get_container),
 ) -> UserController:
     return container.user_controller
+
+
+def get_login_rate_limit(request: Request) -> None:
+    """Protege el endpoint de login contra intentos repetidos por IP."""
+    client_ip = request.client.host if request.client else "unknown"
+    allowed, retry_after, _ = login_rate_limiter.allow(client_ip)
+
+    if not allowed:
+        raise RateLimitExceededException(retry_after=retry_after)
 
 
 def get_current_user(
