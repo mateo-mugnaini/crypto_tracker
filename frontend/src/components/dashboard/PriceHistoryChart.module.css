@@ -1,10 +1,10 @@
 .chartWrapper {
   display: grid;
   gap: 0.8rem;
-  border: 1px solid rgba(145, 169, 202, 0.14);
-  border-radius: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   padding: 1rem;
-  background: rgba(21, 37, 60, 0.42);
+  background: var(--surface-2);
 }
 
 .chartHeader {
@@ -16,21 +16,23 @@
 
 .eyebrow {
   display: inline-block;
-  margin-bottom: 0.45rem;
-  color: #6be7c6;
-  font-size: 0.7rem;
-  font-weight: 900;
-  letter-spacing: 0.16em;
+  margin-bottom: 0.4rem;
+  color: var(--primary);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
 }
 
 .chartHeader h3 {
-  font-size: 1rem;
+  margin-bottom: 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
 }
 
 .rangeLabel {
-  color: #8da0bb;
-  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
 }
 
 .chart {
@@ -41,19 +43,19 @@
 }
 
 .axis {
-  stroke: rgba(145, 169, 202, 0.35);
+  stroke: rgba(148, 163, 184, 0.35);
   stroke-width: 1;
 }
 
 .gridLine {
-  stroke: rgba(145, 169, 202, 0.12);
+  stroke: rgba(148, 163, 184, 0.12);
   stroke-dasharray: 4 6;
   stroke-width: 1;
 }
 
 .axisLabel,
 .middleLabel {
-  fill: #8da0bb;
+  fill: var(--text-muted);
   font-size: 11px;
 }
 
@@ -62,25 +64,26 @@
 }
 
 .line {
-  stroke: #6be7c6;
+  stroke: var(--primary);
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 3;
 }
 
 .point {
-  fill: #0e1c30;
-  stroke: #6be7c6;
+  fill: var(--surface-2);
+  stroke: var(--primary);
   stroke-width: 2;
 }
 
 .point:hover {
-  fill: #6be7c6;
+  fill: var(--primary);
 }
 
 .empty {
   margin: 0;
-  color: #8da0bb;
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }
 
 @media (max-width: 650px) {

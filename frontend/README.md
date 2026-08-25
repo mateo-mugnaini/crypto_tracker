@@ -1,10 +1,11 @@
 # Crypto Tracker — Frontend
 
-Frontend inicial de Crypto Tracker con React, TypeScript y Vite.
+Frontend de Crypto Tracker con React, TypeScript, Vite y CSS Modules.
 
 ## Estado
 
-Este primer módulo incluye:
+La aplicación cuenta con autenticación, dashboard de mercado, favoritos,
+historial, comparación de monedas y un sistema visual fintech responsive.
 
 - scaffolding Vite + React + TypeScript;
 - cliente HTTP centralizado;
@@ -25,7 +26,11 @@ Este primer módulo incluye:
 - polling opcional del mercado configurable por entorno;
 - polling consciente de visibilidad y con backoff ante errores;
 - precio actual de cada moneda obtenido desde el último registro de historial;
+- cartera personal no custodial con posiciones y rendimiento;
 - manejo de errores de red y del contrato del backend.
+
+El rediseño visual integral está documentado en
+[`docs/13-redisenio-ui-ux.md`](docs/13-redisenio-ui-ux.md).
 
 ## Requisitos
 
@@ -130,3 +135,5 @@ La documentación está en [`docs/01-scaffold-y-api.md`](docs/01-scaffold-y-api.
 [`docs/11-polling-resiliente.md`](docs/11-polling-resiliente.md).
 La etapa de precio actual está documentada en
 [`docs/12-precio-actual.md`](docs/12-precio-actual.md).
+La cartera está documentada en
+[`docs/14-cartera-personal.md`](docs/14-cartera-personal.md).

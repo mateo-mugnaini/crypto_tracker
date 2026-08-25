@@ -16,6 +16,7 @@ from app.api.dependencies import (
     get_price_history_date_range_query_params,
     get_price_history_query_params,
     get_user_controller,
+    get_portfolio_controller,
     get_current_user,
     get_login_rate_limit,
 )
@@ -37,6 +38,7 @@ from app.exceptions.domain_exception import (
     ForbiddenOperationException,
     FavoriteAlreadyExistsException,
     FavoriteNotFoundException,
+    PortfolioHoldingNotFoundException,
     UserNotFoundException,
 )
 from app.api.health import check_database
@@ -66,12 +68,21 @@ from app.schemas.price_history import (
     PriceHistoryVariationResponse,
 )
 from app.schemas.user import TokenResponse, UserLoginRequest, UserRegisterRequest, UserResponse
+from app.schemas.portfolio import (
+    PortfolioActionResponse,
+    PortfolioHoldingRequest,
+    PortfolioResponse,
+)
 from app.schedulers.price_update_scheduler import PriceUpdateScheduler
 
 
 logger = logging.getLogger("crypto_tracker.api")
 
 OPENAPI_TAGS = [
+    {
+        "name": "portfolio",
+        "description": "Cartera personal no custodial y rendimiento de posiciones.",
+    },
     {
         "name": "system",
         "description": "Disponibilidad y metadatos operativos de la API.",
@@ -209,11 +220,13 @@ def _error_response(
 @app.exception_handler(UserNotFoundException)
 @app.exception_handler(CoinNotFoundException)
 @app.exception_handler(FavoriteNotFoundException)
+@app.exception_handler(PortfolioHoldingNotFoundException)
 async def not_found_exception_handler(_, exc):
     codes = {
         UserNotFoundException: "user_not_found",
         CoinNotFoundException: "coin_not_found",
         FavoriteNotFoundException: "favorite_not_found",
+        PortfolioHoldingNotFoundException: "portfolio_holding_not_found",
     }
     return _error_response(status.HTTP_404_NOT_FOUND, codes[type(exc)], str(exc))
 
@@ -499,6 +512,65 @@ def get_favorites_with_coin_data(
     _ensure_user_ownership(user_id, current_user)
 
     return controller.get_favorites_with_coin_data(user_id)
+
+
+# ============================================================
+# PORTFOLIO
+# ============================================================
+
+
+@app.get(
+    "/portfolio",
+    response_model=PortfolioResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["portfolio"],
+    summary="Consultar cartera personal",
+    responses={status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse}},
+)
+def get_portfolio(
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_portfolio_controller),
+):
+    return controller.get_portfolio(current_user["id"])
+
+
+@app.post(
+    "/portfolio/holdings",
+    response_model=PortfolioResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["portfolio"],
+    summary="Crear o actualizar una posición",
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse},
+        status.HTTP_404_NOT_FOUND: {"model": ErrorResponse},
+        status.HTTP_422_UNPROCESSABLE_ENTITY: {"model": ErrorResponse},
+    },
+)
+def save_portfolio_holding(
+    request: PortfolioHoldingRequest,
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_portfolio_controller),
+):
+    return controller.save_or_update_holding(current_user["id"], request)
+
+
+@app.delete(
+    "/portfolio/holdings/{coin_id}",
+    response_model=PortfolioActionResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["portfolio"],
+    summary="Eliminar una posición",
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse},
+        status.HTTP_404_NOT_FOUND: {"model": ErrorResponse},
+    },
+)
+def remove_portfolio_holding(
+    coin_id: str = Path(..., min_length=1, max_length=64),
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_portfolio_controller),
+):
+    return controller.remove_holding(current_user["id"], coin_id.strip().lower())
 
 
 # ============================================================

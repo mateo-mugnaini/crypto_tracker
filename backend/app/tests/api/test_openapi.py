@@ -11,6 +11,7 @@ def test_openapi_declares_documented_tag_groups(api_client):
         "favorites",
         "users",
         "price-history",
+        "portfolio",
     }
 
 

@@ -7,6 +7,9 @@ import type {
   PriceHistoryRecord,
   PriceHistoryStatistics,
   PriceHistoryVariation,
+  PortfolioActionResponse,
+  PortfolioHoldingInput,
+  PortfolioResponse,
   TokenResponse,
   User,
 } from "./types";
@@ -189,6 +192,29 @@ export const api = {
     const query = new URLSearchParams({ user_id: String(userId) });
     return request<null>(
       `/favorites/${encodeURIComponent(coinId)}?${query.toString()}`,
+      { method: "DELETE" },
+      token,
+    );
+  },
+
+  getPortfolio(token: string) {
+    return request<PortfolioResponse>("/portfolio", {}, token);
+  },
+
+  savePortfolioHolding(input: PortfolioHoldingInput, token: string) {
+    return request<PortfolioResponse>(
+      "/portfolio/holdings",
+      {
+        method: "POST",
+        body: JSON.stringify(input),
+      },
+      token,
+    );
+  },
+
+  removePortfolioHolding(coinId: string, token: string) {
+    return request<PortfolioActionResponse>(
+      `/portfolio/holdings/${encodeURIComponent(coinId)}`,
       { method: "DELETE" },
       token,
     );

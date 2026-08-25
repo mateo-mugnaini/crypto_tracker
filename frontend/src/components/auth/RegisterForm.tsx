@@ -8,10 +8,7 @@ interface RegisterFormProps {
   onRegistered(): void;
 }
 
-export default function RegisterForm({
-  onLogin,
-  onRegistered,
-}: RegisterFormProps) {
+export default function RegisterForm({ onLogin, onRegistered }: RegisterFormProps) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,11 +44,9 @@ export default function RegisterForm({
   return (
     <form className={styles.card} onSubmit={handleSubmit}>
       <div>
-        <span className={styles.eyebrow}>Registro</span>
-        <h2>Crear cuenta</h2>
-        <p className={styles.muted}>
-          Registrate para guardar tus monedas y consultar tu mercado.
-        </p>
+        <span className={styles.eyebrow}>Nuevo workspace</span>
+        <h2>Crear tu cuenta</h2>
+        <p className={styles.muted}>Guarda tus favoritos y consulta tu mercado desde un solo lugar.</p>
       </div>
 
       <label>
@@ -82,7 +77,7 @@ export default function RegisterForm({
       </label>
 
       <label>
-        Password
+        Contraseña
         <input
           type="password"
           value={password}
@@ -96,12 +91,12 @@ export default function RegisterForm({
       </label>
 
       <label>
-        Repetir password
+        Repetir contraseña
         <input
           type="password"
           value={passwordConfirmation}
           onChange={(event) => setPasswordConfirmation(event.target.value)}
-          placeholder="Repetí tu password"
+          placeholder="Repite tu contraseña"
           autoComplete="new-password"
           minLength={8}
           maxLength={128}

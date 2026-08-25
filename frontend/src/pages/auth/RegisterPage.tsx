@@ -9,16 +9,16 @@ export default function RegisterPage() {
   return (
     <main className={styles.layout}>
       <section className={styles.introPanel}>
-        <span className={styles.eyebrow}>Crypto Tracker / Registro</span>
-        <h1>Empezá a seguir tu mercado.</h1>
+        <span className={styles.eyebrow}>Crypto Tracker / Create account</span>
+        <h1>Tu mercado empieza aquí.</h1>
         <p>
-          Creá tu cuenta y prepará tu espacio para favoritos, historial y
-          análisis de precios.
+          Crea tu espacio personal para seguir favoritos, revisar precios y
+          analizar la evolución de tus monedas.
         </p>
         <div className={styles.featureList}>
-          <span>● Cuenta propia</span>
-          <span>● Datos del backend real</span>
-          <span>● Sesión segura</span>
+          <span>Cuenta propia</span>
+          <span>Datos persistentes</span>
+          <span>Acceso seguro</span>
         </div>
       </section>
       <RegisterForm
@@ -26,7 +26,7 @@ export default function RegisterPage() {
         onRegistered={() =>
           navigate("/login", {
             replace: true,
-            state: { notice: "Cuenta creada. Ya podés iniciar sesión." },
+            state: { notice: "Cuenta creada. Ya puedes iniciar sesión." },
           })
         }
       />

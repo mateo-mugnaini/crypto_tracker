@@ -161,7 +161,7 @@ export default function PriceHistoryPanel() {
           : "—";
 
   return (
-    <section className={styles.panel}>
+    <section className={styles.panel} id="history">
       <div className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>Análisis</span>

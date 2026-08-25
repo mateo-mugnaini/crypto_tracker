@@ -8,7 +8,7 @@ import ComparisonChart, {
 } from "./ComparisonChart";
 import styles from "./PriceComparisonPanel.module.css";
 
-const SERIES_COLORS = ["#6be7c6", "#9da8ff"];
+const SERIES_COLORS = ["#19C6D3", "#7CE38B"];
 const HISTORY_LIMIT = 60;
 
 function getErrorMessage(caughtError: unknown) {
@@ -124,7 +124,7 @@ export default function PriceComparisonPanel() {
   const secondChange = getPercentageChange(series[1]?.records || []);
 
   return (
-    <section className={styles.panel}>
+    <section className={styles.panel} id="compare">
       <div className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>Comparativa</span>

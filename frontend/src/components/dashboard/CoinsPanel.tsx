@@ -48,7 +48,7 @@ export default function CoinsPanel() {
   }
 
   return (
-    <section className={styles.panel}>
+    <section className={styles.panel} id="market">
       <div className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>Mercado local</span>

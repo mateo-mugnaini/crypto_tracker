@@ -115,6 +115,18 @@ CREATE TABLE favorites (
     CONSTRAINT fk_favorites_coin FOREIGN KEY (coin_id) REFERENCES coins(id)
 );
 
+CREATE TABLE portfolio_holdings (
+    user_id INT NOT NULL,
+    coin_id VARCHAR(64) NOT NULL,
+    quantity DECIMAL(24, 8) NOT NULL,
+    average_buy_price DECIMAL(24, 8) NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
+    PRIMARY KEY (user_id, coin_id),
+    CONSTRAINT fk_portfolio_user FOREIGN KEY (user_id) REFERENCES users(id),
+    CONSTRAINT fk_portfolio_coin FOREIGN KEY (coin_id) REFERENCES coins(id)
+);
+
 CREATE TABLE price_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
     coin_id VARCHAR(64) NOT NULL,
@@ -201,6 +213,17 @@ el valor es `null`.
 | `DELETE` | `/favorites/{coin_id}?user_id={user_id}` | Elimina un favorito propio. | Bearer |
 | `GET` | `/favorites?user_id={user_id}` | Lista los IDs de monedas favoritas propias. | Bearer |
 | `GET` | `/favorites/details?user_id={user_id}` | Lista favoritos incluyendo datos de la moneda. | Bearer |
+
+### Cartera personal
+
+| Método | Ruta | Descripción | Auth |
+| --- | --- | --- | --- |
+| `GET` | `/portfolio` | Consulta posiciones, valor actual y rendimiento del usuario autenticado. | Bearer |
+| `POST` | `/portfolio/holdings` | Crea o actualiza una posición manual con cantidad y precio medio de compra. | Bearer |
+| `DELETE` | `/portfolio/holdings/{coin_id}` | Elimina una posición propia. | Bearer |
+
+La cartera es no custodial: solo registra cantidades y precios de referencia. No
+almacena fondos, claves privadas ni semillas.
 
 ### Historial de precios
 
@@ -339,6 +362,7 @@ Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con
 - [`docs/91-charts.md`](docs/91-charts.md): contrato de estadísticas, variaciones y agregaciones para gráficos.
 - [`docs/92-integracion-final.md`](docs/92-integracion-final.md): auditoría y cierre del backend, incluyendo la ruta de actualización de precio.
 - [`docs/93-scheduler-precios.md`](docs/93-scheduler-precios.md): actualización automática configurable de precios.
+- [`docs/95-cartera-personal.md`](docs/95-cartera-personal.md): cartera no custodial, posiciones y rendimiento.
 - [`docs/94-precio-actual.md`](docs/94-precio-actual.md): exposición del último precio persistido en el mercado.
 - [`CHANGELOG.md`](CHANGELOG.md): historial de cambios.
 - [`relevamiento.md`](relevamiento.md): análisis técnico histórico; puede contener observaciones de etapas anteriores y no sustituye la documentación de las rutas actuales.

@@ -11,7 +11,7 @@ export default function FavoritesPanel() {
   } = useFavorites();
 
   return (
-    <section className={styles.panel}>
+    <section className={styles.panel} id="favorites">
       <div className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>Tu selección</span>

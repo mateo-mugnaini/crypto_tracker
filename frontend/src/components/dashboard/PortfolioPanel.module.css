@@ -1,0 +1,50 @@
+.panel {
+  display: grid;
+  gap: 1.15rem;
+  scroll-margin-top: 1.5rem;
+  border: 1px solid rgba(124, 227, 139, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 1.35rem;
+  background: linear-gradient(135deg, rgba(124, 227, 139, 0.07), var(--surface-1) 38%);
+  box-shadow: var(--shadow-sm);
+}
+
+.sectionHeading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.eyebrow { display: inline-block; margin-bottom: 0.45rem; color: var(--accent); font-size: 0.65rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
+.sectionHeading h2 { margin-bottom: 0; color: var(--text-primary); font-size: 1.18rem; letter-spacing: -0.03em; }
+.description, .muted { margin-bottom: 0; color: var(--text-secondary); font-size: 0.82rem; line-height: 1.55; }
+.refreshButton, .holdingForm > button { border: 1px solid rgba(124, 227, 139, 0.28); border-radius: var(--radius-sm); padding: 0.55rem 0.7rem; color: var(--accent); background: var(--accent-muted); font-size: 0.72rem; }
+.errorMessage { margin-bottom: 0; border-radius: var(--radius-sm); padding: 0.7rem 0.8rem; color: #fecdd3; background: rgba(251, 113, 133, 0.1); font-size: 0.8rem; }
+.summaryGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.65rem; }
+.summaryGrid > div { display: grid; gap: 0.35rem; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem; background: rgba(16, 32, 51, 0.78); }
+.summaryGrid span, .summaryGrid small { color: var(--text-muted); font-size: 0.7rem; }
+.summaryGrid strong { color: var(--text-primary); font-size: 1.05rem; }
+.positive { color: var(--positive) !important; }
+.negative { color: var(--negative) !important; }
+.holdingForm { display: grid; grid-template-columns: minmax(180px, 1.5fr) minmax(120px, 1fr) minmax(150px, 1fr) auto; align-items: end; gap: 0.65rem; }
+.holdingForm label { display: grid; gap: 0.4rem; color: var(--text-secondary); font-size: 0.72rem; font-weight: 700; }
+.holdingForm input, .holdingForm select { min-height: 2.45rem; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.58rem 0.7rem; outline: none; color: var(--text-primary); background: var(--surface-2); font-size: 0.78rem; }
+.holdingForm input:focus, .holdingForm select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-muted); }
+.holdingForm > button { min-height: 2.45rem; color: #07111f; background: var(--accent); font-weight: 800; }
+.emptyState { display: grid; gap: 0.3rem; border: 1px dashed var(--border-hover); border-radius: var(--radius-md); padding: 1rem; color: var(--text-secondary); background: rgba(16, 32, 51, 0.5); }
+.emptyState strong { color: var(--text-primary); font-size: 0.82rem; }
+.emptyState span { font-size: 0.76rem; }
+.tableWrapper { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-md); }
+.tableWrapper table { width: 100%; min-width: 720px; border-collapse: collapse; }
+.tableWrapper th, .tableWrapper td { padding: 0.78rem 0.85rem; text-align: left; white-space: nowrap; }
+.tableWrapper th { color: var(--text-muted); background: var(--surface-2); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.tableWrapper td { border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.77rem; }
+.tableWrapper td:first-child strong, .tableWrapper td:first-child small, .tableWrapper td:nth-child(4) small { display: block; }
+.tableWrapper td:first-child strong { color: var(--text-primary); font-size: 0.78rem; }
+.tableWrapper td small { margin-top: 0.2rem; color: var(--text-muted); font-size: 0.66rem; }
+.removeButton { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.45rem 0.55rem; color: var(--text-secondary); background: transparent; font-size: 0.68rem; }
+.removeButton:hover { border-color: rgba(251, 113, 133, 0.35); color: var(--negative); background: rgba(251, 113, 133, 0.08); }
+
+@media (max-width: 900px) {
+  .holdingForm { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 620px) {
+  .sectionHeading { display: grid; }
+  .summaryGrid, .holdingForm { grid-template-columns: 1fr; }
+}

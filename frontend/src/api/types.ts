@@ -51,6 +51,39 @@ export interface FavoriteActionResponse {
   message: string;
 }
 
+export interface PortfolioHoldingInput {
+  coin_id: string;
+  quantity: number;
+  average_buy_price: number;
+}
+
+export interface PortfolioHolding {
+  coin_id: string;
+  symbol: string;
+  name: string;
+  quantity: number;
+  average_buy_price: number;
+  invested_value: number;
+  current_price: number | null;
+  current_value: number | null;
+  profit_loss: number | null;
+  profit_loss_percentage: number | null;
+  allocation_percentage: number | null;
+}
+
+export interface PortfolioResponse {
+  total_invested: number;
+  total_current_value: number | null;
+  total_profit_loss: number | null;
+  total_profit_loss_percentage: number | null;
+  holdings: PortfolioHolding[];
+}
+
+export interface PortfolioActionResponse {
+  success: boolean;
+  message: string;
+}
+
 export interface PriceHistoryRecord {
   id: number | null;
   coin_id: string;

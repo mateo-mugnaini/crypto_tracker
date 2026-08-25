@@ -37,9 +37,9 @@ export default function LoginForm({ notice, onRegister }: LoginFormProps) {
   return (
     <form className={styles.card} onSubmit={handleSubmit}>
       <div>
-        <span className={styles.eyebrow}>Acceso</span>
-        <h2>Iniciar sesión</h2>
-        <p className={styles.muted}>Usá las credenciales de un usuario del backend.</p>
+        <span className={styles.eyebrow}>Workspace</span>
+        <h2>Volver al mercado</h2>
+        <p className={styles.muted}>Ingresa para continuar con tu seguimiento.</p>
       </div>
 
       {notice && <p className={styles.successMessage}>{notice}</p>}
@@ -57,7 +57,7 @@ export default function LoginForm({ notice, onRegister }: LoginFormProps) {
       </label>
 
       <label>
-        Password
+        Contraseña
         <input
           type="password"
           value={password}

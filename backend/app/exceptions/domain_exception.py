@@ -31,3 +31,7 @@ class FavoriteAlreadyExistsException(DomainException):
 
 class FavoriteNotFoundException(DomainException):
     """El favorito no existe."""
+
+
+class PortfolioHoldingNotFoundException(DomainException):
+    """La posición de cartera no existe."""

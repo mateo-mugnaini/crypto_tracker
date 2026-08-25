@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from "./auth/AuthContext";
 import styles from "./App.module.css";
 import { FavoritesProvider } from "./features/favorites/FavoritesContext";
 import { MarketProvider } from "./features/market/MarketContext";
+import { PortfolioProvider } from "./features/portfolio/PortfolioContext";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
@@ -41,7 +42,9 @@ export default function App() {
     <AuthProvider>
       <FavoritesProvider>
         <MarketProvider>
-          <AppContent />
+          <PortfolioProvider>
+            <AppContent />
+          </PortfolioProvider>
         </MarketProvider>
       </FavoritesProvider>
     </AuthProvider>

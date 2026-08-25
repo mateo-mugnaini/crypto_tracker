@@ -11,16 +11,16 @@ export default function LoginPage() {
   return (
     <main className={styles.layout}>
       <section className={styles.introPanel}>
-        <span className={styles.eyebrow}>Crypto Tracker / Frontend 01</span>
-        <h1>Seguimiento cripto con datos propios.</h1>
+        <span className={styles.eyebrow}>Crypto Tracker / Secure access</span>
+        <h1>Seguimiento cripto, sin ruido.</h1>
         <p>
-          Una interfaz liviana sobre la API FastAPI que construimos. Primero
-          autenticación; después, favoritos, historial y análisis.
+          Lee el mercado con claridad, guarda tus activos relevantes y encuentra
+          contexto en cada movimiento.
         </p>
         <div className={styles.featureList}>
-          <span>● API FastAPI conectada</span>
-          <span>● JWT Bearer</span>
-          <span>● Historial preparado</span>
+          <span>Datos del mercado</span>
+          <span>Historial y tendencias</span>
+          <span>Workspace personal</span>
         </div>
       </section>
       <LoginForm notice={notice} onRegister={() => navigate("/register")} />
