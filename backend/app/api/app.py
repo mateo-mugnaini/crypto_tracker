@@ -61,6 +61,29 @@ from app.schemas.user import TokenResponse, UserLoginRequest, UserRegisterReques
 
 logger = logging.getLogger("crypto_tracker.api")
 
+OPENAPI_TAGS = [
+    {
+        "name": "system",
+        "description": "Disponibilidad y metadatos operativos de la API.",
+    },
+    {
+        "name": "coins",
+        "description": "Consulta y sincronización de monedas.",
+    },
+    {
+        "name": "favorites",
+        "description": "Gestión de favoritos propios del usuario autenticado.",
+    },
+    {
+        "name": "users",
+        "description": "Registro, autenticación y perfil de usuarios.",
+    },
+    {
+        "name": "price-history",
+        "description": "Historial, estadísticas, variaciones y agregaciones de precios.",
+    },
+]
+
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     configure_logging()
@@ -74,6 +97,7 @@ app = FastAPI(
     description="API para gestionar criptomonedas, favoritos y ver el historial de precios",
     version="1.0.0",
     lifespan=lifespan,
+    openapi_tags=OPENAPI_TAGS,
 )
 app.state.request_metrics = RequestMetrics()
 
@@ -228,7 +252,12 @@ async def rate_limit_exception_handler(_, exc):
 # ============================================================
 
 
-@app.get("/")
+@app.get(
+    "/",
+    tags=["system"],
+    summary="Comprobar disponibilidad",
+    description="Devuelve una respuesta simple para verificar que la API responde.",
+)
 def root():
 
     # return {"success": True, "message": "Crypto Tracker API funcionando."}
@@ -240,7 +269,13 @@ def root():
 # ============================================================
 
 
-@app.get("/coins", status_code=status.HTTP_200_OK)
+@app.get(
+    "/coins",
+    status_code=status.HTTP_200_OK,
+    tags=["coins"],
+    summary="Listar monedas locales",
+    response_description="Monedas persistidas en la base local.",
+)
 def get_all_coins(
     controller: CoinController = Depends(get_coin_controller),
 ):
@@ -248,7 +283,13 @@ def get_all_coins(
     return controller.get_all_coins()
 
 
-@app.post("/coins/sync")
+@app.post(
+    "/coins/sync",
+    tags=["coins"],
+    summary="Sincronizar monedas",
+    description="Obtiene las monedas principales desde CoinGecko y las persiste localmente.",
+    responses={status.HTTP_502_BAD_GATEWAY: {"model": ErrorResponse}},
+)
 def sync_coins(
     controller: CoinController = Depends(get_coin_controller),
 ):
@@ -256,7 +297,13 @@ def sync_coins(
     return controller.sync_coins()
 
 
-@app.get("/coins/{coin_id}", status_code=status.HTTP_200_OK)
+@app.get(
+    "/coins/{coin_id}",
+    status_code=status.HTTP_200_OK,
+    tags=["coins"],
+    summary="Obtener una moneda local",
+    responses={status.HTTP_404_NOT_FOUND: {"model": ErrorResponse}},
+)
 def get_coin(
     coin_id: str = Path(..., min_length=1, description="ID de la criptomoneda"),
     controller: CoinController = Depends(get_coin_controller),
@@ -265,7 +312,13 @@ def get_coin(
     return controller.get_coin(coin_id)
 
 
-@app.post("/coins/{coin_id}")
+@app.post(
+    "/coins/{coin_id}",
+    tags=["coins"],
+    summary="Sincronizar una moneda",
+    description="Obtiene una moneda concreta desde CoinGecko y actualiza su registro local.",
+    responses={status.HTTP_502_BAD_GATEWAY: {"model": ErrorResponse}},
+)
 def update_coin(
     coin_id: str = Path(
         ..., min_length=1, description="ID de la criptomoneda en CoinGecko"
@@ -285,6 +338,8 @@ def update_coin(
     "/favorites",
     response_model=FavoriteActionResponse,
     status_code=status.HTTP_201_CREATED,
+    tags=["favorites"],
+    summary="Agregar un favorito",
     responses={
         status.HTTP_404_NOT_FOUND: {
             "description": "El usuario o la moneda no existe.",
@@ -311,6 +366,8 @@ def add_favorite(
 @app.delete(
     "/favorites/{coin_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    tags=["favorites"],
+    summary="Eliminar un favorito",
     responses={
         status.HTTP_404_NOT_FOUND: {
             "description": "El favorito no existe.",
@@ -329,7 +386,12 @@ def remove_favorite(
     return None
 
 
-@app.get("/favorites", status_code=status.HTTP_200_OK)
+@app.get(
+    "/favorites",
+    status_code=status.HTTP_200_OK,
+    tags=["favorites"],
+    summary="Listar favoritos propios",
+)
 def get_favorites(
     user_id: int,
     controller: FavoriteController = Depends(get_favorite_controller),
@@ -340,7 +402,12 @@ def get_favorites(
     return controller.get_favorites(user_id)
 
 
-@app.get("/favorites/details", status_code=status.HTTP_200_OK)
+@app.get(
+    "/favorites/details",
+    status_code=status.HTTP_200_OK,
+    tags=["favorites"],
+    summary="Listar favoritos con datos de moneda",
+)
 def get_favorites_with_coin_data(
     user_id: int,
     controller: FavoriteController = Depends(get_favorite_controller),
@@ -360,6 +427,8 @@ def get_favorites_with_coin_data(
     "/users/register",
     status_code=status.HTTP_201_CREATED,
     response_model=UserResponse,
+    tags=["users"],
+    summary="Registrar usuario",
     responses={status.HTTP_409_CONFLICT: {"model": ErrorResponse}},
 )
 def register_user(
@@ -372,7 +441,13 @@ def register_user(
 @app.post(
     "/users/login",
     response_model=TokenResponse,
-    responses={status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse}},
+    tags=["users"],
+    summary="Iniciar sesión",
+    description="Valida las credenciales y devuelve un access token Bearer.",
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse},
+        status.HTTP_429_TOO_MANY_REQUESTS: {"model": ErrorResponse},
+    },
 )
 def login_user(
     request: UserLoginRequest,
@@ -382,7 +457,13 @@ def login_user(
     return {"access_token": controller.login(request.email, request.password), "token_type": "bearer"}
 
 
-@app.get("/users/me", response_model=UserResponse)
+@app.get(
+    "/users/me",
+    response_model=UserResponse,
+    tags=["users"],
+    summary="Obtener usuario actual",
+    responses={status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse}},
+)
 def get_current_user_profile(current_user: dict = Depends(get_current_user)):
     return current_user
 
@@ -392,7 +473,12 @@ def get_current_user_profile(current_user: dict = Depends(get_current_user)):
 # ============================================================
 
 
-@app.post("/coins/{coin_id}/price")
+@app.post(
+    "/coins/{coin_id}/price",
+    tags=["price-history"],
+    summary="Registrar precio actual",
+    description="Obtiene y registra el precio actual de una moneda.",
+)
 def update_coin_price(
     coin_id: str = Path(
         ...,
@@ -408,6 +494,9 @@ def update_coin_price(
     "/coins/{coin_id}/price-history",
     status_code=status.HTTP_200_OK,
     response_model=list[PriceHistoryResponse],
+    tags=["price-history"],
+    summary="Consultar historial de precios",
+    description="Filtra, ordena y pagina observaciones de precio de una moneda.",
 )
 def get_price_history(
     coin_id: str = Path(
@@ -435,6 +524,8 @@ def get_price_history(
     "/coins/{coin_id}/price-history/statistics",
     status_code=status.HTTP_200_OK,
     response_model=PriceHistoryStatisticsResponse,
+    tags=["price-history"],
+    summary="Obtener estadísticas de precios",
 )
 def get_price_statistics(
     coin_id: str = Path(
@@ -451,6 +542,8 @@ def get_price_statistics(
     "/coins/{coin_id}/price-history/variation",
     status_code=status.HTTP_200_OK,
     response_model=PriceHistoryVariationResponse,
+    tags=["price-history"],
+    summary="Obtener variación de precio",
 )
 def get_price_variation(
     coin_id: str = Path(
@@ -474,6 +567,9 @@ def get_price_variation(
     "/coins/{coin_id}/price-history/aggregations",
     status_code=status.HTTP_200_OK,
     response_model=list[PriceHistoryAggregationResponse],
+    tags=["price-history"],
+    summary="Obtener agregaciones de precios",
+    description="Agrupa observaciones por hora, día o semana.",
 )
 def get_price_aggregations(
     coin_id: str = Path(
