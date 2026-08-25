@@ -13,6 +13,19 @@ from app.services.price_history_service import PriceHistoryService
 
 TEST_COIN_ID = "integration-bitcoin"
 
+
+def _ensure_index(cursor, table_name: str, index_name: str, columns: str) -> None:
+    """Create a trusted test-schema index when it does not exist yet."""
+    cursor.execute(
+        f"SHOW INDEX FROM `{table_name}` WHERE Key_name = %s",
+        (index_name,),
+    )
+
+    if not cursor.fetchall():
+        cursor.execute(
+            f"ALTER TABLE `{table_name}` ADD INDEX `{index_name}` ({columns})"
+        )
+
 pytestmark = pytest.mark.integration
 
 
@@ -31,7 +44,8 @@ def integration_schema():
                 id VARCHAR(255) PRIMARY KEY,
                 symbol VARCHAR(50) NOT NULL,
                 name VARCHAR(255) NOT NULL,
-                market_cap_rank INT NULL
+                market_cap_rank INT NULL,
+                INDEX idx_coins_market_cap_rank (market_cap_rank, id)
             )
             """
         )
@@ -43,9 +57,32 @@ def integration_schema():
                 price DECIMAL(20, 8) NOT NULL,
                 recorded_at DATETIME NOT NULL,
                 CONSTRAINT fk_price_history_coin
-                    FOREIGN KEY (coin_id) REFERENCES coins(id)
+                    FOREIGN KEY (coin_id) REFERENCES coins(id),
+                INDEX idx_price_history_coin_recorded_at
+                    (coin_id, recorded_at, id),
+                INDEX idx_price_history_coin_price
+                    (coin_id, price, id)
             )
             """
+        )
+
+        _ensure_index(
+            cursor,
+            "coins",
+            "idx_coins_market_cap_rank",
+            "market_cap_rank, id",
+        )
+        _ensure_index(
+            cursor,
+            "price_history",
+            "idx_price_history_coin_recorded_at",
+            "coin_id, recorded_at, id",
+        )
+        _ensure_index(
+            cursor,
+            "price_history",
+            "idx_price_history_coin_price",
+            "coin_id, price, id",
         )
         connection.commit()
     finally:
@@ -115,3 +152,22 @@ def test_service_calculates_statistics_from_mysql_rows(repositories):
         "max_price": 150.0,
         "average_price": 125.0,
     }
+
+
+def test_integration_schema_has_indexes_for_current_queries():
+    connection = get_test_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("SHOW INDEX FROM coins")
+        coin_indexes = {row[2] for row in cursor.fetchall()}
+
+        cursor.execute("SHOW INDEX FROM price_history")
+        price_history_indexes = {row[2] for row in cursor.fetchall()}
+    finally:
+        cursor.close()
+        connection.close()
+
+    assert "idx_coins_market_cap_rank" in coin_indexes
+    assert "idx_price_history_coin_recorded_at" in price_history_indexes
+    assert "idx_price_history_coin_price" in price_history_indexes

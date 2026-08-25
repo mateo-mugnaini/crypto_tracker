@@ -282,7 +282,7 @@ pytest -m api
 pytest -m integration
 ```
 
-Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con el esquema compatible. La suite actual se ejecuta con 144 pruebas exitosas en el entorno del proyecto; puede aparecer una advertencia de compatibilidad entre Starlette y la versión instalada de `httpx`.
+Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con el esquema compatible. La suite actual se ejecuta con 145 pruebas exitosas en el entorno del proyecto; puede aparecer una advertencia de compatibilidad entre Starlette y la versión instalada de `httpx`.
 
 ## Documentación del proyecto
 
@@ -290,6 +290,7 @@ Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con
 - [`docs/`](docs/): recorrido didáctico por configuración, arquitectura, persistencia, seguridad, FastAPI y pruebas.
 - [`docs/72-cors-rate-limiting-y-abuso-api.md`](docs/72-cors-rate-limiting-y-abuso-api.md): CORS y rate limiting del login.
 - [`docs/73-auditoria-general-de-seguridad.md`](docs/73-auditoria-general-de-seguridad.md): auditoría de autenticación, autorización y exposición de seguridad.
+- [`docs/74-indices-y-claves.md`](docs/74-indices-y-claves.md): índices y claves para consultas frecuentes.
 - [`CHANGELOG.md`](CHANGELOG.md): historial de cambios.
 - [`relevamiento.md`](relevamiento.md): análisis técnico histórico; puede contener observaciones de etapas anteriores y no sustituye la documentación de las rutas actuales.
 
