@@ -131,12 +131,40 @@
 }
 
 @media (max-width: 650px) {
+  .panel {
+    border-radius: 18px;
+    padding: 1rem;
+  }
+
   .sectionHeading {
     display: grid;
+    gap: 0.65rem;
+  }
+
+  .sectionHeading h2 {
+    font-size: 1.05rem;
+  }
+
+  .pill {
+    justify-self: start;
+    white-space: normal;
   }
 
   .selectGrid,
   .changeGrid {
     grid-template-columns: 1fr;
+  }
+
+  .selectGrid select {
+    min-height: 2.8rem;
+  }
+
+  .errorState {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .errorState button {
+    min-height: 2.6rem;
   }
 }

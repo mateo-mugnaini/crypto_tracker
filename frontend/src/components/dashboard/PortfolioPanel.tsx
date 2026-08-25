@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 
 import { useMarket } from "../../features/market/MarketContext";
 import { usePortfolio } from "../../features/portfolio/PortfolioContext";
+import HelpTag from "./HelpTag";
 import styles from "./PortfolioPanel.module.css";
 
 const moneyFormatter = new Intl.NumberFormat("en-US", {
@@ -60,16 +61,24 @@ export default function PortfolioPanel() {
   }
 
   return (
-    <section className={styles.panel} id="portfolio">
-      <div className={styles.sectionHeading}>
+    <details className={styles.panel} data-dashboard-accordion="true" id="portfolio" open>
+      <summary className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>My portfolio</span>
           <h2>Tu cartera personal</h2>
         </div>
-        <button className={styles.refreshButton} disabled={isLoading} onClick={() => void refresh()} type="button">
-          {isLoading ? "Actualizando…" : "Actualizar"}
-        </button>
-      </div>
+        <div className={styles.headingActions}>
+          <HelpTag title="Cómo funciona la cartera">
+            <strong>¿Qué debes ingresar?</strong><br />
+            Selecciona una moneda, indica cuántas unidades tienes y escribe el
+            precio medio que pagaste por cada una. El valor actual se obtiene
+            del último precio disponible.
+          </HelpTag>
+          <button className={styles.refreshButton} disabled={isLoading} onClick={(event) => { event.stopPropagation(); void refresh(); }} type="button">
+            {isLoading ? "Actualizando…" : "Actualizar"}
+          </button>
+        </div>
+      </summary>
 
       <p className={styles.description}>
         Registra tus posiciones para entender cuánto invertiste y cómo evolucionan.
@@ -149,6 +158,6 @@ export default function PortfolioPanel() {
           </table>
         </div>
       )}
-    </section>
+    </details>
   );
 }

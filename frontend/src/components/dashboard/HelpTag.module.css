@@ -1,0 +1,96 @@
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(25, 198, 211, 0.28);
+  border-radius: 999px;
+  padding: 0.42rem 0.62rem;
+  color: var(--primary);
+  background: var(--primary-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  transition: border-color var(--transition), background var(--transition), color var(--transition);
+}
+
+.trigger:hover,
+.trigger:focus-visible {
+  border-color: var(--primary);
+  color: var(--text-primary);
+  background: rgba(25, 198, 211, 0.2);
+}
+
+.mobileLabel {
+  display: none;
+}
+
+.popup {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  display: none;
+  width: min(290px, 75vw);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius-md);
+  padding: 0.9rem;
+  color: var(--text-secondary);
+  background: var(--surface-3);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.popup::before {
+  position: absolute;
+  top: -0.35rem;
+  right: 1rem;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-top: 1px solid var(--border-hover);
+  border-left: 1px solid var(--border-hover);
+  background: var(--surface-3);
+  content: "";
+  transform: rotate(45deg);
+}
+
+.root:hover .popup,
+.root:focus-within .popup,
+.open .popup {
+  display: block;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .desktopLabel {
+    display: none;
+  }
+
+  .mobileLabel {
+    display: inline;
+    font-size: 0.82rem;
+    line-height: 1;
+  }
+
+  .trigger {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+  }
+
+  .popup {
+    position: fixed;
+    top: auto;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    width: auto;
+  }
+
+  .popup::before {
+    display: none;
+  }
+}

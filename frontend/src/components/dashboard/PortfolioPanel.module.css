@@ -10,6 +10,7 @@
 }
 
 .sectionHeading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.headingActions { display: flex; align-items: center; gap: 0.55rem; }
 .eyebrow { display: inline-block; margin-bottom: 0.45rem; color: var(--accent); font-size: 0.65rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
 .sectionHeading h2 { margin-bottom: 0; color: var(--text-primary); font-size: 1.18rem; letter-spacing: -0.03em; }
 .description, .muted { margin-bottom: 0; color: var(--text-secondary); font-size: 0.82rem; line-height: 1.55; }
@@ -45,6 +46,131 @@
 }
 
 @media (max-width: 620px) {
-  .sectionHeading { display: grid; }
+  .panel {
+    border-radius: 18px;
+    padding: 1rem;
+  }
+
+  .sectionHeading {
+    align-items: flex-start;
+  }
+
+  .sectionHeading h2 {
+    font-size: 1.05rem;
+  }
+
+  .headingActions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .headingActions button {
+    min-height: 2.5rem;
+  }
+
+  .description,
+  .muted {
+    font-size: 0.78rem;
+  }
+
   .summaryGrid, .holdingForm { grid-template-columns: 1fr; }
+
+  .summaryGrid {
+    gap: 0.55rem;
+  }
+
+  .summaryGrid > div {
+    padding: 0.75rem;
+  }
+
+  .holdingForm {
+    gap: 0.75rem;
+  }
+
+  .holdingForm input,
+  .holdingForm select,
+  .holdingForm > button {
+    min-height: 2.8rem;
+  }
+
+  .holdingForm > button {
+    width: 100%;
+  }
+
+  .tableWrapper {
+    overflow: visible;
+    border: 0;
+  }
+
+  .tableWrapper table,
+  .tableWrapper tbody {
+    display: block;
+    min-width: 0;
+  }
+
+  .tableWrapper thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .tableWrapper tbody {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .tableWrapper tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.1rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem;
+    background: var(--surface-2);
+  }
+
+  .tableWrapper td {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-width: 0;
+    border-top: 1px solid var(--border);
+    padding: 0.45rem 0;
+    white-space: normal;
+    text-align: right;
+  }
+
+  .tableWrapper td::before {
+    color: var(--text-muted);
+    font-size: 0.66rem;
+    text-align: left;
+  }
+
+  .tableWrapper td:first-child {
+    display: block;
+    grid-column: 1 / -1;
+    border-top: 0;
+    padding-top: 0;
+    text-align: left;
+  }
+
+  .tableWrapper td:nth-child(2)::before { content: "Cantidad"; }
+  .tableWrapper td:nth-child(3)::before { content: "Valor actual"; }
+  .tableWrapper td:nth-child(4)::before { content: "Resultado"; }
+  .tableWrapper td:nth-child(5)::before { content: "Peso"; }
+
+  .tableWrapper td:last-child {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+    border-top: 0;
+    padding-top: 0.65rem;
+  }
+
+  .removeButton {
+    min-height: 2.5rem;
+  }
 }

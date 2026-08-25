@@ -70,10 +70,40 @@
   .layout {
     grid-template-columns: 1fr;
     gap: 2.25rem;
-    padding: 2.5rem 0;
+    width: min(100% - 2rem, 560px);
+    min-height: auto;
+    padding: 2.5rem 0 3rem;
   }
 
   .introPanel h1 {
     font-size: clamp(2.6rem, 12vw, 4.2rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .layout {
+    width: calc(100% - 1.5rem);
+    gap: 1.5rem;
+    padding: 1.5rem 0 2rem;
+  }
+
+  .introPanel h1 {
+    margin-bottom: 0.9rem;
+    font-size: clamp(2.35rem, 13vw, 3.4rem);
+  }
+
+  .introPanel p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .featureList {
+    gap: 0.45rem;
+    margin-top: 1.35rem;
+  }
+
+  .featureList span {
+    padding: 0.48rem 0.6rem;
+    font-size: 0.7rem;
   }
 }

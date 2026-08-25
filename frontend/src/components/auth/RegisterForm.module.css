@@ -100,3 +100,28 @@
 .linkButton:hover {
   color: var(--primary);
 }
+
+@media (max-width: 480px) {
+  .card {
+    gap: 0.85rem;
+    border-radius: 18px;
+    padding: 1.15rem;
+  }
+
+  .card h2 {
+    font-size: 1.3rem;
+  }
+
+  .card input,
+  .card > button[type="submit"] {
+    min-height: 3rem;
+  }
+
+  .card input {
+    padding: 0.75rem;
+  }
+
+  .linkButton {
+    min-height: 2.5rem;
+  }
+}

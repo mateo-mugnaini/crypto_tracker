@@ -193,19 +193,103 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 620px) {
+  .panel {
+    border-radius: 18px;
+    padding: 1rem;
+  }
+
   .sectionHeading {
     align-items: flex-start;
+    margin-bottom: 0.95rem;
+  }
+
+  .sectionHeading h2 {
+    font-size: 1.05rem;
+  }
+
+  .pill {
+    padding: 0.4rem 0.55rem;
+    font-size: 0.64rem;
+  }
+
+  .errorState {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .errorState button,
+  .updateButton {
+    min-height: 2.6rem;
   }
 
   .coinCard {
-    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "icon name favorite"
+      "icon price update"
+      "icon rank rank";
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto;
+    gap: 0.45rem 0.65rem;
+    padding: 0.75rem;
+  }
+
+  .coinCard > :nth-child(1) {
+    grid-area: icon;
+  }
+
+  .coinCard > :nth-child(2) {
+    grid-area: name;
+    min-width: 0;
+  }
+
+  .coinCard > :nth-child(3) {
+    grid-area: price;
+  }
+
+  .coinCard > :nth-child(4) {
+    grid-area: rank;
+    margin-top: 0;
+  }
+
+  .coinCard > :nth-child(5) {
+    grid-area: favorite;
+    justify-self: end;
+  }
+
+  .coinCard > :nth-child(6) {
+    grid-area: update;
+    justify-self: end;
   }
 
   .priceBlock {
-    grid-column: 2 / -1;
-    grid-row: 2;
     min-width: 0;
     text-align: left;
+  }
+
+  .priceBlock strong,
+  .coinCard strong {
+    overflow-wrap: anywhere;
+  }
+
+  .favoriteButton {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .coinGrid {
+    gap: 0.55rem;
+  }
+
+  .coinIcon {
+    width: 2.15rem;
+    height: 2.15rem;
+  }
+
+  .coinCard span,
+  .coinCard small {
+    font-size: 0.64rem;
   }
 }

@@ -87,11 +87,27 @@
 }
 
 @media (max-width: 650px) {
+  .chartWrapper {
+    gap: 0.65rem;
+    border-radius: 14px;
+    padding: 0.75rem;
+  }
+
   .chartHeader {
     display: grid;
+    gap: 0.55rem;
   }
 
   .chart {
-    min-height: 180px;
+    min-height: 0;
+  }
+
+  .rangeLabel {
+    overflow-wrap: anywhere;
+  }
+
+  .axisLabel,
+  .middleLabel {
+    font-size: 10px;
   }
 }

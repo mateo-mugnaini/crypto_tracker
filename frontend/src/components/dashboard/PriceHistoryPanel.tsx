@@ -161,14 +161,14 @@ export default function PriceHistoryPanel() {
           : "—";
 
   return (
-    <section className={styles.panel} id="history">
-      <div className={styles.sectionHeading}>
+    <details className={styles.panel} data-dashboard-accordion="true" id="history" open>
+      <summary className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>Análisis</span>
           <h2>Historial de precios</h2>
         </div>
         <span className={styles.pill}>Página {page + 1}</span>
-      </div>
+      </summary>
 
       {coinError && (
         <div className={styles.errorState}>
@@ -337,6 +337,6 @@ export default function PriceHistoryPanel() {
           Siguiente
         </button>
       </div>
-    </section>
+    </details>
   );
 }

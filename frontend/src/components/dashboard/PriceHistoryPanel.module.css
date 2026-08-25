@@ -226,23 +226,146 @@
   .toolbar {
     display: grid;
     align-items: stretch;
+    gap: 0.75rem;
   }
 
   .filterForm {
     justify-content: stretch;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .filterForm label {
-    flex: 1 1 140px;
+    min-width: 0;
   }
 }
 
 @media (max-width: 650px) {
-  .statGrid {
-    grid-template-columns: repeat(2, 1fr);
+  .panel {
+    border-radius: 18px;
+    padding: 1rem;
   }
 
   .sectionHeading {
     align-items: flex-start;
+    margin-bottom: 0;
+  }
+
+  .sectionHeading h2 {
+    font-size: 1.05rem;
+  }
+
+  .toolbar > label,
+  .filterForm label {
+    min-width: 0;
+  }
+
+  .toolbar select,
+  .filterForm input,
+  .filterForm select,
+  .filterForm button {
+    min-height: 2.8rem;
+    width: 100%;
+  }
+
+  .filterForm {
+    grid-template-columns: 1fr;
+  }
+
+  .filterForm button {
+    margin-top: 0.1rem;
+  }
+
+  .statGrid {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+
+  .statGrid > div {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 0.75rem;
+  }
+
+  .tableWrapper {
+    overflow: visible;
+    border: 0;
+  }
+
+  .tableWrapper table,
+  .tableWrapper tbody {
+    display: block;
+    min-width: 0;
+  }
+
+  .tableWrapper thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .tableWrapper tbody {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .tableWrapper tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.7rem;
+    background: var(--surface-2);
+  }
+
+  .tableWrapper td {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-top: 0;
+    padding: 0.15rem 0;
+    text-align: right;
+    white-space: normal;
+  }
+
+  .tableWrapper td::before {
+    color: var(--text-muted);
+    content: "Fecha";
+    font-size: 0.66rem;
+    text-align: left;
+  }
+
+  .tableWrapper td:nth-child(2)::before {
+    content: "Precio";
+  }
+
+  .pagination {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem;
+  }
+
+  .pagination span {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    text-align: center;
+  }
+
+  .pagination button {
+    min-height: 2.7rem;
+  }
+
+  .pagination button:first-of-type {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .pagination button:last-of-type {
+    grid-column: 2;
+    grid-row: 2;
   }
 }

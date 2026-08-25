@@ -124,14 +124,14 @@ export default function PriceComparisonPanel() {
   const secondChange = getPercentageChange(series[1]?.records || []);
 
   return (
-    <section className={styles.panel} id="compare">
-      <div className={styles.sectionHeading}>
+    <details className={styles.panel} data-dashboard-accordion="true" id="compare" open>
+      <summary className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>Comparativa</span>
           <h2>Dos monedas, una tendencia</h2>
         </div>
         <span className={styles.pill}>Últimos {HISTORY_LIMIT} registros</span>
-      </div>
+      </summary>
 
       {(marketError || error) && (
         <div className={styles.errorState}>
@@ -202,6 +202,6 @@ export default function PriceComparisonPanel() {
       )}
 
       <ComparisonChart series={series} />
-    </section>
+    </details>
   );
 }

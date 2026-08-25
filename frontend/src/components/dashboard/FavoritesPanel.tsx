@@ -11,14 +11,14 @@ export default function FavoritesPanel() {
   } = useFavorites();
 
   return (
-    <section className={styles.panel} id="favorites">
-      <div className={styles.sectionHeading}>
+    <details className={styles.panel} data-dashboard-accordion="true" id="favorites" open>
+      <summary className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>Tu selección</span>
           <h2>Favoritos</h2>
         </div>
         <span className={styles.pill}>{favorites.length} guardados</span>
-      </div>
+      </summary>
 
       {isLoading && <p className={styles.muted}>Cargando favoritos…</p>}
       {error && <p className={styles.errorMessage}>{error}</p>}
@@ -54,6 +54,6 @@ export default function FavoritesPanel() {
           );
         })}
       </div>
-    </section>
+    </details>
   );
 }

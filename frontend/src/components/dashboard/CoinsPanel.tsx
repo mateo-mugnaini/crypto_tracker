@@ -48,14 +48,14 @@ export default function CoinsPanel() {
   }
 
   return (
-    <section className={styles.panel} id="market">
-      <div className={styles.sectionHeading}>
+    <details className={styles.panel} data-dashboard-accordion="true" id="market" open>
+      <summary className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>Mercado local</span>
           <h2>Monedas sincronizadas</h2>
         </div>
         <span className={styles.pill}>{coins.length} monedas</span>
-      </div>
+      </summary>
 
       {isLoading && <p className={styles.muted}>Cargando monedas…</p>}
       {error && (
@@ -121,6 +121,6 @@ export default function CoinsPanel() {
           );
         })}
       </div>
-    </section>
+    </details>
   );
 }

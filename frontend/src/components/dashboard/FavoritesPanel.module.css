@@ -125,7 +125,37 @@
 }
 
 @media (max-width: 480px) {
+  .panel {
+    border-radius: 18px;
+    padding: 1rem;
+  }
+
   .sectionHeading {
     align-items: flex-start;
+    margin-bottom: 0.95rem;
+  }
+
+  .sectionHeading h2 {
+    font-size: 1.05rem;
+  }
+
+  .favoriteGrid {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+
+  .favoriteCard {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.6rem;
+    padding: 0.75rem;
+  }
+
+  .favoriteCard strong,
+  .favoriteCard span {
+    overflow-wrap: anywhere;
+  }
+
+  .removeButton {
+    min-height: 2.5rem;
   }
 }
