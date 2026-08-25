@@ -30,12 +30,12 @@ Antes del módulo:
 
 ### CORS
 
-CORS es una política aplicada por los navegadores. Un frontend en `http://localhost:3000` y una API en `http://127.0.0.1:8000` tienen orígenes distintos, aunque estén en la misma máquina. El navegador envía el header `Origin` y puede realizar primero una petición preflight `OPTIONS` para preguntar si el método y headers están permitidos.
+CORS es una política aplicada por los navegadores. Un frontend en `http://127.0.0.1:5173` y una API en `http://127.0.0.1:8000` tienen orígenes distintos, aunque estén en la misma máquina. El navegador envía el header `Origin` y puede realizar primero una petición preflight `OPTIONS` para preguntar si el método y headers están permitidos.
 
 La API responde mediante headers como:
 
 ```http
-Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Origin: http://127.0.0.1:5173
 Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS
 Access-Control-Allow-Headers: Authorization, Content-Type
 ```
@@ -93,7 +93,7 @@ Creados:
 ### Configuración
 
 ```env
-CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 RATE_LIMIT_LOGIN_MAX_REQUESTS=10
 RATE_LIMIT_LOGIN_WINDOW_SECONDS=60
 ```
@@ -141,7 +141,7 @@ Tests unitarios:
 
 Tests API:
 
-- preflight CORS permite `localhost:3000`;
+- preflight CORS permite `127.0.0.1:5173`;
 - un origen desconocido no recibe `Access-Control-Allow-Origin`;
 - el login devuelve `429` después de 10 requests y añade `Retry-After`.
 

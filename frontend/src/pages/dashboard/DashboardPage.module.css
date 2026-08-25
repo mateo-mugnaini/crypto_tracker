@@ -4,6 +4,11 @@
   padding-bottom: 5rem;
 }
 
+.dashboardGrid {
+  display: grid;
+  gap: 1.25rem;
+}
+
 .hero {
   display: flex;
   min-height: 390px;

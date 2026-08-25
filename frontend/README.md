@@ -17,9 +17,11 @@ Este primer módulo incluye:
 - rutas públicas y protegidas con React Router;
 - cierre de sesión automático ante una respuesta `401`;
 - dashboard inicial con `GET /coins`;
+- favoritos propios con listado, alta y baja;
+- historial de precios con filtros, estadísticas y paginación;
 - manejo de errores de red y del contrato del backend.
 
-Todavía no incluye favoritos, historial ni gráficos. Se
+Todavía no incluye gráficos. Se
 agregarán en módulos sucesivos.
 
 ## Requisitos
@@ -64,6 +66,9 @@ src/
 ├── routes/
 │   ├── ProtectedRoute.tsx  guard de rutas autenticadas
 │   └── PublicRoute.tsx     guard de rutas públicas
+├── features/
+│   └── favorites/
+│       └── FavoritesContext.tsx estado compartido de favoritos
 ├── components/
 │   ├── auth/
 │   │   ├── LoginForm.tsx
@@ -73,6 +78,10 @@ src/
 │   └── dashboard/
 │       ├── CoinsPanel.tsx
 │       ├── CoinsPanel.module.css
+│       ├── FavoritesPanel.tsx
+│       ├── FavoritesPanel.module.css
+│       ├── PriceHistoryPanel.tsx
+│       ├── PriceHistoryPanel.module.css
 │       ├── Topbar.tsx
 │       └── Topbar.module.css
 ├── pages/
@@ -98,5 +107,7 @@ El frontend consume el contrato documentado en `backend/docs/87-92` y no
 duplica reglas de autenticación ni de negocio del backend.
 
 La documentación está en [`docs/01-scaffold-y-api.md`](docs/01-scaffold-y-api.md),
-[`docs/02-registro-y-navegacion.md`](docs/02-registro-y-navegacion.md) y
-[`docs/03-rutas-y-sesion.md`](docs/03-rutas-y-sesion.md).
+[`docs/02-registro-y-navegacion.md`](docs/02-registro-y-navegacion.md),
+[`docs/03-rutas-y-sesion.md`](docs/03-rutas-y-sesion.md) y
+[`docs/04-layout-y-favoritos.md`](docs/04-layout-y-favoritos.md) y
+[`docs/05-historial-y-filtros.md`](docs/05-historial-y-filtros.md).

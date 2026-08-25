@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 
 import { ApiError, api } from "../../api/client";
 import type { Coin } from "../../api/types";
+import { useFavorites } from "../../features/favorites/FavoritesContext";
 import styles from "./CoinsPanel.module.css";
 
 export default function CoinsPanel() {
   const [coins, setCoins] = useState<Coin[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { isFavorite, toggleFavorite, updatingCoinIds } = useFavorites();
 
   useEffect(() => {
     api
@@ -36,20 +38,41 @@ export default function CoinsPanel() {
       {isLoading && <p className={styles.muted}>Cargando monedas…</p>}
       {error && <p className={styles.errorMessage}>{error}</p>}
       {!isLoading && !error && coins.length === 0 && (
-        <p className={styles.muted}>Todavía no hay monedas sincronizadas.</p>
+        <p className={styles.muted}>Todavia no hay monedas sincronizadas.</p>
       )}
 
       <div className={styles.coinGrid}>
-        {coins.map((coin) => (
-          <article className={styles.coinCard} key={coin.id}>
-            <div className={styles.coinIcon}>{coin.symbol.slice(0, 1).toUpperCase()}</div>
-            <div>
-              <strong>{coin.name}</strong>
-              <span>{coin.symbol.toUpperCase()}</span>
-            </div>
-            <small>#{coin.market_cap_rank ?? "—"}</small>
-          </article>
-        ))}
+        {coins.map((coin) => {
+          const favorite = isFavorite(coin.id);
+          const isUpdating = updatingCoinIds.includes(coin.id);
+
+          return (
+            <article className={styles.coinCard} key={coin.id}>
+              <div className={styles.coinIcon}>
+                {coin.symbol.slice(0, 1).toUpperCase()}
+              </div>
+              <div>
+                <strong>{coin.name}</strong>
+                <span>{coin.symbol.toUpperCase()}</span>
+              </div>
+              <small>#{coin.market_cap_rank ?? "—"}</small>
+              <button
+                aria-label={
+                  favorite
+                    ? `Quitar ${coin.name} de favoritos`
+                    : `Agregar ${coin.name} a favoritos`
+                }
+                aria-pressed={favorite}
+                className={`${styles.favoriteButton} ${favorite ? styles.favoriteActive : ""}`}
+                disabled={isUpdating}
+                onClick={() => void toggleFavorite(coin.id)}
+                type="button"
+              >
+                {favorite ? "★" : "☆"}
+              </button>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

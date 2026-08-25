@@ -304,8 +304,8 @@ correlacionarlo con los logs del backend.
 El backend permite por defecto estos orígenes de desarrollo:
 
 ```text
-http://localhost:3000
-http://127.0.0.1:3000
+http://localhost:5173
+http://127.0.0.1:5173
 ```
 
 Si el frontend utiliza otro puerto, origen o framework, hay que agregarlo en

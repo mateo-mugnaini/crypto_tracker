@@ -51,15 +51,15 @@
   font-size: 0.9rem;
 }
 
-.coinGrid {
+.favoriteGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 0.8rem;
 }
 
-.coinCard {
+.favoriteCard {
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 0.75rem;
   border: 1px solid rgba(145, 169, 202, 0.14);
@@ -79,29 +79,28 @@
   font-weight: 900;
 }
 
-.coinCard strong,
-.coinCard span {
+.favoriteCard strong,
+.favoriteCard span {
   display: block;
 }
 
-.coinCard span,
-.coinCard small {
+.favoriteCard span {
   margin-top: 0.2rem;
   color: #8da0bb;
   font-size: 0.75rem;
 }
 
-.favoriteButton {
-  border: 0;
-  padding: 0.2rem;
-  color: #8da0bb;
+.removeButton {
+  border: 1px solid rgba(145, 169, 202, 0.28);
+  border-radius: 10px;
+  padding: 0.5rem 0.65rem;
+  color: #b9c9dd;
   background: transparent;
-  font-size: 1.4rem;
-  line-height: 1;
+  font-size: 0.8rem;
 }
 
-.favoriteButton:hover,
-.favoriteActive {
+.removeButton:hover {
+  border-color: #6be7c6;
   color: #6be7c6;
 }
 

@@ -1,4 +1,6 @@
 import CoinsPanel from "../../components/dashboard/CoinsPanel";
+import FavoritesPanel from "../../components/dashboard/FavoritesPanel";
+import PriceHistoryPanel from "../../components/dashboard/PriceHistoryPanel";
 import Topbar from "../../components/dashboard/Topbar";
 import styles from "./DashboardPage.module.css";
 
@@ -22,7 +24,11 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        <CoinsPanel />
+        <div className={styles.dashboardGrid}>
+          <CoinsPanel />
+          <FavoritesPanel />
+          <PriceHistoryPanel />
+        </div>
       </main>
     </>
   );

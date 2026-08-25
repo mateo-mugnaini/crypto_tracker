@@ -23,6 +23,57 @@ export interface CoinListResponse {
   data: Coin[];
 }
 
+export interface Favorite {
+  user_id: number;
+  coin_id: string;
+}
+
+export interface FavoriteDetails {
+  coin_id: string;
+  symbol: string;
+  name: string;
+  market_cap_rank: number | null;
+}
+
+export interface FavoriteListResponse {
+  success: boolean;
+  data: Favorite[];
+}
+
+export interface FavoriteDetailsListResponse {
+  success: boolean;
+  data: FavoriteDetails[];
+}
+
+export interface FavoriteActionResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface PriceHistoryRecord {
+  id: number | null;
+  coin_id: string;
+  price: number;
+  recorded_at: string;
+}
+
+export interface PriceHistoryStatistics {
+  coin_id: string;
+  count: number;
+  min_price: number | null;
+  max_price: number | null;
+  average_price: number | null;
+}
+
+export interface PriceHistoryVariation {
+  coin_id: string;
+  initial_price: number | null;
+  final_price: number | null;
+  absolute_change: number | null;
+  percentage_change: number | null;
+  trend: "up" | "down" | "unchanged" | null;
+}
+
 export interface ApiErrorDetail {
   code: string;
   message: string;

@@ -11,6 +11,8 @@ def test_settings_defaults_to_development_environment():
 
     assert settings.app_env == "development"
     assert settings.mysql_pool_size == 5
+    assert "http://localhost:5173" in settings.cors_allowed_origins
+    assert "http://127.0.0.1:5173" in settings.cors_allowed_origins
 
 
 def test_settings_rejects_unknown_environment(monkeypatch):

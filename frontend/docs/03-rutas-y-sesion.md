@@ -65,6 +65,6 @@ completado correctamente.
 
 ## Próximo módulo
 
-- Layout compartido para dashboard.
-- Favoritos conectados al usuario autenticado.
-- Estados de carga y error por sección.
+- Historial de precios.
+- Filtros y paginación.
+- Gráficos de evolución.

@@ -1,0 +1,211 @@
+.panel {
+  display: grid;
+  gap: 1.25rem;
+  border: 1px solid rgba(145, 169, 202, 0.2);
+  border-radius: 24px;
+  padding: 1.5rem;
+  background: rgba(14, 28, 48, 0.82);
+  box-shadow: 0 1.5rem 5rem rgba(0, 0, 0, 0.2);
+}
+
+.sectionHeading,
+.toolbar,
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 0.85rem;
+  color: #6be7c6;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.sectionHeading h2 {
+  margin-bottom: 0.3rem;
+  font-size: 1.35rem;
+}
+
+.pill {
+  border: 1px solid rgba(145, 169, 202, 0.22);
+  border-radius: 999px;
+  padding: 0.55rem 0.75rem;
+  color: #b8c8de;
+  background: rgba(21, 37, 60, 0.7);
+  font-size: 0.85rem;
+}
+
+.toolbar {
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.toolbar > label,
+.filterForm label {
+  display: grid;
+  min-width: 140px;
+  gap: 0.45rem;
+  color: #b9c9dd;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.toolbar select,
+.filterForm input,
+.filterForm select {
+  min-height: 2.55rem;
+  border: 1px solid rgba(145, 169, 202, 0.28);
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  outline: none;
+  color: #edf4ff;
+  background: #0a172a;
+}
+
+.toolbar select:focus,
+.filterForm input:focus,
+.filterForm select:focus {
+  border-color: #6be7c6;
+  box-shadow: 0 0 0 3px rgba(107, 231, 198, 0.12);
+}
+
+.filterForm {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.filterForm button {
+  min-height: 2.55rem;
+  white-space: nowrap;
+}
+
+.muted {
+  color: #8da0bb;
+}
+
+.errorMessage {
+  margin-bottom: 0;
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  color: #ffc0c0;
+  background: rgba(178, 53, 72, 0.18);
+  font-size: 0.9rem;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.statGrid > div {
+  display: grid;
+  gap: 0.35rem;
+  border: 1px solid rgba(145, 169, 202, 0.14);
+  border-radius: 14px;
+  padding: 0.85rem;
+  background: rgba(21, 37, 60, 0.58);
+}
+
+.statGrid span {
+  color: #8da0bb;
+  font-size: 0.78rem;
+}
+
+.statGrid strong {
+  font-size: 1rem;
+}
+
+.up {
+  color: #6be7c6;
+}
+
+.down {
+  color: #ff9eaa;
+}
+
+.unchanged {
+  color: #b8c8de;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border: 1px solid rgba(145, 169, 202, 0.14);
+  border-radius: 14px;
+}
+
+.tableWrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 420px;
+}
+
+.tableWrapper th,
+.tableWrapper td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+}
+
+.tableWrapper th {
+  color: #8da0bb;
+  background: rgba(21, 37, 60, 0.58);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.tableWrapper td {
+  border-top: 1px solid rgba(145, 169, 202, 0.1);
+  color: #d9e5f4;
+}
+
+.pagination {
+  justify-content: center;
+}
+
+.pagination span {
+  color: #8da0bb;
+  font-size: 0.85rem;
+}
+
+.pagination button {
+  border: 1px solid rgba(145, 169, 202, 0.28);
+  border-radius: 10px;
+  padding: 0.55rem 0.75rem;
+  color: #b9c9dd;
+  background: transparent;
+}
+
+@media (max-width: 900px) {
+  .toolbar {
+    display: grid;
+    align-items: stretch;
+  }
+
+  .filterForm {
+    justify-content: stretch;
+  }
+
+  .filterForm label {
+    flex: 1 1 140px;
+  }
+}
+
+@media (max-width: 650px) {
+  .statGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sectionHeading {
+    align-items: flex-start;
+  }
+}

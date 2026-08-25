@@ -1,6 +1,12 @@
 import type {
   ApiErrorPayload,
   CoinListResponse,
+  FavoriteActionResponse,
+  FavoriteDetailsListResponse,
+  FavoriteListResponse,
+  PriceHistoryRecord,
+  PriceHistoryStatistics,
+  PriceHistoryVariation,
   TokenResponse,
   User,
 } from "./types";
@@ -141,6 +147,94 @@ export const api = {
 
   getCoins() {
     return request<CoinListResponse>("/coins");
+  },
+
+  getFavoriteDetails(userId: number, token: string) {
+    const query = new URLSearchParams({ user_id: String(userId) });
+    return request<FavoriteDetailsListResponse>(
+      `/favorites/details?${query.toString()}`,
+      {},
+      token,
+    );
+  },
+
+  getFavorites(userId: number, token: string) {
+    const query = new URLSearchParams({ user_id: String(userId) });
+    return request<FavoriteListResponse>(
+      `/favorites?${query.toString()}`,
+      {},
+      token,
+    );
+  },
+
+  addFavorite(userId: number, coinId: string, token: string) {
+    return request<FavoriteActionResponse>(
+      "/favorites",
+      {
+        method: "POST",
+        body: JSON.stringify({ user_id: userId, coin_id: coinId }),
+      },
+      token,
+    );
+  },
+
+  removeFavorite(userId: number, coinId: string, token: string) {
+    const query = new URLSearchParams({ user_id: String(userId) });
+    return request<null>(
+      `/favorites/${encodeURIComponent(coinId)}?${query.toString()}`,
+      { method: "DELETE" },
+      token,
+    );
+  },
+
+  getPriceHistory(
+    coinId: string,
+    filters: {
+      startDate?: string;
+      endDate?: string;
+      minPrice?: string;
+      maxPrice?: string;
+      limit?: number;
+      offset?: number;
+      sortBy?: "recorded_at" | "price";
+      sortOrder?: "asc" | "desc";
+    } = {},
+  ) {
+    const query = new URLSearchParams();
+
+    if (filters.startDate) query.set("start_date", filters.startDate);
+    if (filters.endDate) query.set("end_date", filters.endDate);
+    if (filters.minPrice) query.set("min_price", filters.minPrice);
+    if (filters.maxPrice) query.set("max_price", filters.maxPrice);
+    if (filters.limit !== undefined) query.set("limit", String(filters.limit));
+    if (filters.offset !== undefined) query.set("offset", String(filters.offset));
+    if (filters.sortBy) query.set("sort_by", filters.sortBy);
+    if (filters.sortOrder) query.set("sort_order", filters.sortOrder);
+
+    const queryString = query.toString();
+    const path = `/coins/${encodeURIComponent(coinId)}/price-history${queryString ? `?${queryString}` : ""}`;
+
+    return request<PriceHistoryRecord[]>(path);
+  },
+
+  getPriceStatistics(coinId: string) {
+    return request<PriceHistoryStatistics>(
+      `/coins/${encodeURIComponent(coinId)}/price-history/statistics`,
+    );
+  },
+
+  getPriceVariation(
+    coinId: string,
+    filters: { startDate?: string; endDate?: string } = {},
+  ) {
+    const query = new URLSearchParams();
+    if (filters.startDate) query.set("start_date", filters.startDate);
+    if (filters.endDate) query.set("end_date", filters.endDate);
+
+    const queryString = query.toString();
+    const path = `/coins/${encodeURIComponent(coinId)}/price-history/variation${queryString ? `?${queryString}` : ""}`;
+
+    return request<PriceHistoryVariation>(path);
   },
 };
 
