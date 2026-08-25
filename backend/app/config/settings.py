@@ -50,6 +50,14 @@ class Settings:
         self.rate_limit_login_window_seconds = int(
             os.getenv("RATE_LIMIT_LOGIN_WINDOW_SECONDS", 60)
         )
+        self.price_update_enabled = os.getenv(
+            "PRICE_UPDATE_ENABLED", "false"
+        ).strip().lower() in {"1", "true", "yes", "on"}
+        self.price_update_interval_seconds = int(
+            os.getenv("PRICE_UPDATE_INTERVAL_SECONDS", 300)
+        )
+        if self.price_update_interval_seconds < 1:
+            raise ValueError("PRICE_UPDATE_INTERVAL_SECONDS debe ser mayor que cero.")
 
     def validate_for_runtime(self) -> None:
         """Validate settings that are unsafe to leave implicit at startup."""

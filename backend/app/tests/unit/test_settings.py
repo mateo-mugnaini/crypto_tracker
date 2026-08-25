@@ -13,6 +13,8 @@ def test_settings_defaults_to_development_environment():
     assert settings.mysql_pool_size == 5
     assert "http://localhost:5173" in settings.cors_allowed_origins
     assert "http://127.0.0.1:5173" in settings.cors_allowed_origins
+    assert settings.price_update_enabled is False
+    assert settings.price_update_interval_seconds == 300
 
 
 def test_settings_rejects_unknown_environment(monkeypatch):

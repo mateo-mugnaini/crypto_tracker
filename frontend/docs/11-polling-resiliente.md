@@ -30,8 +30,9 @@ Pestaña oculta    → sin requests
 Pestaña visible   → refresco inmediato
 ```
 
-El mecanismo continúa consultando datos existentes mediante `GET /coins`. No
-crea registros de precios y no reemplaza el scheduler del backend.
+El mecanismo continúa consultando datos mediante `GET /coins`. Con el
+scheduler del backend habilitado, puede reflejar los nuevos registros después
+de cada ciclo; el frontend no crea esos registros.
 
 ## Verificación
 
@@ -43,5 +44,5 @@ Resultado: TypeScript y Vite compilan correctamente.
 
 ## Próximo módulo
 
-- Integrar el polling con registros creados por el scheduler del backend.
+- Verificación end-to-end con scheduler y frontend levantados.
 - Revisar pruebas de comportamiento temporal con fake timers.

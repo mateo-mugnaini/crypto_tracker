@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import asyncio
 import logging
 from time import perf_counter
 from uuid import uuid4
@@ -65,6 +66,7 @@ from app.schemas.price_history import (
     PriceHistoryVariationResponse,
 )
 from app.schemas.user import TokenResponse, UserLoginRequest, UserRegisterRequest, UserResponse
+from app.schedulers.price_update_scheduler import PriceUpdateScheduler
 
 
 logger = logging.getLogger("crypto_tracker.api")
@@ -96,8 +98,35 @@ OPENAPI_TAGS = [
 async def lifespan(application: FastAPI):
     configure_logging()
     settings.validate_for_runtime()
-    application.state.container = Container()
-    yield
+    container = Container()
+    application.state.container = container
+    scheduler_task = None
+
+    if settings.price_update_enabled:
+        scheduler = PriceUpdateScheduler(
+            coin_repository=container.coin_repository,
+            price_history_service=container.price_history_service,
+            interval_seconds=settings.price_update_interval_seconds,
+        )
+        application.state.price_update_scheduler = scheduler
+        scheduler_task = asyncio.create_task(scheduler.run())
+        logger.info(
+            "Automatic price updates enabled.",
+            extra={
+                "event": "price_update_scheduler_enabled",
+                "interval_seconds": settings.price_update_interval_seconds,
+            },
+        )
+
+    try:
+        yield
+    finally:
+        if scheduler_task is not None:
+            scheduler_task.cancel()
+            try:
+                await scheduler_task
+            except asyncio.CancelledError:
+                pass
 
 
 app = FastAPI(

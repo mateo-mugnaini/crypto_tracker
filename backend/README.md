@@ -80,6 +80,8 @@ Variables disponibles:
 | `JWT_ALGORITHM` | Algoritmo JWT; por defecto, `HS256`. |
 | `JWT_ACCESS_TOKEN_MINUTES` | Duración del token de acceso; por defecto, 30 minutos. |
 | `CORS_ALLOWED_ORIGINS` | Orígenes frontend separados por comas. |
+| `PRICE_UPDATE_ENABLED` | Activa el scheduler de precios; por defecto `false`. |
+| `PRICE_UPDATE_INTERVAL_SECONDS` | Intervalo del scheduler en segundos; por defecto `300`. |
 | `RATE_LIMIT_LOGIN_MAX_REQUESTS` | Intentos de login permitidos por ventana; por defecto, 10. |
 | `RATE_LIMIT_LOGIN_WINDOW_SECONDS` | Duración de la ventana de login; por defecto, 60 segundos. |
 
@@ -332,6 +334,7 @@ Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con
 - [`docs/90-paginacion-filtros-ui.md`](docs/90-paginacion-filtros-ui.md): contrato de paginación, filtros y ordenamiento del historial para la UI.
 - [`docs/91-charts.md`](docs/91-charts.md): contrato de estadísticas, variaciones y agregaciones para gráficos.
 - [`docs/92-integracion-final.md`](docs/92-integracion-final.md): auditoría y cierre del backend, incluyendo la ruta de actualización de precio.
+- [`docs/93-scheduler-precios.md`](docs/93-scheduler-precios.md): actualización automática configurable de precios.
 - [`CHANGELOG.md`](CHANGELOG.md): historial de cambios.
 - [`relevamiento.md`](relevamiento.md): análisis técnico histórico; puede contener observaciones de etapas anteriores y no sustituye la documentación de las rutas actuales.
 
