@@ -8,6 +8,7 @@ class CoinResponse(BaseModel):
     symbol: str
     name: str
     market_cap_rank: int | None = None
+    current_price: float | None = None
 
 
 class CoinResponseEnvelope(BaseModel):

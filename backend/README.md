@@ -181,6 +181,10 @@ Este comando no levanta el servidor HTTP: crea el contenedor de dependencias y s
 | `GET` | `/coins/{coin_id}` | Obtiene una moneda por su ID de CoinGecko. | No |
 | `POST` | `/coins/{coin_id}` | Sincroniza o actualiza una moneda concreta. | No |
 
+`/coins` y `/coins/{coin_id}` incluyen `current_price`, que corresponde al
+último registro disponible en `price_history`. Si todavía no existe historial,
+el valor es `null`.
+
 ### Usuarios
 
 | Método | Ruta | Descripción | Auth |
@@ -308,7 +312,7 @@ pytest -m api
 pytest -m integration
 ```
 
-Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con el esquema compatible. La suite actual se ejecuta con 168 pruebas exitosas en el entorno del proyecto; puede aparecer una advertencia de compatibilidad entre Starlette y la versión instalada de `httpx`.
+Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con el esquema compatible. La suite actual se ejecuta con 172 pruebas exitosas en el entorno del proyecto; puede aparecer una advertencia de compatibilidad entre Starlette y la versión instalada de `httpx`.
 
 ## Documentación del proyecto
 
@@ -335,6 +339,7 @@ Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con
 - [`docs/91-charts.md`](docs/91-charts.md): contrato de estadísticas, variaciones y agregaciones para gráficos.
 - [`docs/92-integracion-final.md`](docs/92-integracion-final.md): auditoría y cierre del backend, incluyendo la ruta de actualización de precio.
 - [`docs/93-scheduler-precios.md`](docs/93-scheduler-precios.md): actualización automática configurable de precios.
+- [`docs/94-precio-actual.md`](docs/94-precio-actual.md): exposición del último precio persistido en el mercado.
 - [`CHANGELOG.md`](CHANGELOG.md): historial de cambios.
 - [`relevamiento.md`](relevamiento.md): análisis técnico histórico; puede contener observaciones de etapas anteriores y no sustituye la documentación de las rutas actuales.
 

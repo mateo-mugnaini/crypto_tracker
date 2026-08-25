@@ -15,6 +15,7 @@ export interface Coin {
   symbol: string;
   name: string;
   market_cap_rank: number | null;
+  current_price: number | null;
 }
 
 export interface CoinListResponse {

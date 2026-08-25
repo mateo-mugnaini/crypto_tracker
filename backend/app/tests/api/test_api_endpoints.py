@@ -106,6 +106,7 @@ def test_get_coins_returns_controller_contract(api_client):
                 "symbol": "btc",
                 "name": "Bitcoin",
                 "market_cap_rank": 1,
+                "current_price": 65000.25,
             }
         ],
     }
@@ -120,6 +121,7 @@ def test_get_coins_returns_controller_contract(api_client):
             "symbol": "btc",
             "name": "Bitcoin",
             "market_cap_rank": 1,
+            "current_price": 65000.25,
         }
     ]
     controller.get_all_coins.assert_called_once_with()

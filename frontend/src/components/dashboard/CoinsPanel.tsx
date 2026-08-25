@@ -5,6 +5,16 @@ import { useFavorites } from "../../features/favorites/FavoritesContext";
 import { useMarket } from "../../features/market/MarketContext";
 import styles from "./CoinsPanel.module.css";
 
+const moneyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 2,
+});
+
+function formatPrice(price: number | null) {
+  return price === null ? "Sin datos" : moneyFormatter.format(price);
+}
+
 export default function CoinsPanel() {
   const { coins, error, loadCoins, refresh, status } = useMarket();
   const { isFavorite, toggleFavorite, updatingCoinIds } = useFavorites();
@@ -79,6 +89,10 @@ export default function CoinsPanel() {
               <div>
                 <strong>{coin.name}</strong>
                 <span>{coin.symbol.toUpperCase()}</span>
+              </div>
+              <div className={styles.priceBlock}>
+                <strong>{formatPrice(coin.current_price)}</strong>
+                <small>Precio actual</small>
               </div>
               <small>#{coin.market_cap_rank ?? "—"}</small>
               <button

@@ -44,5 +44,6 @@ Resultado: TypeScript y Vite compilan correctamente.
 
 ## Próximo módulo
 
-- Verificación end-to-end con scheduler y frontend levantados.
-- Revisar pruebas de comportamiento temporal con fake timers.
+- La integración del precio actual se documenta en el módulo 12.
+- La verificación end-to-end con scheduler y frontend levantados queda como
+  siguiente bloque de validación.

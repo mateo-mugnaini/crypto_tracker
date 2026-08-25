@@ -5,6 +5,22 @@ from app.models.coin import Coin
 
 class CoinRepository:
 
+    _COIN_READ_QUERY = """
+        SELECT
+            c.id,
+            c.symbol,
+            c.name,
+            c.market_cap_rank,
+            (
+                SELECT ph.price
+                FROM price_history AS ph
+                WHERE ph.coin_id = c.id
+                ORDER BY ph.recorded_at DESC, ph.id DESC
+                LIMIT 1
+            ) AS current_price
+        FROM coins AS c
+    """
+
     def save(self, coin: Coin):
 
         connection = None
@@ -62,10 +78,9 @@ class CoinRepository:
 
         cursor = connection.cursor(dictionary=True)
 
-        query = """
-        SELECT *
-        FROM coins
-        ORDER BY market_cap_rank ASC
+        query = f"""
+            {self._COIN_READ_QUERY}
+            ORDER BY c.market_cap_rank ASC
         """
 
         cursor.execute(query)
@@ -84,10 +99,9 @@ class CoinRepository:
 
         cursor = connection.cursor(dictionary=True)
 
-        query = """
-        SELECT *
-        FROM coins
-        WHERE id = %s
+        query = f"""
+            {self._COIN_READ_QUERY}
+            WHERE c.id = %s
         """
 
         cursor.execute(query, (coin_id,))

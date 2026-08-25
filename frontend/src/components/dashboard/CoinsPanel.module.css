@@ -100,6 +100,16 @@
   display: block;
 }
 
+.priceBlock {
+  min-width: 6.5rem;
+  text-align: right;
+}
+
+.priceBlock strong {
+  color: #baf8e8;
+  font-size: 0.85rem;
+}
+
 .coinCard span,
 .coinCard small {
   margin-top: 0.2rem;
@@ -138,5 +148,15 @@
 @media (max-width: 760px) {
   .sectionHeading {
     align-items: flex-start;
+  }
+
+  .coinCard {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .priceBlock {
+    grid-column: 2 / -1;
+    grid-row: 2;
+    text-align: left;
   }
 }

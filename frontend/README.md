@@ -24,10 +24,8 @@ Este primer módulo incluye:
 - actualización manual del precio por moneda;
 - polling opcional del mercado configurable por entorno;
 - polling consciente de visibilidad y con backoff ante errores;
+- precio actual de cada moneda obtenido desde el último registro de historial;
 - manejo de errores de red y del contrato del backend.
-
-Todavía no incluye comparación entre monedas. Se
-agregarán en módulos sucesivos.
 
 ## Requisitos
 
@@ -130,3 +128,5 @@ La documentación está en [`docs/01-scaffold-y-api.md`](docs/01-scaffold-y-api.
 [`docs/09-actualizacion-manual-precios.md`](docs/09-actualizacion-manual-precios.md) y
 [`docs/10-polling-opcional.md`](docs/10-polling-opcional.md) y
 [`docs/11-polling-resiliente.md`](docs/11-polling-resiliente.md).
+La etapa de precio actual está documentada en
+[`docs/12-precio-actual.md`](docs/12-precio-actual.md).
