@@ -20,8 +20,8 @@ una persona navegue entre login y registro desde la zona pública.
   y password de 8 a 128 caracteres.
 - Mensajes de error normalizados mediante `ApiError`.
 - Confirmación visual después de un registro exitoso.
-- Navegación pública login → registro y registro → login sin agregar todavía
-  un router externo.
+- Navegación pública login → registro y registro → login, preparada para el
+  router formal incorporado en el módulo siguiente.
 
 ## Flujo
 
@@ -65,6 +65,5 @@ Resultado: TypeScript y Vite compilan correctamente.
 
 ## Próximo módulo
 
-- Rutas públicas y protegidas con navegación formal.
-- Estado de ruta sin depender únicamente de `AppContent`.
-- Manejo explícito de sesión expirada.
+- Favoritos.
+- Historial y gráficos.

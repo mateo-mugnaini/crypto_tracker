@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { api } from "../api/client";
+import { api, setUnauthorizedHandler } from "../api/client";
 import type { User } from "../api/types";
 
 const TOKEN_STORAGE_KEY = "crypto_tracker_access_token";
@@ -39,6 +39,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
     setStatus("anonymous");
   }, []);
+
+  useEffect(() => setUnauthorizedHandler(logout), [logout]);
 
   useEffect(() => {
     const storedToken = sessionStorage.getItem(TOKEN_STORAGE_KEY);

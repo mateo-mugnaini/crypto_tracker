@@ -1,45 +1,37 @@
-import { useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AuthProvider, useAuth } from "./auth/AuthContext";
-import DashboardPage from "./pages/dashboard/DashboardPage";
+import styles from "./App.module.css";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
-import styles from "./App.module.css";
+import DashboardPage from "./pages/dashboard/DashboardPage";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicRoute from "./routes/PublicRoute";
 
 function AppContent() {
   const { status } = useAuth();
-  const [authScreen, setAuthScreen] = useState<"login" | "register">("login");
-  const [registrationNotice, setRegistrationNotice] = useState<string | null>(null);
 
   if (status === "loading") {
     return <main className={styles.centeredState}>Verificando sesión…</main>;
   }
 
-  if (status === "anonymous") {
-    if (authScreen === "register") {
-      return (
-        <RegisterPage
-          onLogin={() => setAuthScreen("login")}
-          onRegistered={() => {
-            setRegistrationNotice("Cuenta creada. Ya podés iniciar sesión.");
-            setAuthScreen("login");
-          }}
-        />
-      );
-    }
+  const fallbackPath = status === "authenticated" ? "/dashboard" : "/login";
 
-    return (
-      <LoginPage
-        notice={registrationNotice}
-        onRegister={() => {
-          setRegistrationNotice(null);
-          setAuthScreen("register");
-        }}
-      />
-    );
-  }
+  return (
+    <Routes>
+      <Route element={<PublicRoute />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
 
-  return <DashboardPage />;
+      <Route element={<ProtectedRoute />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+      </Route>
+
+      <Route path="/" element={<Navigate replace to={fallbackPath} />} />
+      <Route path="*" element={<Navigate replace to={fallbackPath} />} />
+    </Routes>
+  );
 }
 
 export default function App() {

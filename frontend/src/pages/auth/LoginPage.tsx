@@ -1,12 +1,13 @@
+import { useLocation, useNavigate } from "react-router-dom";
+
 import LoginForm from "../../components/auth/LoginForm";
 import styles from "./LoginPage.module.css";
 
-interface LoginPageProps {
-  notice?: string | null;
-  onRegister(): void;
-}
+export default function LoginPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const notice = (location.state as { notice?: string } | null)?.notice;
 
-export default function LoginPage({ notice, onRegister }: LoginPageProps) {
   return (
     <main className={styles.layout}>
       <section className={styles.introPanel}>
@@ -22,7 +23,7 @@ export default function LoginPage({ notice, onRegister }: LoginPageProps) {
           <span>● Historial preparado</span>
         </div>
       </section>
-      <LoginForm notice={notice} onRegister={onRegister} />
+      <LoginForm notice={notice} onRegister={() => navigate("/register")} />
     </main>
   );
 }

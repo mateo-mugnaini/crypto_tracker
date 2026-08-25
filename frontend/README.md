@@ -14,10 +14,12 @@ Este primer módulo incluye:
 - token guardado en `sessionStorage`;
 - registro de usuarios contra `POST /users/register`;
 - navegación entre login y registro;
+- rutas públicas y protegidas con React Router;
+- cierre de sesión automático ante una respuesta `401`;
 - dashboard inicial con `GET /coins`;
 - manejo de errores de red y del contrato del backend.
 
-Todavía no incluye favoritos, historial, gráficos ni routing formal. Se
+Todavía no incluye favoritos, historial ni gráficos. Se
 agregarán en módulos sucesivos.
 
 ## Requisitos
@@ -59,6 +61,9 @@ src/
 │   └── types.ts           contratos HTTP
 ├── auth/
 │   └── AuthContext.tsx    sesión y usuario actual
+├── routes/
+│   ├── ProtectedRoute.tsx  guard de rutas autenticadas
+│   └── PublicRoute.tsx     guard de rutas públicas
 ├── components/
 │   ├── auth/
 │   │   ├── LoginForm.tsx
@@ -79,7 +84,7 @@ src/
 │   └── dashboard/
 │       ├── DashboardPage.tsx
 │       └── DashboardPage.module.css
-├── App.tsx                composición raíz y sesión
+├── App.tsx                composición raíz y rutas
 ├── App.module.css         estilos globales mínimos
 └── main.tsx               entrypoint React
 ```
@@ -92,5 +97,6 @@ colisiones de clases y facilitando la evolución visual por módulo.
 El frontend consume el contrato documentado en `backend/docs/87-92` y no
 duplica reglas de autenticación ni de negocio del backend.
 
-La documentación está en [`docs/01-scaffold-y-api.md`](docs/01-scaffold-y-api.md)
-y [`docs/02-registro-y-navegacion.md`](docs/02-registro-y-navegacion.md).
+La documentación está en [`docs/01-scaffold-y-api.md`](docs/01-scaffold-y-api.md),
+[`docs/02-registro-y-navegacion.md`](docs/02-registro-y-navegacion.md) y
+[`docs/03-rutas-y-sesion.md`](docs/03-rutas-y-sesion.md).

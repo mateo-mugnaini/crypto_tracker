@@ -1,15 +1,11 @@
+import { useNavigate } from "react-router-dom";
+
 import RegisterForm from "../../components/auth/RegisterForm";
 import styles from "./RegisterPage.module.css";
 
-interface RegisterPageProps {
-  onLogin(): void;
-  onRegistered(): void;
-}
+export default function RegisterPage() {
+  const navigate = useNavigate();
 
-export default function RegisterPage({
-  onLogin,
-  onRegistered,
-}: RegisterPageProps) {
   return (
     <main className={styles.layout}>
       <section className={styles.introPanel}>
@@ -25,7 +21,15 @@ export default function RegisterPage({
           <span>● Sesión segura</span>
         </div>
       </section>
-      <RegisterForm onLogin={onLogin} onRegistered={onRegistered} />
+      <RegisterForm
+        onLogin={() => navigate("/login")}
+        onRegistered={() =>
+          navigate("/login", {
+            replace: true,
+            state: { notice: "Cuenta creada. Ya podés iniciar sesión." },
+          })
+        }
+      />
     </main>
   );
 }

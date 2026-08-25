@@ -9,6 +9,18 @@ const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"
 ).replace(/\/$/, "");
 
+let unauthorizedHandler: (() => void) | null = null;
+
+export function setUnauthorizedHandler(handler: () => void) {
+  unauthorizedHandler = handler;
+
+  return () => {
+    if (unauthorizedHandler === handler) {
+      unauthorizedHandler = null;
+    }
+  };
+}
+
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
@@ -91,6 +103,10 @@ async function request<T>(
     | null;
 
   if (!response.ok) {
+    if (response.status === 401) {
+      unauthorizedHandler?.();
+    }
+
     const details = getErrorDetails((payload || {}) as ApiErrorPayload);
     throw new ApiError(
       response.status,
