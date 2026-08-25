@@ -15,11 +15,9 @@ El backend incluye:
 - Estadísticas, variaciones y agregaciones horarias, diarias o semanales del historial.
 - Pruebas unitarias, de API e integración.
 
-El frontend vive en una carpeta independiente del repositorio (`../frontend`).
-
-El roadmap backend llegó a M92: el backend está verificado localmente y el
-frontend continúa pendiente de implementación porque su carpeta todavía está
-vacía.
+El frontend vive en una carpeta independiente del repositorio (`../frontend`) y
+ya cuenta con un scaffold inicial React + TypeScript + Vite. La integración
+visual completa continúa en evolución.
 
 ## Requisitos
 

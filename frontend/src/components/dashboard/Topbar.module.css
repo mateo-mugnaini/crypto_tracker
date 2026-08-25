@@ -1,0 +1,60 @@
+.topbar {
+  display: flex;
+  width: min(1180px, calc(100% - 3rem));
+  margin: 0 auto;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.5rem 0;
+}
+
+.topbar strong,
+.topbar span {
+  display: block;
+}
+
+.topbar span {
+  color: #8da0bb;
+  font-size: 0.78rem;
+}
+
+.brandMark {
+  display: grid;
+  width: 2.4rem;
+  height: 2.4rem;
+  place-items: center;
+  border-radius: 10px;
+  color: #07121f;
+  background: #6be7c6;
+  font-weight: 900;
+}
+
+.actions {
+  display: flex;
+  margin-left: auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.userChip,
+.secondaryButton {
+  border: 1px solid rgba(145, 169, 202, 0.28);
+  border-radius: 999px;
+  padding: 0.55rem 0.75rem;
+  background: rgba(21, 37, 60, 0.7);
+}
+
+.secondaryButton {
+  border-radius: 12px;
+  color: #b9c9dd;
+  background: transparent;
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    align-items: flex-start;
+  }
+
+  .userChip {
+    display: none;
+  }
+}

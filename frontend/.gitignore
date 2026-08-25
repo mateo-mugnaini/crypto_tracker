@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Vite / production build
+dist/
+build/
+.vite/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and reports
+*.log
+logs/
+coverage/
+
+# TypeScript / tooling caches
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+.cache/
+
+# IDEs and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo

@@ -1,0 +1,62 @@
+.layout {
+  display: grid;
+  width: min(1180px, calc(100% - 3rem));
+  min-height: 100vh;
+  margin: 0 auto;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  align-items: center;
+  gap: 8rem;
+  padding: 4rem 0;
+}
+
+.introPanel {
+  max-width: 720px;
+}
+
+.introPanel h1 {
+  max-width: 680px;
+  margin-bottom: 1rem;
+  font-size: clamp(2.5rem, 6vw, 5.6rem);
+  line-height: 0.98;
+  letter-spacing: -0.07em;
+}
+
+.introPanel p {
+  max-width: 560px;
+  color: #a9bad2;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 0.85rem;
+  color: #6be7c6;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.featureList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 2rem;
+  color: #b8c8de;
+  font-size: 0.9rem;
+}
+
+.featureList span {
+  border: 1px solid rgba(145, 169, 202, 0.22);
+  border-radius: 999px;
+  padding: 0.55rem 0.75rem;
+  background: rgba(21, 37, 60, 0.7);
+}
+
+@media (max-width: 760px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
