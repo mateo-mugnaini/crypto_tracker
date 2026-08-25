@@ -106,19 +106,20 @@ class CoinRepository:
         cursor = connection.cursor()
 
         query = """
-        SELECT COUNT(*)
+        SELECT 1
         FROM coins
-        WHERE id =%s
+        WHERE id = %s
+        LIMIT 1
         """
 
         cursor.execute(query, (coin_id,))
 
-        count = cursor.fetchone()[0]
+        result = cursor.fetchone()
 
         cursor.close()
         connection.close()
 
-        return count > 0
+        return result is not None
 
     def update(self, coin):
 

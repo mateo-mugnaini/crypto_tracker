@@ -1,4 +1,6 @@
 from contextlib import asynccontextmanager
+import logging
+from time import perf_counter
 
 from fastapi import Body, Depends, FastAPI, Path, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -35,6 +37,7 @@ from app.exceptions.domain_exception import (
     FavoriteNotFoundException,
     UserNotFoundException,
 )
+from app.logging_config import configure_logging
 from app.models.favorite import Favorite
 from app.schemas.error import ErrorResponse
 from app.schemas.favorite import FavoriteActionResponse, FavoriteCreateRequest
@@ -49,8 +52,13 @@ from app.schemas.price_history import (
 )
 from app.schemas.user import TokenResponse, UserLoginRequest, UserRegisterRequest, UserResponse
 
+
+logger = logging.getLogger("crypto_tracker.api")
+
 @asynccontextmanager
 async def lifespan(application: FastAPI):
+    configure_logging()
+    settings.validate_for_runtime()
     application.state.container = Container()
     yield
 
@@ -69,6 +77,40 @@ app.add_middleware(
     allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
 )
+
+
+@app.middleware("http")
+async def log_http_request(request, call_next):
+    started_at = perf_counter()
+    fields = {
+        "method": request.method,
+        "path": request.url.path,
+    }
+
+    try:
+        response = await call_next(request)
+    except Exception as error:
+        logger.exception(
+            "HTTP request failed.",
+            extra={
+                "event": "http_request_failed",
+                **fields,
+                "duration_ms": round((perf_counter() - started_at) * 1000, 2),
+                "error_type": type(error).__name__,
+            },
+        )
+        raise
+
+    logger.info(
+        "HTTP request completed.",
+        extra={
+            "event": "http_request_completed",
+            **fields,
+            "status_code": response.status_code,
+            "duration_ms": round((perf_counter() - started_at) * 1000, 2),
+        },
+    )
+    return response
 
 
 def _error_response(

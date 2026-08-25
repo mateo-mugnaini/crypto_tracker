@@ -1,6 +1,11 @@
-# def sumar(a, b):
-#     return a + b
+import logging
+
+
+logger = logging.getLogger("crypto_tracker.cli")
+
+
 def mostrar_titulo():
-    print("|===================================|")
-    print("|          CRYPTO TRACKER           |")
-    print("|===================================|")
+    logger.info(
+        "Crypto Tracker started.",
+        extra={"event": "application_started"},
+    )

@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 import requests
@@ -45,13 +45,11 @@ def test_side_effect_simulates_timeout_without_calling_the_network(mock_get):
 
 
 @patch("app.repositories.coin_repository.get_connection")
-def test_magic_mock_can_represent_the_indexable_database_row(mock_get_connection):
+def test_coin_repository_exists_uses_short_circuit_query(mock_get_connection):
     connection = Mock()
     cursor = Mock()
-    row = MagicMock()
-    row.__getitem__.return_value = 1
     connection.cursor.return_value = cursor
-    cursor.fetchone.return_value = row
+    cursor.fetchone.return_value = (1,)
     mock_get_connection.return_value = connection
     repository = CoinRepository()
 
@@ -59,6 +57,9 @@ def test_magic_mock_can_represent_the_indexable_database_row(mock_get_connection
 
     assert exists is True
     cursor.execute.assert_called_once()
+    query, params = cursor.execute.call_args.args
+    assert "SELECT 1" in query
+    assert "LIMIT 1" in query
+    assert params == ("bitcoin",)
     cursor.close.assert_called_once_with()
     connection.close.assert_called_once_with()
-    row.__getitem__.assert_called_once_with(0)

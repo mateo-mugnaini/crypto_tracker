@@ -63,14 +63,17 @@ Variables disponibles:
 
 | Variable | Descripción |
 | --- | --- |
+| `APP_ENV` | Entorno activo: `development`, `test` o `production`; por defecto, `development`. |
 | `COINGECKO_BASE_URL` | URL base de CoinGecko, normalmente `https://api.coingecko.com/api/v3`. |
 | `REQUEST_TIMEOUT` | Tiempo máximo de espera de las peticiones HTTP, en segundos. |
+| `LOG_LEVEL` | Nivel de logging de la aplicación; por defecto, `INFO`. |
 | `MYSQL_HOST` | Host de MySQL. |
 | `MYSQL_PORT` | Puerto de MySQL. |
 | `MYSQL_USER` | Usuario de MySQL. |
 | `MYSQL_PASSWORD` | Contraseña de MySQL. |
 | `MYSQL_DATABASE` | Base de datos usada por la aplicación. |
 | `MYSQL_TEST_DATABASE` | Base de datos usada por las pruebas de integración. |
+| `MYSQL_POOL_SIZE` | Cantidad máxima de conexiones del pool de aplicación; por defecto, 5. |
 | `JWT_SECRET_KEY` | Clave secreta para firmar JWT; debe tener al menos 32 caracteres. |
 | `JWT_ALGORITHM` | Algoritmo JWT; por defecto, `HS256`. |
 | `JWT_ACCESS_TOKEN_MINUTES` | Duración del token de acceso; por defecto, 30 minutos. |
@@ -282,7 +285,7 @@ pytest -m api
 pytest -m integration
 ```
 
-Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con el esquema compatible. La suite actual se ejecuta con 145 pruebas exitosas en el entorno del proyecto; puede aparecer una advertencia de compatibilidad entre Starlette y la versión instalada de `httpx`.
+Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con el esquema compatible. La suite actual se ejecuta con 156 pruebas exitosas en el entorno del proyecto; puede aparecer una advertencia de compatibilidad entre Starlette y la versión instalada de `httpx`.
 
 ## Documentación del proyecto
 
@@ -291,6 +294,13 @@ Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con
 - [`docs/72-cors-rate-limiting-y-abuso-api.md`](docs/72-cors-rate-limiting-y-abuso-api.md): CORS y rate limiting del login.
 - [`docs/73-auditoria-general-de-seguridad.md`](docs/73-auditoria-general-de-seguridad.md): auditoría de autenticación, autorización y exposición de seguridad.
 - [`docs/74-indices-y-claves.md`](docs/74-indices-y-claves.md): índices y claves para consultas frecuentes.
+- [`docs/75-explain-y-planes-sql.md`](docs/75-explain-y-planes-sql.md): verificación de planes SQL con `EXPLAIN`.
+- [`docs/76-optimizacion-sql.md`](docs/76-optimizacion-sql.md): optimización localizada de consultas SQL.
+- [`docs/77-decision-cache.md`](docs/77-decision-cache.md): evaluación y decisión sobre caching.
+- [`docs/78-conexiones-y-pooling.md`](docs/78-conexiones-y-pooling.md): pool lazy de conexiones MySQL.
+- [`docs/79-datasets-grandes-y-rendimiento.md`](docs/79-datasets-grandes-y-rendimiento.md): datasets grandes, paginación y rendimiento.
+- [`docs/80-logging-estructurado.md`](docs/80-logging-estructurado.md): logging JSON seguro para runtime y requests HTTP.
+- [`docs/81-configuracion-por-entornos.md`](docs/81-configuracion-por-entornos.md): entornos y validación segura de producción.
 - [`CHANGELOG.md`](CHANGELOG.md): historial de cambios.
 - [`relevamiento.md`](relevamiento.md): análisis técnico histórico; puede contener observaciones de etapas anteriores y no sustituye la documentación de las rutas actuales.
 
@@ -299,4 +309,4 @@ Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con
 - No hay migraciones ni DDL automatizado para crear las tablas.
 - La ruta `POST /coins/{coin_id}/price` está declarada en `app/api/app.py`, pero el `PriceHistoryController` actual no expone el método `update_price`; debe corregirse antes de usar esa ruta.
 - El rate limiting actual es en memoria y por IP: sirve para desarrollo/educación, pero no coordina múltiples workers ni instancias.
-- Los errores de red de CoinGecko se imprimen en consola y se traducen a una respuesta de gateway cuando el servicio devuelve datos vacíos; todavía no existe logging estructurado.
+- Los errores de red de CoinGecko se registran con logging estructurado y se traducen a una respuesta de gateway cuando el servicio devuelve datos vacíos; todavía no existe correlación distribuida de requests.

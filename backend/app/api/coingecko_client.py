@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import requests
 
 from app.config.settings import settings
 from app.exceptions.api_exception import CoinGeckoException
+
+
+logger = logging.getLogger("crypto_tracker.coingecko")
 
 
 class CoinGeckoClient:
@@ -43,6 +47,10 @@ class CoinGeckoClient:
         params: dict[str, Any] | None = None,
     ) -> Any:
         if not self.base_url:
+            logger.error(
+                "CoinGecko base URL is not configured.",
+                extra={"event": "coingecko_base_url_missing"},
+            )
             raise CoinGeckoException("COINGECKO_BASE_URL no está configurada.")
 
         url = f"{self.base_url}{path}"
@@ -53,15 +61,45 @@ class CoinGeckoClient:
             return response.json()
 
         except requests.exceptions.Timeout:
-            print("La petición excedió el tiempo máximo.")
+            logger.warning(
+                "CoinGecko request timed out.",
+                extra={
+                    "event": "coingecko_timeout",
+                    "path": path,
+                    "error_type": "Timeout",
+                },
+            )
 
         except requests.exceptions.ConnectionError:
-            print("No fue posible conectarse con CoinGecko.")
+            logger.warning(
+                "CoinGecko connection failed.",
+                extra={
+                    "event": "coingecko_connection_error",
+                    "path": path,
+                    "error_type": "ConnectionError",
+                },
+            )
 
         except requests.exceptions.HTTPError as error:
-            print(f"Error HTTP: {error}")
+            status_code = error.response.status_code if error.response else None
+            logger.warning(
+                "CoinGecko returned an HTTP error.",
+                extra={
+                    "event": "coingecko_http_error",
+                    "path": path,
+                    "status_code": status_code,
+                    "error_type": "HTTPError",
+                },
+            )
 
-        except requests.exceptions.RequestException as error:
-            print(f"Error inesperado: {error}")
+        except requests.exceptions.RequestException:
+            logger.warning(
+                "CoinGecko request failed.",
+                extra={
+                    "event": "coingecko_request_error",
+                    "path": path,
+                    "error_type": "RequestException",
+                },
+            )
 
         return None
