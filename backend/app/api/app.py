@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 import logging
 from time import perf_counter
+from uuid import uuid4
 
 from fastapi import Body, Depends, FastAPI, Path, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -39,6 +40,11 @@ from app.exceptions.domain_exception import (
 )
 from app.logging_config import configure_logging
 from app.models.favorite import Favorite
+from app.observability import (
+    RequestMetrics,
+    reset_request_id,
+    set_request_id,
+)
 from app.schemas.error import ErrorResponse
 from app.schemas.favorite import FavoriteActionResponse, FavoriteCreateRequest
 from app.schemas.price_history import (
@@ -69,6 +75,7 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+app.state.request_metrics = RequestMetrics()
 
 app.add_middleware(
     CORSMiddleware,
@@ -76,41 +83,53 @@ app.add_middleware(
     allow_credentials=False,
     allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
+    expose_headers=["X-Request-ID"],
 )
 
 
 @app.middleware("http")
 async def log_http_request(request, call_next):
     started_at = perf_counter()
+    request_id = str(uuid4())
+    request_context_token = set_request_id(request_id)
+    metrics = request.app.state.request_metrics
     fields = {
         "method": request.method,
         "path": request.url.path,
     }
 
     try:
-        response = await call_next(request)
-    except Exception as error:
-        logger.exception(
-            "HTTP request failed.",
+        try:
+            response = await call_next(request)
+        except Exception as error:
+            duration_ms = round((perf_counter() - started_at) * 1000, 2)
+            metrics.record(500, duration_ms)
+            logger.exception(
+                "HTTP request failed.",
+                extra={
+                    "event": "http_request_failed",
+                    **fields,
+                    "duration_ms": duration_ms,
+                    "error_type": type(error).__name__,
+                },
+            )
+            raise
+
+        duration_ms = round((perf_counter() - started_at) * 1000, 2)
+        metrics.record(response.status_code, duration_ms)
+        response.headers["X-Request-ID"] = request_id
+        logger.info(
+            "HTTP request completed.",
             extra={
-                "event": "http_request_failed",
+                "event": "http_request_completed",
                 **fields,
-                "duration_ms": round((perf_counter() - started_at) * 1000, 2),
-                "error_type": type(error).__name__,
+                "status_code": response.status_code,
+                "duration_ms": duration_ms,
             },
         )
-        raise
-
-    logger.info(
-        "HTTP request completed.",
-        extra={
-            "event": "http_request_completed",
-            **fields,
-            "status_code": response.status_code,
-            "duration_ms": round((perf_counter() - started_at) * 1000, 2),
-        },
-    )
-    return response
+        return response
+    finally:
+        reset_request_id(request_context_token)
 
 
 def _error_response(

@@ -5,6 +5,7 @@ import logging
 from datetime import datetime, timezone
 
 from app.config.settings import settings
+from app.observability import get_request_id
 
 
 class JsonFormatter(logging.Formatter):
@@ -32,6 +33,10 @@ class JsonFormatter(logging.Formatter):
             value = getattr(record, field, None)
             if value is not None:
                 payload[field] = value
+
+        request_id = getattr(record, "request_id", None) or get_request_id()
+        if request_id is not None:
+            payload["request_id"] = request_id
 
         return json.dumps(payload, ensure_ascii=False)
 

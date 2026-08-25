@@ -285,7 +285,7 @@ pytest -m api
 pytest -m integration
 ```
 
-Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con el esquema compatible. La suite actual se ejecuta con 156 pruebas exitosas en el entorno del proyecto; puede aparecer una advertencia de compatibilidad entre Starlette y la versión instalada de `httpx`.
+Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con el esquema compatible. La suite actual se ejecuta con 158 pruebas exitosas en el entorno del proyecto; puede aparecer una advertencia de compatibilidad entre Starlette y la versión instalada de `httpx`.
 
 ## Documentación del proyecto
 
@@ -301,6 +301,7 @@ Las pruebas de integración necesitan `MYSQL_TEST_DATABASE` y una base MySQL con
 - [`docs/79-datasets-grandes-y-rendimiento.md`](docs/79-datasets-grandes-y-rendimiento.md): datasets grandes, paginación y rendimiento.
 - [`docs/80-logging-estructurado.md`](docs/80-logging-estructurado.md): logging JSON seguro para runtime y requests HTTP.
 - [`docs/81-configuracion-por-entornos.md`](docs/81-configuracion-por-entornos.md): entornos y validación segura de producción.
+- [`docs/82-observabilidad.md`](docs/82-observabilidad.md): request IDs y métricas básicas por proceso.
 - [`CHANGELOG.md`](CHANGELOG.md): historial de cambios.
 - [`relevamiento.md`](relevamiento.md): análisis técnico histórico; puede contener observaciones de etapas anteriores y no sustituye la documentación de las rutas actuales.
 
