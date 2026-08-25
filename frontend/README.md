@@ -19,6 +19,7 @@ Este primer módulo incluye:
 - dashboard inicial con `GET /coins`;
 - favoritos propios con listado, alta y baja;
 - historial de precios con filtros, estadísticas, paginación y gráfico SVG;
+- comparación normalizada entre dos monedas;
 - manejo de errores de red y del contrato del backend.
 
 Todavía no incluye comparación entre monedas. Se
@@ -84,6 +85,10 @@ src/
 │       ├── PriceHistoryPanel.module.css
 │       ├── PriceHistoryChart.tsx
 │       ├── PriceHistoryChart.module.css
+│       ├── PriceComparisonPanel.tsx
+│       ├── PriceComparisonPanel.module.css
+│       ├── ComparisonChart.tsx
+│       ├── ComparisonChart.module.css
 │       ├── Topbar.tsx
 │       └── Topbar.module.css
 ├── pages/
@@ -113,4 +118,5 @@ La documentación está en [`docs/01-scaffold-y-api.md`](docs/01-scaffold-y-api.
 [`docs/03-rutas-y-sesion.md`](docs/03-rutas-y-sesion.md) y
 [`docs/04-layout-y-favoritos.md`](docs/04-layout-y-favoritos.md) y
 [`docs/05-historial-y-filtros.md`](docs/05-historial-y-filtros.md) y
-[`docs/06-grafico-historial.md`](docs/06-grafico-historial.md).
+[`docs/06-grafico-historial.md`](docs/06-grafico-historial.md) y
+[`docs/07-comparacion-monedas.md`](docs/07-comparacion-monedas.md).

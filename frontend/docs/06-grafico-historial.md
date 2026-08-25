@@ -48,5 +48,5 @@ Resultado: TypeScript y Vite compilan correctamente.
 
 ## Próximo módulo
 
-- Comparación visual entre dos o más monedas.
-- Normalización de series para comparar variaciones porcentuales.
+- Estados avanzados de carga y refresco.
+- Optimización de consultas y cache del dashboard.
