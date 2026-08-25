@@ -7,6 +7,7 @@ import type {
   PriceHistoryStatistics,
   PriceHistoryVariation,
 } from "../../api/types";
+import PriceHistoryChart from "./PriceHistoryChart";
 import styles from "./PriceHistoryPanel.module.css";
 
 const PAGE_SIZE = 10;
@@ -309,6 +310,8 @@ export default function PriceHistoryPanel() {
           </table>
         </div>
       )}
+
+      <PriceHistoryChart records={records} />
 
       <div className={styles.pagination}>
         <button

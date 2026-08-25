@@ -19,6 +19,7 @@ del backend, con filtros y navegación paginada desde el dashboard.
 - Paginación con diez registros visibles por página.
 - Estadísticas de cantidad, mínimo y máximo.
 - Indicador de variación y tendencia.
+- Gráfico temporal SVG de los registros visibles.
 - Estados de carga, vacío y error.
 
 ## Contrato utilizado
@@ -52,7 +53,9 @@ src/
 │   └── types.ts
 ├── components/dashboard/
 │   ├── PriceHistoryPanel.tsx
-│   └── PriceHistoryPanel.module.css
+│   ├── PriceHistoryPanel.module.css
+│   ├── PriceHistoryChart.tsx
+│   └── PriceHistoryChart.module.css
 └── pages/dashboard/
     └── DashboardPage.tsx
 ```
@@ -67,5 +70,4 @@ Resultado: TypeScript y Vite compilan correctamente.
 
 ## Próximo módulo
 
-- Gráfico de evolución temporal.
 - Comparación visual entre monedas.

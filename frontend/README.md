@@ -18,10 +18,10 @@ Este primer módulo incluye:
 - cierre de sesión automático ante una respuesta `401`;
 - dashboard inicial con `GET /coins`;
 - favoritos propios con listado, alta y baja;
-- historial de precios con filtros, estadísticas y paginación;
+- historial de precios con filtros, estadísticas, paginación y gráfico SVG;
 - manejo de errores de red y del contrato del backend.
 
-Todavía no incluye gráficos. Se
+Todavía no incluye comparación entre monedas. Se
 agregarán en módulos sucesivos.
 
 ## Requisitos
@@ -82,6 +82,8 @@ src/
 │       ├── FavoritesPanel.module.css
 │       ├── PriceHistoryPanel.tsx
 │       ├── PriceHistoryPanel.module.css
+│       ├── PriceHistoryChart.tsx
+│       ├── PriceHistoryChart.module.css
 │       ├── Topbar.tsx
 │       └── Topbar.module.css
 ├── pages/
@@ -110,4 +112,5 @@ La documentación está en [`docs/01-scaffold-y-api.md`](docs/01-scaffold-y-api.
 [`docs/02-registro-y-navegacion.md`](docs/02-registro-y-navegacion.md),
 [`docs/03-rutas-y-sesion.md`](docs/03-rutas-y-sesion.md) y
 [`docs/04-layout-y-favoritos.md`](docs/04-layout-y-favoritos.md) y
-[`docs/05-historial-y-filtros.md`](docs/05-historial-y-filtros.md).
+[`docs/05-historial-y-filtros.md`](docs/05-historial-y-filtros.md) y
+[`docs/06-grafico-historial.md`](docs/06-grafico-historial.md).
