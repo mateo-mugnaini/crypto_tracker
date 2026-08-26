@@ -1,4 +1,5 @@
 import PortfolioPanel from "../../components/dashboard/PortfolioPanel";
+import PortfolioAnalyticsPanel from "../../components/dashboard/PortfolioAnalyticsPanel";
 import DashboardLayout from "../dashboard/DashboardLayout";
 
 export default function PortfolioPage() {
@@ -9,6 +10,7 @@ export default function PortfolioPage() {
       title="Entiende tu cartera."
     >
       <PortfolioPanel />
+      <PortfolioAnalyticsPanel />
     </DashboardLayout>
   );
 }

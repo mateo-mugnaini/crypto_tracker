@@ -2,6 +2,7 @@ import type {
   ApiErrorPayload,
   Coin,
   CoinListResponse,
+  CoinResponse,
   FavoriteActionResponse,
   FavoriteDetails,
   FavoriteDetailsListResponse,
@@ -10,11 +11,20 @@ import type {
   PriceHistoryStatistics,
   PriceHistoryVariation,
   PortfolioActionResponse,
+  PortfolioOperation,
+  PortfolioOperationInput,
+  PortfolioOperationsSummary,
+  PortfolioOperationsResponse,
+  PortfolioAnalytics,
   PortfolioHolding,
   PortfolioHoldingInput,
   PortfolioResponse,
   TokenResponse,
   User,
+  NotificationListResponse,
+  PriceAlert,
+  PriceAlertInput,
+  PriceAlertListResponse,
 } from "./types";
 
 const API_BASE_URL = (
@@ -115,6 +125,15 @@ function isCoinListResponse(value: unknown): value is CoinListResponse {
     isString(value.message) &&
     Array.isArray(value.data) &&
     value.data.every(isCoin)
+  );
+}
+
+function isCoinResponse(value: unknown): value is CoinResponse {
+  return (
+    isRecord(value) &&
+    typeof value.success === "boolean" &&
+    isString(value.message) &&
+    isCoin(value.data)
   );
 }
 
@@ -229,6 +248,134 @@ function isPortfolioResponse(value: unknown): value is PortfolioResponse {
 function isPortfolioActionResponse(value: unknown): value is PortfolioActionResponse {
   return (
     isRecord(value) && typeof value.success === "boolean" && isString(value.message)
+  );
+}
+
+function isPortfolioOperation(value: unknown): value is PortfolioOperation {
+  return (
+    isRecord(value) &&
+    typeof value.id === "number" &&
+    isString(value.coin_id) &&
+    isString(value.symbol) &&
+    isString(value.name) &&
+    (value.operation_type === "buy" || value.operation_type === "sell") &&
+    typeof value.quantity === "number" &&
+    typeof value.price_usd === "number" &&
+    typeof value.fee_usd === "number" &&
+    isString(value.executed_at) &&
+    (value.note === null || isString(value.note))
+  );
+}
+
+function isPortfolioOperationsResponse(
+  value: unknown,
+): value is PortfolioOperationsResponse {
+  return (
+    isRecord(value) &&
+    typeof value.total === "number" &&
+    Array.isArray(value.data) &&
+    value.data.every(isPortfolioOperation)
+  );
+}
+
+function isPortfolioOperationsSummary(
+  value: unknown,
+): value is PortfolioOperationsSummary {
+  return (
+    isRecord(value) &&
+    typeof value.total_invested === "number" &&
+    isNumberOrNull(value.total_current_value) &&
+    typeof value.realized_profit_loss === "number" &&
+    isNumberOrNull(value.unrealized_profit_loss) &&
+    isNumberOrNull(value.total_profit_loss)
+  );
+}
+
+function isPortfolioAnalytics(value: unknown): value is PortfolioAnalytics {
+  if (!isRecord(value)) return false;
+  const assets = value.assets;
+  const points = value.points;
+  return (
+    typeof value.period_days === "number" &&
+    isString(value.period_start) &&
+    isString(value.period_end) &&
+    Array.isArray(points) &&
+    points.every(
+      (point) =>
+        isRecord(point) &&
+        isString(point.timestamp) &&
+        typeof point.value === "number" &&
+        typeof point.invested === "number",
+    ) &&
+    Array.isArray(assets) &&
+    assets.every(
+      (asset) =>
+        isRecord(asset) &&
+        isString(asset.coin_id) &&
+        isString(asset.symbol) &&
+        isString(asset.name) &&
+        typeof asset.quantity === "number" &&
+        typeof asset.invested === "number" &&
+        isNumberOrNull(asset.current_price) &&
+        isNumberOrNull(asset.current_value) &&
+        isNumberOrNull(asset.profit_loss) &&
+        isNumberOrNull(asset.profit_loss_percentage) &&
+        isNumberOrNull(asset.allocation_percentage),
+    ) &&
+    isNumberOrNull(value.total_return_percentage) &&
+    isNumberOrNull(value.max_drawdown_percentage) &&
+    isNumberOrNull(value.volatility_percentage) &&
+    (value.benchmark_coin_id === null || isString(value.benchmark_coin_id)) &&
+    Array.isArray(value.benchmark)
+  );
+}
+
+function isPriceAlert(value: unknown): value is PriceAlert {
+  return (
+    isRecord(value) &&
+    typeof value.id === "number" &&
+    isString(value.coin_id) &&
+    isString(value.symbol) &&
+    isString(value.name) &&
+    (value.condition === "above" || value.condition === "below") &&
+    typeof value.target_price === "number" &&
+    typeof value.is_active === "boolean" &&
+    isNumberOrNull(value.current_price) &&
+    (value.last_triggered_at === null || isString(value.last_triggered_at)) &&
+    isString(value.created_at) &&
+    isString(value.updated_at)
+  );
+}
+
+function isPriceAlertListResponse(value: unknown): value is PriceAlertListResponse {
+  return (
+    isRecord(value) &&
+    typeof value.total === "number" &&
+    Array.isArray(value.data) &&
+    value.data.every(isPriceAlert)
+  );
+}
+
+function isNotificationListResponse(value: unknown): value is NotificationListResponse {
+  return (
+    isRecord(value) &&
+    typeof value.total === "number" &&
+    typeof value.unread === "number" &&
+    Array.isArray(value.data) &&
+    value.data.every(
+      (item) =>
+        isRecord(item) &&
+        typeof item.id === "number" &&
+        (item.alert_id === null || typeof item.alert_id === "number") &&
+        (item.coin_id === null || isString(item.coin_id)) &&
+        (item.symbol === null || isString(item.symbol)) &&
+        (item.name === null || isString(item.name)) &&
+        isString(item.title) &&
+        isString(item.message) &&
+        isNumberOrNull(item.current_price) &&
+        typeof item.is_read === "boolean" &&
+        isString(item.created_at),
+    )
   );
 }
 
@@ -426,6 +573,56 @@ export const api = {
     );
   },
 
+  async openMarketStream(token: string, signal?: AbortSignal) {
+    let response: Response;
+    try {
+      response = await fetch(`${API_BASE_URL}/market/stream`, {
+        headers: { Accept: "text/event-stream", Authorization: `Bearer ${token}` },
+        signal,
+      });
+    } catch {
+      if (signal?.aborted) {
+        throw new ApiError(
+          0,
+          "stream_aborted",
+          "El canal live fue cerrado.",
+          null,
+          [],
+          "aborted",
+        );
+      }
+      throw new ApiError(
+        0,
+        "stream_unavailable",
+        "No se pudo abrir el canal live.",
+        null,
+        [],
+        "network",
+      );
+    }
+
+    if (!response.ok) {
+      if (response.status === 401) unauthorizedHandler?.();
+      throw new ApiError(
+        response.status,
+        "stream_unavailable",
+        "El canal live no está disponible.",
+        response.headers.get("X-Request-ID"),
+      );
+    }
+    return response;
+  },
+
+  getCoin(coinId: string, options: RequestOptions = {}) {
+    return request<CoinResponse>(
+      `/coins/${encodeURIComponent(coinId)}`,
+      {},
+      undefined,
+      options,
+      isCoinResponse,
+    );
+  },
+
   updateCurrentPrice(coinId: string, options: RequestOptions = {}) {
     return request<PriceHistoryRecord>(
       `/coins/${encodeURIComponent(coinId)}/price`,
@@ -522,6 +719,167 @@ export const api = {
     return request<PortfolioActionResponse>(
       `/portfolio/holdings/${encodeURIComponent(coinId)}`,
       { method: "DELETE" },
+      token,
+      options,
+      isPortfolioActionResponse,
+    );
+  },
+
+  getPortfolioOperations(token: string, options: RequestOptions = {}) {
+    return request<PortfolioOperationsResponse>(
+      "/portfolio/operations",
+      {},
+      token,
+      options,
+      isPortfolioOperationsResponse,
+    );
+  },
+
+  getPortfolioOperationsSummary(token: string, options: RequestOptions = {}) {
+    return request<PortfolioOperationsSummary>(
+      "/portfolio/operations/summary",
+      {},
+      token,
+      options,
+      isPortfolioOperationsSummary,
+    );
+  },
+
+  getPortfolioAnalytics(
+    days: number,
+    token: string,
+    benchmarkCoinId?: string,
+    options: RequestOptions = {},
+  ) {
+    const query = new URLSearchParams({ days: String(days) });
+    if (benchmarkCoinId) query.set("benchmark_coin_id", benchmarkCoinId);
+    return request<PortfolioAnalytics>(
+      `/portfolio/analytics?${query.toString()}`,
+      {},
+      token,
+      options,
+      isPortfolioAnalytics,
+    );
+  },
+
+  createPortfolioOperation(
+    input: PortfolioOperationInput,
+    token: string,
+    options: RequestOptions = {},
+  ) {
+    return request<PortfolioOperation>(
+      "/portfolio/operations",
+      { method: "POST", body: JSON.stringify(input) },
+      token,
+      options,
+      isPortfolioOperation,
+    );
+  },
+
+  updatePortfolioOperation(
+    operationId: number,
+    input: PortfolioOperationInput,
+    token: string,
+    options: RequestOptions = {},
+  ) {
+    return request<PortfolioOperation>(
+      `/portfolio/operations/${operationId}`,
+      { method: "PUT", body: JSON.stringify(input) },
+      token,
+      options,
+      isPortfolioOperation,
+    );
+  },
+
+  removePortfolioOperation(
+    operationId: number,
+    token: string,
+    options: RequestOptions = {},
+  ) {
+    return request<PortfolioActionResponse>(
+      `/portfolio/operations/${operationId}`,
+      { method: "DELETE" },
+      token,
+      options,
+      isPortfolioActionResponse,
+    );
+  },
+
+  getAlerts(token: string, options: RequestOptions = {}) {
+    return request<PriceAlertListResponse>(
+      "/alerts",
+      {},
+      token,
+      options,
+      isPriceAlertListResponse,
+    );
+  },
+
+  createAlert(input: PriceAlertInput, token: string, options: RequestOptions = {}) {
+    return request<PriceAlert>(
+      "/alerts",
+      { method: "POST", body: JSON.stringify(input) },
+      token,
+      options,
+      isPriceAlert,
+    );
+  },
+
+  updateAlert(
+    alertId: number,
+    input: Partial<Pick<PriceAlertInput, "condition" | "target_price">> & {
+      is_active?: boolean;
+    },
+    token: string,
+    options: RequestOptions = {},
+  ) {
+    return request<PriceAlert>(
+      `/alerts/${alertId}`,
+      { method: "PATCH", body: JSON.stringify(input) },
+      token,
+      options,
+      isPriceAlert,
+    );
+  },
+
+  removeAlert(alertId: number, token: string, options: RequestOptions = {}) {
+    return request<PortfolioActionResponse>(
+      `/alerts/${alertId}`,
+      { method: "DELETE" },
+      token,
+      options,
+      isPortfolioActionResponse,
+    );
+  },
+
+  getNotifications(token: string, options: RequestOptions = {}) {
+    return request<NotificationListResponse>(
+      "/notifications",
+      {},
+      token,
+      options,
+      isNotificationListResponse,
+    );
+  },
+
+  markNotificationRead(
+    notificationId: number,
+    token: string,
+    options: RequestOptions = {},
+  ) {
+    return request<PortfolioActionResponse>(
+      `/notifications/${notificationId}/read`,
+      { method: "POST" },
+      token,
+      options,
+      isPortfolioActionResponse,
+    );
+  },
+
+  markAllNotificationsRead(token: string, options: RequestOptions = {}) {
+    return request<PortfolioActionResponse>(
+      "/notifications/read-all",
+      { method: "POST" },
       token,
       options,
       isPortfolioActionResponse,

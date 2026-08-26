@@ -42,6 +42,44 @@
   font-size: 0.82rem;
   line-height: 1.55;
 }
+
+.subheading {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  margin: 0.25rem 0 0;
+}
+
+.operationsHeader {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 1.4rem;
+}
+
+.operationsHeader .muted {
+  margin: 0.25rem 0 0;
+}
+
+.operationForm {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 0.85rem;
+}
+
+.operationForm > button {
+  align-self: end;
+}
+
+.operationsList {
+  margin-top: 1.5rem;
+}
+
+.operationActions {
+  display: flex;
+  gap: 0.4rem;
+}
 .refreshButton,
 .holdingForm > button {
   border: 1px solid rgba(124, 227, 139, 0.28);
@@ -81,6 +119,29 @@
   color: var(--text-primary);
   font-size: 1.05rem;
 }
+
+.operationSummary {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.operationSummary > div {
+  display: grid;
+  gap: 0.3rem;
+  border-left: 2px solid var(--border-hover);
+  padding: 0.1rem 0.65rem;
+}
+
+.operationSummary span {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+}
+
+.operationSummary strong {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
 .positive {
   color: var(--positive) !important;
 }
@@ -93,7 +154,8 @@
   align-items: end;
   gap: 0.65rem;
 }
-.holdingForm label {
+.holdingForm label,
+.operationForm label {
   display: grid;
   gap: 0.4rem;
   color: var(--text-secondary);
@@ -101,7 +163,9 @@
   font-weight: 700;
 }
 .holdingForm input,
-.holdingForm select {
+.holdingForm select,
+.operationForm input,
+.operationForm select {
   min-height: 2.45rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -112,11 +176,14 @@
   font-size: 0.78rem;
 }
 .holdingForm input:focus,
-.holdingForm select:focus {
+.holdingForm select:focus,
+.operationForm input:focus,
+.operationForm select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-muted);
 }
-.holdingForm > button {
+.holdingForm > button,
+.operationForm > button {
   min-height: 2.45rem;
   color: #07111f;
   background: var(--accent);
@@ -214,6 +281,19 @@
     font-size: 1.05rem;
   }
 
+  .operationsHeader {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .operationForm {
+    grid-template-columns: 1fr;
+  }
+
+  .operationActions {
+    flex-direction: column;
+  }
+
   .headingActions {
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -229,7 +309,9 @@
   }
 
   .summaryGrid,
-  .holdingForm {
+  .operationSummary,
+  .holdingForm,
+  .operationForm {
     grid-template-columns: 1fr;
   }
 
@@ -247,7 +329,10 @@
 
   .holdingForm input,
   .holdingForm select,
-  .holdingForm > button {
+  .holdingForm > button,
+  .operationForm input,
+  .operationForm select,
+  .operationForm > button {
     min-height: 2.8rem;
   }
 

@@ -1,4 +1,4 @@
-import CoinsPanel from "../../components/dashboard/CoinsPanel";
+import MarketExplorer from "../../components/market/MarketExplorer";
 import DashboardLayout from "../dashboard/DashboardLayout";
 
 export default function MarketPage() {
@@ -8,7 +8,7 @@ export default function MarketPage() {
       eyebrow="Market / Live snapshot"
       title="Explora el mercado."
     >
-      <CoinsPanel />
+      <MarketExplorer />
     </DashboardLayout>
   );
 }

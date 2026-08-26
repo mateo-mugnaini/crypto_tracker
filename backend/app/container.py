@@ -5,12 +5,15 @@ from app.repositories.user_repository import UserRepository
 from app.repositories.favorite_repository import FavoriteRepository
 from app.repositories.price_history_repository import PriceHistoryRepository
 from app.repositories.portfolio_repository import PortfolioRepository
+from app.repositories.alert_repository import AlertRepository
 
 from app.services.coin_service import CoinService
 from app.services.favorite_service import FavoriteService
 from app.services.price_history_service import PriceHistoryService
 from app.services.user_service import UserService
 from app.services.portfolio_service import PortfolioService
+from app.services.alert_service import AlertService
+from app.services.portfolio_analytics_service import PortfolioAnalyticsService
 from app.security.password_hasher import PasswordHasher
 from app.security.token_service import TokenService
 from app.config.settings import settings
@@ -20,6 +23,8 @@ from app.controllers.favorite_controller import FavoriteController
 from app.controllers.price_history_controller import PriceHistoryController
 from app.controllers.user_controller import UserController
 from app.controllers.portfolio_controller import PortfolioController
+from app.controllers.alert_controller import AlertController
+from app.controllers.portfolio_analytics_controller import PortfolioAnalyticsController
 
 
 class Container:
@@ -34,6 +39,7 @@ class Container:
         self.favorite_repository = FavoriteRepository()
         self.price_history_repository = PriceHistoryRepository()
         self.portfolio_repository = PortfolioRepository()
+        self.alert_repository = AlertRepository()
         self.password_hasher = PasswordHasher()
         self.token_service = TokenService(settings.jwt_secret_key, settings.jwt_algorithm, settings.jwt_access_token_minutes)
 
@@ -42,13 +48,23 @@ class Container:
         self.favorite_service = FavoriteService(
             self.favorite_repository, self.user_repository, self.coin_repository
         )
+        self.alert_service = AlertService(
+            self.alert_repository, self.user_repository, self.coin_repository
+        )
         self.price_history_service = PriceHistoryService(
             self.price_history_repository,
             self.api_client,
+            self.alert_service,
         )
         self.user_service = UserService(self.user_repository, self.password_hasher, self.token_service)
         self.portfolio_service = PortfolioService(
             self.portfolio_repository,
+            self.user_repository,
+            self.coin_repository,
+        )
+        self.portfolio_analytics_service = PortfolioAnalyticsService(
+            self.portfolio_repository,
+            self.price_history_repository,
             self.user_repository,
             self.coin_repository,
         )
@@ -61,3 +77,7 @@ class Container:
         )
         self.user_controller = UserController(self.user_service)
         self.portfolio_controller = PortfolioController(self.portfolio_service)
+        self.alert_controller = AlertController(self.alert_service)
+        self.portfolio_analytics_controller = PortfolioAnalyticsController(
+            self.portfolio_analytics_service
+        )

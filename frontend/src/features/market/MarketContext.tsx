@@ -11,19 +11,28 @@ import {
 
 import { ApiError, api, isRequestCancelled } from "../../api/client";
 import type { RequestOptions } from "../../api/client";
-import type { Coin } from "../../api/types";
+import type { Coin, MarketSnapshotEvent } from "../../api/types";
+import { useOptionalAuth } from "../../auth/AuthContext";
 
 const MARKET_CACHE_TTL_MS = 30_000;
 
 let marketCache: { coins: Coin[]; timestamp: number } | null = null;
+let lastMarketTimestamp = 0;
+
+function nextMarketTimestamp() {
+  lastMarketTimestamp = Math.max(Date.now(), lastMarketTimestamp + 1);
+  return lastMarketTimestamp;
+}
 
 type MarketStatus = "idle" | "loading" | "success" | "error";
+type LiveStatus = "disabled" | "connecting" | "connected" | "fallback";
 
 interface MarketContextValue {
   coins: Coin[];
   autoRefreshIntervalMs: number;
   error: string | null;
   isAutoRefreshEnabled: boolean;
+  liveStatus: LiveStatus;
   lastUpdated: Date | null;
   status: MarketStatus;
   loadCoins(force?: boolean, options?: RequestOptions): Promise<boolean>;
@@ -38,27 +47,88 @@ function getMarketError(caughtError: unknown) {
     : "No se pudieron cargar las monedas.";
 }
 
+function isSnapshot(value: unknown): value is MarketSnapshotEvent {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.coin_id === "string" &&
+    typeof candidate.price === "number" &&
+    Number.isFinite(candidate.price) &&
+    typeof candidate.recorded_at === "string"
+  );
+}
+
+async function consumeEventStream(
+  response: Response,
+  onEvent: (eventName: string, payload: unknown) => void,
+) {
+  if (!response.body) throw new Error("El navegador no soporta streams de mercado.");
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let eventName = "message";
+  let data = "";
+
+  const dispatch = () => {
+    if (data) {
+      try {
+        onEvent(eventName, JSON.parse(data));
+      } catch {
+        // Ignore incomplete or malformed events; the next snapshot can recover state.
+      }
+    }
+    eventName = "message";
+    data = "";
+  };
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+      for (const line of lines) {
+        if (!line.trim()) {
+          dispatch();
+        } else if (line.startsWith("event:")) {
+          eventName = line.slice(6).trim();
+        } else if (line.startsWith("data:")) {
+          data += line.slice(5).trim();
+        }
+      }
+    }
+    dispatch();
+  } finally {
+    reader.releaseLock();
+  }
+}
+
 export function invalidateMarketCache() {
   marketCache = null;
 }
 
 export function MarketProvider({ children }: { children: ReactNode }) {
+  const auth = useOptionalAuth();
   const [coins, setCoins] = useState<Coin[]>(marketCache?.coins || []);
   const [status, setStatus] = useState<MarketStatus>(marketCache ? "success" : "idle");
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(
     marketCache ? new Date(marketCache.timestamp) : null,
   );
+  const [liveStatus, setLiveStatus] = useState<LiveStatus>("disabled");
   const requestRef = useRef<Promise<boolean> | null>(null);
   const autoRefreshIntervalMs = Number(
     import.meta.env.VITE_MARKET_REFRESH_INTERVAL_MS || 0,
   );
   const isAutoRefreshEnabled =
     Number.isFinite(autoRefreshIntervalMs) && autoRefreshIntervalMs > 0;
+  const liveEnabled = import.meta.env.VITE_MARKET_LIVE_ENABLED !== "false";
 
   const loadCoins = useCallback(async (force = false, options: RequestOptions = {}) => {
     if (force) {
       invalidateMarketCache();
+      setLastUpdated(new Date(nextMarketTimestamp()));
     }
 
     const now = Date.now();
@@ -74,7 +144,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
       return true;
     }
 
-    if (requestRef.current) {
+    if (requestRef.current && !force) {
       return requestRef.current;
     }
 
@@ -84,7 +154,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
     const request = api
       .getCoins(options)
       .then((response) => {
-        const timestamp = Date.now();
+        const timestamp = nextMarketTimestamp();
         marketCache = { coins: response.data, timestamp };
         setCoins(response.data);
         setStatus("success");
@@ -99,7 +169,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
         return false;
       })
       .finally(() => {
-        requestRef.current = null;
+        if (requestRef.current === request) requestRef.current = null;
       });
 
     requestRef.current = request;
@@ -112,11 +182,86 @@ export function MarketProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    if (!isAutoRefreshEnabled) {
+    if (!liveEnabled || auth?.status !== "authenticated" || !auth.token) {
+      setLiveStatus("disabled");
       return;
     }
 
-    const baseIntervalMs = Math.max(autoRefreshIntervalMs, 1_000);
+    const controller = new AbortController();
+    let cancelled = false;
+    let reconnectTimer: number | null = null;
+    let reconnectAttempt = 0;
+
+    const applyEvent = (eventName: string, payload: unknown) => {
+      if (eventName === "market_snapshot" && payload && typeof payload === "object") {
+        const snapshotCoins = (payload as { coins?: unknown }).coins;
+        if (
+          Array.isArray(snapshotCoins) &&
+          snapshotCoins.every((coin) => isSnapshotCoin(coin))
+        ) {
+          const nextCoins = snapshotCoins as Coin[];
+          const timestamp = nextMarketTimestamp();
+          marketCache = { coins: nextCoins, timestamp };
+          setCoins(nextCoins);
+          setStatus("success");
+          setLastUpdated(new Date(timestamp));
+        }
+      }
+      if (eventName === "price_snapshot" && isSnapshot(payload)) {
+        const timestamp = nextMarketTimestamp();
+        setCoins((current) => {
+          const nextCoins = current.map((coin) =>
+            coin.id === payload.coin_id
+              ? { ...coin, current_price: payload.price }
+              : coin,
+          );
+          marketCache = { coins: nextCoins, timestamp };
+          return nextCoins;
+        });
+        setStatus("success");
+        setLastUpdated(new Date(timestamp));
+      }
+    };
+
+    const scheduleReconnect = () => {
+      if (cancelled) return;
+      const delay = Math.min(1_000 * 2 ** reconnectAttempt, 30_000);
+      reconnectAttempt = Math.min(reconnectAttempt + 1, 5);
+      reconnectTimer = window.setTimeout(() => void connect(), delay);
+    };
+
+    const connect = async () => {
+      if (cancelled) return;
+      setLiveStatus(reconnectAttempt ? "fallback" : "connecting");
+      try {
+        const response = await api.openMarketStream(auth.token!, controller.signal);
+        if (cancelled) return;
+        reconnectAttempt = 0;
+        setLiveStatus("connected");
+        await consumeEventStream(response, applyEvent);
+        scheduleReconnect();
+      } catch (caughtError) {
+        if (cancelled || isRequestCancelled(caughtError)) return;
+        setLiveStatus("fallback");
+        scheduleReconnect();
+      }
+    };
+
+    void connect();
+    return () => {
+      cancelled = true;
+      controller.abort();
+      if (reconnectTimer !== null) window.clearTimeout(reconnectTimer);
+    };
+  }, [auth?.status, auth?.token, liveEnabled]);
+
+  useEffect(() => {
+    const shouldPoll = isAutoRefreshEnabled || liveStatus === "fallback";
+    if (!shouldPoll) {
+      return;
+    }
+
+    const baseIntervalMs = Math.max(autoRefreshIntervalMs || 30_000, 1_000);
     const maxBackoffMs = baseIntervalMs * 8;
     let timeoutId: number | null = null;
     let failureCount = 0;
@@ -163,7 +308,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
       if (timeoutId !== null) window.clearTimeout(timeoutId);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [autoRefreshIntervalMs, isAutoRefreshEnabled, refresh]);
+  }, [autoRefreshIntervalMs, isAutoRefreshEnabled, liveStatus, refresh]);
 
   const value = useMemo(
     () => ({
@@ -171,6 +316,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
       coins,
       error,
       isAutoRefreshEnabled,
+      liveStatus,
       lastUpdated,
       status,
       loadCoins,
@@ -181,6 +327,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
       coins,
       error,
       isAutoRefreshEnabled,
+      liveStatus,
       lastUpdated,
       loadCoins,
       refresh,
@@ -189,6 +336,19 @@ export function MarketProvider({ children }: { children: ReactNode }) {
   );
 
   return <MarketContext.Provider value={value}>{children}</MarketContext.Provider>;
+}
+
+function isSnapshotCoin(value: unknown): value is Coin {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.id === "string" &&
+    typeof candidate.symbol === "string" &&
+    typeof candidate.name === "string" &&
+    (candidate.market_cap_rank === null ||
+      typeof candidate.market_cap_rank === "number") &&
+    (candidate.current_price === null || typeof candidate.current_price === "number")
+  );
 }
 
 export function useMarket() {

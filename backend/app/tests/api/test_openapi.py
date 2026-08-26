@@ -12,6 +12,7 @@ def test_openapi_declares_documented_tag_groups(api_client):
         "users",
         "price-history",
         "portfolio",
+        "alerts",
     }
 
 

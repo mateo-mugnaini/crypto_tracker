@@ -166,7 +166,8 @@
 }
 
 .iconButton,
-.logoutButton {
+.logoutButton,
+.notificationButton {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
@@ -180,6 +181,44 @@
     border-color var(--transition),
     color var(--transition),
     background var(--transition);
+}
+
+.notificationButton {
+  position: relative;
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  padding: 0;
+}
+.notificationButton:hover {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+  background: var(--surface-2);
+}
+.notificationLink {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: inherit;
+}
+.notificationButton svg {
+  width: 1rem;
+  height: 1rem;
+}
+.notificationCount {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.25rem;
+  min-width: 1rem;
+  border-radius: 999px;
+  padding: 0.12rem 0.25rem;
+  color: #06121d;
+  background: var(--negative);
+  font-size: 0.55rem;
+  font-weight: 900;
+  text-align: center;
 }
 
 .iconButton:hover:not(:disabled),
@@ -285,7 +324,8 @@
   }
 
   .iconButton,
-  .logoutButton {
+  .logoutButton,
+  .notificationButton {
     min-width: 2.45rem;
     min-height: 2.45rem;
     justify-content: center;
@@ -330,7 +370,8 @@
   }
 
   .iconButton,
-  .logoutButton {
+  .logoutButton,
+  .notificationButton {
     min-width: 2.25rem;
     min-height: 2.35rem;
     padding: 0.5rem;

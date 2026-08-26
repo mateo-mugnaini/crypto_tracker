@@ -9,10 +9,11 @@ logger = logging.getLogger("crypto_tracker.scheduler")
 class PriceUpdateScheduler:
     """Periodically persist current prices for locally known coins."""
 
-    def __init__(self, coin_repository, price_history_service, interval_seconds: int):
+    def __init__(self, coin_repository, price_history_service, interval_seconds: int, event_hub=None):
         self.coin_repository = coin_repository
         self.price_history_service = price_history_service
         self.interval_seconds = interval_seconds
+        self.event_hub = event_hub
 
     async def run(self) -> None:
         logger.info(
@@ -52,10 +53,23 @@ class PriceUpdateScheduler:
                 continue
 
             try:
-                await asyncio.to_thread(
+                saved_price = await asyncio.to_thread(
                     self.price_history_service.update_current_price,
                     coin_id,
                 )
+                if self.event_hub is not None and saved_price is not None:
+                    await self.event_hub.publish(
+                        {
+                            "type": "price_snapshot",
+                            "data": {
+                                "coin_id": coin_id,
+                                "price": float(saved_price.price),
+                                "recorded_at": saved_price.recorded_at.isoformat(),
+                                "symbol": coin.get("symbol") if isinstance(coin, dict) else None,
+                                "name": coin.get("name") if isinstance(coin, dict) else None,
+                            },
+                        }
+                    )
                 updated += 1
             except Exception as error:
                 failed += 1

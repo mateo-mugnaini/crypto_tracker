@@ -1,12 +1,13 @@
 from contextlib import asynccontextmanager
 import asyncio
+import json
 import logging
 from time import perf_counter
 from uuid import uuid4
 
-from fastapi import Body, Depends, FastAPI, Path, status
+from fastapi import Body, Depends, FastAPI, Path, Query, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 
 from app.api.dependencies import (
     get_coin_controller,
@@ -17,6 +18,8 @@ from app.api.dependencies import (
     get_price_history_query_params,
     get_user_controller,
     get_portfolio_controller,
+    get_alert_controller,
+    get_portfolio_analytics_controller,
     get_current_user,
     get_login_rate_limit,
 )
@@ -39,6 +42,9 @@ from app.exceptions.domain_exception import (
     FavoriteAlreadyExistsException,
     FavoriteNotFoundException,
     PortfolioHoldingNotFoundException,
+    PortfolioOperationNotFoundException,
+    InsufficientPortfolioBalanceException,
+    PriceAlertNotFoundException,
     UserNotFoundException,
 )
 from app.api.health import check_database
@@ -71,9 +77,22 @@ from app.schemas.user import TokenResponse, UserLoginRequest, UserRegisterReques
 from app.schemas.portfolio import (
     PortfolioActionResponse,
     PortfolioHoldingRequest,
+    PortfolioOperationRequest,
+    PortfolioOperationResponse,
+    PortfolioOperationsResponse,
+    PortfolioOperationsSummaryResponse,
     PortfolioResponse,
 )
+from app.schemas.alerts import (
+    NotificationListResponse,
+    PriceAlertListResponse,
+    PriceAlertRequest,
+    PriceAlertResponse,
+    PriceAlertUpdateRequest,
+)
+from app.schemas.portfolio_analytics import PortfolioAnalyticsResponse
 from app.schedulers.price_update_scheduler import PriceUpdateScheduler
+from app.realtime.market_event_hub import MarketEventHub
 
 
 logger = logging.getLogger("crypto_tracker.api")
@@ -82,6 +101,10 @@ OPENAPI_TAGS = [
     {
         "name": "portfolio",
         "description": "Cartera personal no custodial y rendimiento de posiciones.",
+    },
+    {
+        "name": "alerts",
+        "description": "Alertas de precio y notificaciones internas del usuario.",
     },
     {
         "name": "system",
@@ -111,6 +134,7 @@ async def lifespan(application: FastAPI):
     settings.validate_for_runtime()
     container = Container()
     application.state.container = container
+    application.state.market_event_hub = MarketEventHub()
     scheduler_task = None
 
     if settings.price_update_enabled:
@@ -118,6 +142,7 @@ async def lifespan(application: FastAPI):
             coin_repository=container.coin_repository,
             price_history_service=container.price_history_service,
             interval_seconds=settings.price_update_interval_seconds,
+            event_hub=application.state.market_event_hub,
         )
         application.state.price_update_scheduler = scheduler
         scheduler_task = asyncio.create_task(scheduler.run())
@@ -153,7 +178,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_allowed_origins,
     allow_credentials=False,
-    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
     expose_headers=["X-Request-ID"],
 )
@@ -217,18 +242,41 @@ def _error_response(
     )
 
 
+def _sse_event(event: dict) -> str:
+    return f"event: {event['type']}\ndata: {json.dumps(event['data'], ensure_ascii=False, default=str)}\n\n"
+
+
+def _normalize_market_coins(coins: list[dict]) -> list[dict]:
+    normalized = []
+    for coin in coins:
+        item = dict(coin)
+        if item.get("current_price") is not None:
+            item["current_price"] = float(item["current_price"])
+        normalized.append(item)
+    return normalized
+
+
 @app.exception_handler(UserNotFoundException)
 @app.exception_handler(CoinNotFoundException)
 @app.exception_handler(FavoriteNotFoundException)
 @app.exception_handler(PortfolioHoldingNotFoundException)
+@app.exception_handler(PortfolioOperationNotFoundException)
+@app.exception_handler(PriceAlertNotFoundException)
 async def not_found_exception_handler(_, exc):
     codes = {
         UserNotFoundException: "user_not_found",
         CoinNotFoundException: "coin_not_found",
         FavoriteNotFoundException: "favorite_not_found",
         PortfolioHoldingNotFoundException: "portfolio_holding_not_found",
+        PortfolioOperationNotFoundException: "portfolio_operation_not_found",
+        PriceAlertNotFoundException: "price_alert_not_found",
     }
     return _error_response(status.HTTP_404_NOT_FOUND, codes[type(exc)], str(exc))
+
+
+@app.exception_handler(InsufficientPortfolioBalanceException)
+async def insufficient_portfolio_balance_exception_handler(_, exc):
+    return _error_response(status.HTTP_409_CONFLICT, "insufficient_balance", str(exc))
 
 
 @app.exception_handler(FavoriteAlreadyExistsException)
@@ -423,6 +471,54 @@ def update_coin(
     return controller.update_coin(coin_id)
 
 
+@app.get(
+    "/market/stream",
+    tags=["coins"],
+    summary="Escuchar actualizaciones live del mercado",
+    responses={status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse}},
+)
+async def market_stream(
+    request: Request,
+    current_user: dict = Depends(get_current_user),
+):
+    """Stream the latest scheduler snapshots to one authenticated client."""
+    del current_user
+    hub: MarketEventHub = request.app.state.market_event_hub
+    queue = hub.subscribe()
+
+    async def events():
+        try:
+            coins = await asyncio.to_thread(
+                request.app.state.container.coin_repository.find_all
+            )
+            yield _sse_event(
+                {
+                    "type": "market_snapshot",
+                    "data": {"coins": _normalize_market_coins(coins)},
+                }
+            )
+
+            while not await request.is_disconnected():
+                try:
+                    event = await asyncio.wait_for(queue.get(), timeout=15)
+                except asyncio.TimeoutError:
+                    yield ": keep-alive\n\n"
+                else:
+                    yield _sse_event(event)
+        finally:
+            hub.unsubscribe(queue)
+
+    return StreamingResponse(
+        events(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache, no-transform",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
+
+
 # ============================================================
 # FAVORITES
 # ============================================================
@@ -571,6 +667,204 @@ def remove_portfolio_holding(
     controller=Depends(get_portfolio_controller),
 ):
     return controller.remove_holding(current_user["id"], coin_id.strip().lower())
+
+
+@app.get(
+    "/portfolio/operations",
+    response_model=PortfolioOperationsResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["portfolio"],
+    summary="Listar operaciones de cartera",
+)
+def get_portfolio_operations(
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_portfolio_controller),
+):
+    return controller.get_operations(current_user["id"])
+
+
+@app.get(
+    "/portfolio/operations/summary",
+    response_model=PortfolioOperationsSummaryResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["portfolio"],
+    summary="Consultar resumen de operaciones",
+)
+def get_portfolio_operations_summary(
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_portfolio_controller),
+):
+    return controller.get_operations_summary(current_user["id"])
+
+
+@app.post(
+    "/portfolio/operations",
+    response_model=PortfolioOperationResponse,
+    status_code=status.HTTP_201_CREATED,
+    tags=["portfolio"],
+    summary="Registrar operación de cartera",
+)
+def create_portfolio_operation(
+    request: PortfolioOperationRequest,
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_portfolio_controller),
+):
+    return controller.create_operation(current_user["id"], request)
+
+
+@app.put(
+    "/portfolio/operations/{operation_id}",
+    response_model=PortfolioOperationResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["portfolio"],
+    summary="Editar operación de cartera",
+)
+def update_portfolio_operation(
+    request: PortfolioOperationRequest,
+    operation_id: int = Path(..., ge=1),
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_portfolio_controller),
+):
+    return controller.update_operation(current_user["id"], operation_id, request)
+
+
+@app.delete(
+    "/portfolio/operations/{operation_id}",
+    response_model=PortfolioActionResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["portfolio"],
+    summary="Eliminar operación de cartera",
+)
+def delete_portfolio_operation(
+    operation_id: int = Path(..., ge=1),
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_portfolio_controller),
+):
+    return controller.remove_operation(current_user["id"], operation_id)
+
+
+@app.get(
+    "/portfolio/analytics",
+    response_model=PortfolioAnalyticsResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["portfolio"],
+    summary="Consultar analítica histórica de cartera",
+)
+def get_portfolio_analytics(
+    days: int = Query(default=30, ge=1, le=365),
+    benchmark_coin_id: str | None = Query(default=None, min_length=1, max_length=64),
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_portfolio_analytics_controller),
+):
+    return controller.get_analytics(current_user["id"], days, benchmark_coin_id)
+
+
+# ============================================================
+# ALERTS AND NOTIFICATIONS
+# ============================================================
+
+
+@app.get(
+    "/alerts",
+    response_model=PriceAlertListResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["alerts"],
+    summary="Listar alertas de precio propias",
+)
+def get_alerts(
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_alert_controller),
+):
+    return controller.get_alerts(current_user["id"])
+
+
+@app.post(
+    "/alerts",
+    response_model=PriceAlertResponse,
+    status_code=status.HTTP_201_CREATED,
+    tags=["alerts"],
+    summary="Crear alerta de precio",
+)
+def create_alert(
+    request: PriceAlertRequest,
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_alert_controller),
+):
+    return controller.create_alert(current_user["id"], request)
+
+
+@app.patch(
+    "/alerts/{alert_id}",
+    response_model=PriceAlertResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["alerts"],
+    summary="Actualizar o pausar una alerta",
+)
+def update_alert(
+    request: PriceAlertUpdateRequest,
+    alert_id: int = Path(..., ge=1),
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_alert_controller),
+):
+    return controller.update_alert(current_user["id"], alert_id, request)
+
+
+@app.delete(
+    "/alerts/{alert_id}",
+    response_model=PortfolioActionResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["alerts"],
+    summary="Eliminar alerta de precio",
+)
+def delete_alert(
+    alert_id: int = Path(..., ge=1),
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_alert_controller),
+):
+    return controller.delete_alert(current_user["id"], alert_id)
+
+
+@app.get(
+    "/notifications",
+    response_model=NotificationListResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["alerts"],
+    summary="Listar notificaciones internas",
+)
+def get_notifications(
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_alert_controller),
+):
+    return controller.get_notifications(current_user["id"])
+
+
+@app.post(
+    "/notifications/read-all",
+    response_model=PortfolioActionResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["alerts"],
+    summary="Marcar todas las notificaciones como leídas",
+)
+def mark_all_notifications_read(
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_alert_controller),
+):
+    return controller.mark_all_notifications_read(current_user["id"])
+
+
+@app.post(
+    "/notifications/{notification_id}/read",
+    response_model=PortfolioActionResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["alerts"],
+    summary="Marcar una notificación como leída",
+)
+def mark_notification_read(
+    notification_id: int = Path(..., ge=1),
+    current_user: dict = Depends(get_current_user),
+    controller=Depends(get_alert_controller),
+):
+    return controller.mark_notification_read(current_user["id"], notification_id)
 
 
 # ============================================================

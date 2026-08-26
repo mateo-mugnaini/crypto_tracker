@@ -1,8 +1,10 @@
 import asyncio
+from datetime import datetime
 
 import pytest
 
 from app.schedulers.price_update_scheduler import PriceUpdateScheduler
+from app.models.price_history import PriceHistory
 
 
 pytestmark = pytest.mark.unit
@@ -19,6 +21,15 @@ class FakePriceHistoryService:
 
     def update_current_price(self, coin_id):
         self.updated_coin_ids.append(coin_id)
+        return PriceHistory(None, coin_id, 123.45, datetime(2026, 8, 26, 12, 0))
+
+
+class FakeEventHub:
+    def __init__(self):
+        self.events = []
+
+    async def publish(self, event):
+        self.events.append(event)
 
 
 def test_update_once_updates_all_local_coins():
@@ -52,3 +63,18 @@ def test_run_can_be_cancelled_cleanly():
             await task
 
     asyncio.run(scenario())
+
+
+def test_update_once_publishes_price_snapshots():
+    service = FakePriceHistoryService()
+    hub = FakeEventHub()
+    scheduler = PriceUpdateScheduler(
+        coin_repository=FakeCoinRepository(),
+        price_history_service=service,
+        interval_seconds=300,
+        event_hub=hub,
+    )
+
+    asyncio.run(scheduler.update_once())
+
+    assert [event["data"]["coin_id"] for event in hub.events] == ["bitcoin", "ethereum"]

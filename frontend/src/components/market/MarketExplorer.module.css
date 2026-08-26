@@ -1,0 +1,284 @@
+.panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.toolbar {
+  align-items: end;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(220px, 1.6fr) repeat(3, minmax(130px, 1fr));
+}
+
+.toolbar label,
+.searchField {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.toolbar label > span {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.toolbar input,
+.toolbar select {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font: inherit;
+  min-height: 2.65rem;
+  padding: 0.6rem 0.7rem;
+  width: 100%;
+}
+
+.toolbar input:focus,
+.toolbar select:focus {
+  border-color: var(--primary);
+  outline: 3px solid rgba(25, 198, 211, 0.14);
+}
+
+.filterRow {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filterButton,
+.filterActive {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.74rem;
+  min-height: 2.35rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.filterButton:hover,
+.filterActive {
+  background: var(--primary-muted);
+  border-color: rgba(25, 198, 211, 0.35);
+  color: var(--primary);
+}
+
+.viewToggle {
+  display: flex;
+  gap: 0.3rem;
+  margin-left: auto;
+}
+
+.grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1rem;
+  transition:
+    border-color var(--transition),
+    transform var(--transition);
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.cardTop {
+  align-items: center;
+  display: flex;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.coinIcon {
+  align-items: center;
+  background: var(--primary-muted);
+  border: 1px solid rgba(25, 198, 211, 0.25);
+  border-radius: 50%;
+  color: var(--primary);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.8rem;
+  font-weight: 900;
+  height: 2.4rem;
+  justify-content: center;
+  width: 2.4rem;
+}
+
+.coinName {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.coinName a,
+.detailLink,
+.tableCoin {
+  color: var(--text-primary);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.coinName a:hover,
+.detailLink:hover,
+.tableCoin:hover {
+  color: var(--primary);
+}
+
+.coinName span,
+.price span,
+.tableCoin small {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.favoriteButton {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 1.3rem;
+  height: 2.5rem;
+  justify-content: center;
+  margin-left: auto;
+  width: 2.5rem;
+}
+
+.favoriteButton:hover,
+.favoriteActive {
+  background: var(--primary-muted);
+  border-color: rgba(25, 198, 211, 0.25);
+  color: var(--primary);
+}
+
+.price {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.price strong {
+  color: var(--text-primary);
+  font-size: 1.45rem;
+  letter-spacing: -0.04em;
+}
+
+.cardActions,
+.tableActions {
+  align-items: center;
+  display: flex;
+  gap: 0.55rem;
+  justify-content: space-between;
+}
+
+.detailLink {
+  font-size: 0.78rem;
+}
+
+.errorState {
+  align-items: center;
+  background: rgba(251, 113, 133, 0.1);
+  border: 1px solid rgba(251, 113, 133, 0.25);
+  border-radius: 10px;
+  color: #fecdd3;
+  display: flex;
+  gap: 0.8rem;
+  justify-content: space-between;
+  padding: 0.8rem;
+}
+
+.errorState p {
+  margin: 0;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.tableWrapper table {
+  border-collapse: collapse;
+  min-width: 650px;
+  width: 100%;
+}
+
+.tableWrapper th,
+.tableWrapper td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.8rem 0.65rem;
+  text-align: left;
+}
+
+.tableWrapper th {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.tableCoin {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.6rem;
+}
+
+.tableCoin > span:last-child {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.tableActions {
+  justify-content: flex-start;
+}
+
+@media (max-width: 800px) {
+  .toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .searchField {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .filterRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .filterButton,
+  .filterActive,
+  .viewToggle {
+    justify-content: center;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .viewToggle button {
+    flex: 1;
+  }
+
+  .errorState {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

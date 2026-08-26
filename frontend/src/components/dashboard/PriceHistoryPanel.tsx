@@ -53,7 +53,11 @@ function getErrorMessage(caughtError: unknown) {
     : "No se pudo cargar el historial de precios.";
 }
 
-export default function PriceHistoryPanel() {
+export default function PriceHistoryPanel({
+  initialCoinId = "",
+}: {
+  initialCoinId?: string;
+}) {
   const {
     coins,
     error: coinError,
@@ -78,8 +82,8 @@ export default function PriceHistoryPanel() {
   }, [loadCoins]);
 
   useEffect(() => {
-    setSelectedCoinId((current) => current || coins[0]?.id || "");
-  }, [coins]);
+    setSelectedCoinId((current) => current || initialCoinId || coins[0]?.id || "");
+  }, [coins, initialCoinId]);
 
   useEffect(() => {
     if (!selectedCoinId) {

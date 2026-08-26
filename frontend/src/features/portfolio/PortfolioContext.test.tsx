@@ -68,11 +68,22 @@ describe("PortfolioProvider", () => {
       username: "mateo",
     });
     const getPortfolio = vi.spyOn(api, "getPortfolio").mockResolvedValue(portfolio);
+    vi.spyOn(api, "getPortfolioOperations").mockResolvedValue({ data: [], total: 0 });
+    vi.spyOn(api, "getPortfolioOperationsSummary").mockResolvedValue({
+      total_invested: 0,
+      total_current_value: 0,
+      realized_profit_loss: 0,
+      unrealized_profit_loss: 0,
+      total_profit_loss: 0,
+    });
     vi.spyOn(api, "getCoins").mockResolvedValue({
       data: [],
       message: "ok",
       success: true,
     });
+    vi.spyOn(api, "openMarketStream").mockRejectedValue(
+      new Error("stream disabled in test"),
+    );
 
     render(
       <AuthProvider>

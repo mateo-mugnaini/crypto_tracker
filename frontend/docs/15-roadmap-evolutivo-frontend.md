@@ -8,9 +8,12 @@
 ## Estado de implementación
 
 - **Módulos 01–14:** implementados y documentados.
-- **Módulos 15–18:** implementados: calidad, tests, CI, timeout, cancelación,
+- **Módulos 15–20:** implementados: calidad, tests, CI, timeout, cancelación,
   validación de contratos y sincronización mercado-cartera.
-- **Módulos 19–26:** planificados; todavía no implementados.
+- **Módulo 21:** implementado: alertas de precio y centro de notificaciones.
+- **Módulo 22:** implementado: stream SSE autenticado con reconexión y fallback a polling.
+- **Módulo 23:** implementado: analítica personal, visualizaciones y exportación CSV.
+- **Módulos 24–26:** planificados.
 
 ## 1. Diagnóstico actual
 
@@ -221,6 +224,8 @@ de sesión, mercado y refresco.
 **Prioridad:** P1  
 **Dependencias:** módulos 16, 17 y 18.
 
+**Estado:** implementado y verificado localmente.
+
 Convertir el listado de monedas en una herramienta de exploración.
 
 **Alcance:**
@@ -234,6 +239,12 @@ Convertir el listado de monedas en una herramienta de exploración.
   acciones de favorito/cartera;
 - estados claros para búsqueda sin resultados y datos incompletos.
 
+**Implementado:** `/market` incorpora búsqueda local por nombre, símbolo o ID,
+ordenamiento por ranking, nombre y precio, filtros combinables, selector de
+tarjetas o tabla y parámetros persistidos en la URL. Cada resultado enlaza con
+`/market/:coinId`, donde se muestra el precio actual, favoritos, actualización
+manual y el historial de la moneda.
+
 **Criterios de aceptación:**
 
 - la búsqueda no genera una request por cada tecla si no es necesario;
@@ -245,6 +256,9 @@ Convertir el listado de monedas en una herramienta de exploración.
 
 **Prioridad:** P1  
 **Dependencias:** módulos 16, 17 y 19; requiere ampliar el contrato del backend.
+
+**Estado:** implementado en código y verificado con tests; requiere aplicar la
+migración SQL documentada en `backend/docs/96-cartera-operaciones.md`.
 
 Evolucionar la cartera agregada hacia un registro personal de operaciones. La
 aplicación seguirá siendo no custodial: solo registra información declarada por
@@ -261,6 +275,12 @@ el usuario.
 - importación CSV como etapa posterior;
 - explicación visible de que no se conectan claves privadas ni fondos.
 
+**Implementado:** el backend expone CRUD protegido para operaciones de compra y
+venta, valida el saldo disponible para vender y calcula coste restante, beneficio
+realizado y beneficio no realizado. El frontend agrega formulario, edición,
+confirmación de eliminación, historial y métricas diferenciadas dentro de la
+cartera.
+
 **Criterios de aceptación:**
 
 - una operación se puede corregir sin perder consistencia histórica;
@@ -271,6 +291,7 @@ el usuario.
 ### Módulo 21 — Alertas y centro de notificaciones
 
 **Prioridad:** P1  
+**Estado:** implementado en código y validado con compilación/lint; requiere aplicar la migración SQL de `backend/docs/97-alertas-notificaciones.md`.
 **Dependencias:** módulos 16, 19 y 20; requiere soporte de backend para alertas persistentes.
 
 Permitir que el usuario defina qué cambios quiere vigilar.
@@ -294,6 +315,7 @@ Permitir que el usuario defina qué cambios quiere vigilar.
 ### Módulo 22 — Actualización live con fallback
 
 **Prioridad:** P2  
+**Estado:** implementado en código y validado con build, lint y tests; requiere `PRICE_UPDATE_ENABLED=true` para recibir nuevos snapshots del scheduler.
 **Dependencias:** módulo 16 y soporte de backend.
 
 Añadir Server-Sent Events o WebSocket para recibir nuevos snapshots sin que
@@ -318,6 +340,7 @@ fallback cuando el canal no esté disponible.
 ### Módulo 23 — Analítica personal y visualizaciones avanzadas
 
 **Prioridad:** P2  
+**Estado:** implementado en código y validado con build, lint y tests; utiliza únicamente snapshots y operaciones persistidas.
 **Dependencias:** módulo 20.
 
 Agregar contexto para que el usuario pueda entender su comportamiento y no solo

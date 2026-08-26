@@ -12,6 +12,8 @@ from app.controllers.favorite_controller import FavoriteController
 from app.controllers.price_history_controller import PriceHistoryController
 from app.controllers.user_controller import UserController
 from app.controllers.portfolio_controller import PortfolioController
+from app.controllers.alert_controller import AlertController
+from app.controllers.portfolio_analytics_controller import PortfolioAnalyticsController
 from app.api.rate_limiter import InMemoryRateLimiter
 from app.config.settings import settings
 from app.exceptions.api_exception import AuthenticationException, RateLimitExceededException
@@ -62,6 +64,18 @@ def get_portfolio_controller(
     container: Container = Depends(get_container),
 ) -> PortfolioController:
     return container.portfolio_controller
+
+
+def get_alert_controller(
+    container: Container = Depends(get_container),
+) -> AlertController:
+    return container.alert_controller
+
+
+def get_portfolio_analytics_controller(
+    container: Container = Depends(get_container),
+) -> PortfolioAnalyticsController:
+    return container.portfolio_analytics_controller
 
 
 def get_login_rate_limit(request: Request) -> None:

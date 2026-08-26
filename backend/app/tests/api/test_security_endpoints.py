@@ -35,6 +35,13 @@ def test_cors_does_not_allow_unknown_origin(api_client):
     assert "access-control-allow-origin" not in response.headers
 
 
+def test_market_stream_requires_bearer_token(api_client):
+    response = api_client.get("/market/stream")
+
+    assert response.status_code == 401
+    assert response.json()["detail"]["code"] == "authentication_required"
+
+
 def test_login_returns_429_after_configured_number_of_requests(api_client):
     controller = Mock()
     controller.login.return_value = "jwt-token"

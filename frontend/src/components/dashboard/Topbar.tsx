@@ -2,12 +2,20 @@ import { NavLink } from "react-router-dom";
 
 import { useAuth } from "../../auth/AuthContext";
 import { useMarket } from "../../features/market/MarketContext";
+import { useOptionalAlerts } from "../../features/alerts/AlertsContext";
 import styles from "./Topbar.module.css";
 
 function NavIcon({
   kind,
 }: {
-  kind: "overview" | "portfolio" | "market" | "favorites" | "history" | "compare";
+  kind:
+    | "overview"
+    | "portfolio"
+    | "market"
+    | "favorites"
+    | "history"
+    | "compare"
+    | "alerts";
 }) {
   const paths = {
     overview: "M4 13h6V4H4v9Zm10 7h6V4h-6v16ZM4 20h6v-3H4v3Zm10-7h6v-3h-6v3Z",
@@ -17,6 +25,7 @@ function NavIcon({
       "m12 20-1.45-1.32C5.4 14.36 2 11.28 2 7.5A4.5 4.5 0 0 1 6.5 3c1.74 0 3.41.81 4.5 2.09A6.02 6.02 0 0 1 15.5 3 4.5 4.5 0 0 1 20 7.5c0 3.78-3.4 6.86-8.55 11.18L12 20Z",
     history: "M12 7v5l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
     compare: "M5 19V9m7 10V5m7 14v-7",
+    alerts: "M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-4 13h-2",
   };
 
   return (
@@ -35,6 +44,7 @@ function NavIcon({
 function ActionButtons() {
   const { logout, user } = useAuth();
   const { isAutoRefreshEnabled, refresh, status } = useMarket();
+  const unreadCount = useOptionalAlerts()?.unreadCount ?? 0;
   const isRefreshing = status === "loading";
 
   return (
@@ -50,6 +60,27 @@ function ActionButtons() {
           </small>
         </span>
       </span>
+      <NavLink
+        aria-label="Ver alertas"
+        className={styles.notificationButton}
+        title={unreadCount ? `${unreadCount} alertas nuevas` : "Ver alertas"}
+        to="/alerts"
+      >
+        <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+          <path
+            d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-4 13h-2"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.8"
+          />
+        </svg>
+        {unreadCount > 0 && (
+          <span className={styles.notificationCount}>
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
+        )}
+      </NavLink>
       <button
         aria-label="Actualizar mercado"
         className={styles.iconButton}
@@ -82,6 +113,7 @@ const links = [
   ["/favorites", "Favoritos", "favorites"],
   ["/history", "Historial", "history"],
   ["/compare", "Comparativa", "compare"],
+  ["/alerts", "Alertas", "alerts"],
 ] as const;
 
 export default function Topbar() {

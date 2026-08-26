@@ -17,13 +17,19 @@ export default function DashboardLayout({
   eyebrow,
   title,
 }: DashboardLayoutProps) {
-  const { isAutoRefreshEnabled, lastUpdated, status } = useMarket();
+  const { isAutoRefreshEnabled, lastUpdated, liveStatus, status } = useMarket();
   const syncLabel =
     status === "loading"
       ? "Actualizando mercado"
-      : isAutoRefreshEnabled
-        ? "Sincronización automática activa"
-        : "Actualización manual disponible";
+      : liveStatus === "connected"
+        ? "Canal live conectado"
+        : liveStatus === "connecting"
+          ? "Conectando canal live"
+          : liveStatus === "fallback"
+            ? "Fallback por polling"
+            : isAutoRefreshEnabled
+              ? "Sincronización automática activa"
+              : "Actualización manual disponible";
 
   return (
     <div className={styles.shell}>

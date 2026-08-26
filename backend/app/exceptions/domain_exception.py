@@ -35,3 +35,15 @@ class FavoriteNotFoundException(DomainException):
 
 class PortfolioHoldingNotFoundException(DomainException):
     """La posición de cartera no existe."""
+
+
+class PortfolioOperationNotFoundException(DomainException):
+    """La operación de cartera no existe."""
+
+
+class InsufficientPortfolioBalanceException(DomainException):
+    """La venta supera la cantidad disponible de una moneda."""
+
+
+class PriceAlertNotFoundException(DomainException):
+    """La alerta de precio no existe."""

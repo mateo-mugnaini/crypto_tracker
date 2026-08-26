@@ -1,4 +1,5 @@
 from datetime import datetime, date, time
+import logging
 
 from app.exceptions.api_exception import CoinGeckoException
 from app.models.price_history import PriceHistory
@@ -16,9 +17,11 @@ class PriceHistoryService:
         self,
         price_history_repository: PriceHistoryRepository,
         api_client=None,
+        alert_service=None,
     ):
         self.price_history_repository = price_history_repository
         self.api_client = api_client
+        self.alert_service = alert_service
 
     def update_current_price(
         self,
@@ -43,7 +46,16 @@ class PriceHistoryService:
                 f"No se pudo obtener el precio actual de '{normalized_coin_id}'."
             )
 
-        return self.save_price(normalized_coin_id, price)
+        saved_price = self.save_price(normalized_coin_id, price)
+        if self.alert_service is not None:
+            try:
+                self.alert_service.evaluate_coin(normalized_coin_id, float(price))
+            except Exception:
+                logging.getLogger("crypto_tracker.alerts").exception(
+                    "Price alert evaluation failed.",
+                    extra={"event": "price_alert_evaluation_failed", "coin_id": normalized_coin_id},
+                )
+        return saved_price
 
     def save_price(
         self,

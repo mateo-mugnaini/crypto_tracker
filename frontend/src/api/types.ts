@@ -18,10 +18,24 @@ export interface Coin {
   current_price: number | null;
 }
 
+export interface MarketSnapshotEvent {
+  coin_id: string;
+  price: number;
+  recorded_at: string;
+  symbol: string | null;
+  name: string | null;
+}
+
 export interface CoinListResponse {
   success: boolean;
   message: string;
   data: Coin[];
+}
+
+export interface CoinResponse {
+  success: boolean;
+  message: string;
+  data: Coin;
 }
 
 export interface Favorite {
@@ -82,6 +96,117 @@ export interface PortfolioResponse {
 export interface PortfolioActionResponse {
   success: boolean;
   message: string;
+}
+
+export type PortfolioOperationType = "buy" | "sell";
+
+export interface PortfolioOperationInput {
+  coin_id: string;
+  operation_type: PortfolioOperationType;
+  quantity: number;
+  price_usd: number;
+  fee_usd: number;
+  executed_at: string;
+  note?: string | null;
+}
+
+export interface PortfolioOperation extends PortfolioOperationInput {
+  id: number;
+  symbol: string;
+  name: string;
+}
+
+export interface PortfolioOperationsResponse {
+  data: PortfolioOperation[];
+  total: number;
+}
+
+export interface PortfolioOperationsSummary {
+  total_invested: number;
+  total_current_value: number | null;
+  realized_profit_loss: number;
+  unrealized_profit_loss: number | null;
+  total_profit_loss: number | null;
+}
+
+export interface PortfolioAnalyticsPoint {
+  timestamp: string;
+  value: number;
+  invested: number;
+}
+
+export interface PortfolioAnalyticsAsset {
+  coin_id: string;
+  symbol: string;
+  name: string;
+  quantity: number;
+  invested: number;
+  current_price: number | null;
+  current_value: number | null;
+  profit_loss: number | null;
+  profit_loss_percentage: number | null;
+  allocation_percentage: number | null;
+}
+
+export interface PortfolioBenchmarkPoint {
+  timestamp: string;
+  percentage_change: number;
+}
+
+export interface PortfolioAnalytics {
+  period_days: number;
+  period_start: string;
+  period_end: string;
+  points: PortfolioAnalyticsPoint[];
+  assets: PortfolioAnalyticsAsset[];
+  total_return_percentage: number | null;
+  max_drawdown_percentage: number | null;
+  volatility_percentage: number | null;
+  benchmark_coin_id: string | null;
+  benchmark: PortfolioBenchmarkPoint[];
+}
+
+export type PriceAlertCondition = "above" | "below";
+
+export interface PriceAlertInput {
+  coin_id: string;
+  condition: PriceAlertCondition;
+  target_price: number;
+}
+
+export interface PriceAlert extends PriceAlertInput {
+  id: number;
+  symbol: string;
+  name: string;
+  is_active: boolean;
+  current_price: number | null;
+  last_triggered_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PriceAlertListResponse {
+  data: PriceAlert[];
+  total: number;
+}
+
+export interface Notification {
+  id: number;
+  alert_id: number | null;
+  coin_id: string | null;
+  symbol: string | null;
+  name: string | null;
+  title: string;
+  message: string;
+  current_price: number | null;
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface NotificationListResponse {
+  data: Notification[];
+  total: number;
+  unread: number;
 }
 
 export interface PriceHistoryRecord {

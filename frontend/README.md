@@ -33,6 +33,10 @@ historial, comparación de monedas y un sistema visual fintech responsive.
   toasts y confirmaciones de acciones destructivas.
 - vistas navegables para resumen, mercado, cartera, favoritos, historial y comparativa;
   cada una puede abrirse directamente mediante su propia URL.
+- explorador de mercado con búsqueda local, filtros, ordenamiento, vista de tabla
+  y detalle individual de moneda.
+- cartera 2.0 con registro de compras y ventas, comisiones, notas, edición,
+  eliminación confirmada y métricas de beneficio realizado/no realizado.
 
 El rediseño visual integral está documentado en
 [`docs/13-redisenio-ui-ux.md`](docs/13-redisenio-ui-ux.md).
