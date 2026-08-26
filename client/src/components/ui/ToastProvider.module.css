@@ -1,0 +1,52 @@
+.region {
+  display: grid;
+  gap: 0.6rem;
+  max-width: min(360px, calc(100vw - 2rem));
+  pointer-events: none;
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+  width: 100%;
+  z-index: 30;
+}
+
+.toast {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  color: var(--text);
+  display: flex;
+  font-size: 0.86rem;
+  gap: 0.7rem;
+  justify-content: space-between;
+  padding: 0.8rem 0.75rem 0.8rem 0.9rem;
+  pointer-events: auto;
+}
+
+.toast button {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.success {
+  border-left-color: var(--success);
+}
+.error {
+  border-left-color: var(--danger);
+}
+
+@media (max-width: 560px) {
+  .region {
+    left: 1rem;
+    right: 1rem;
+    top: 0.75rem;
+    width: auto;
+  }
+}

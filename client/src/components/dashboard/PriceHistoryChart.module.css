@@ -1,0 +1,113 @@
+.chartWrapper {
+  display: grid;
+  gap: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  background: var(--surface-2);
+}
+
+.chartHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 0.4rem;
+  color: var(--primary);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.chartHeader h3 {
+  margin-bottom: 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.rangeLabel {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 220px;
+}
+
+.axis {
+  stroke: rgba(148, 163, 184, 0.35);
+  stroke-width: 1;
+}
+
+.gridLine {
+  stroke: rgba(148, 163, 184, 0.12);
+  stroke-dasharray: 4 6;
+  stroke-width: 1;
+}
+
+.axisLabel,
+.middleLabel {
+  fill: var(--text-muted);
+  font-size: 11px;
+}
+
+.middleLabel {
+  text-anchor: end;
+}
+
+.line {
+  stroke: var(--primary);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.point {
+  fill: var(--surface-2);
+  stroke: var(--primary);
+  stroke-width: 2;
+}
+
+.point:hover {
+  fill: var(--primary);
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 650px) {
+  .chartWrapper {
+    gap: 0.65rem;
+    border-radius: 14px;
+    padding: 0.75rem;
+  }
+
+  .chartHeader {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .chart {
+    min-height: 0;
+  }
+
+  .rangeLabel {
+    overflow-wrap: anywhere;
+  }
+
+  .axisLabel,
+  .middleLabel {
+    font-size: 10px;
+  }
+}

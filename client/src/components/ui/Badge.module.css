@@ -1,0 +1,26 @@
+.badge {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.6rem;
+  white-space: nowrap;
+}
+
+.neutral {
+  background: var(--surface-strong);
+}
+
+.success {
+  background: rgba(124, 227, 139, 0.1);
+  border-color: rgba(124, 227, 139, 0.3);
+  color: var(--success);
+}
+
+.danger {
+  background: rgba(255, 107, 122, 0.1);
+  border-color: rgba(255, 107, 122, 0.3);
+  color: var(--danger);
+}

@@ -1,0 +1,27 @@
+.notice {
+  position: fixed;
+  z-index: 60;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  color: #1f1600;
+  background: var(--warning);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media (min-width: 620px) {
+  .notice {
+    right: 1.5rem;
+    left: auto;
+    max-width: 30rem;
+  }
+}

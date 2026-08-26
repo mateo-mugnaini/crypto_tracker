@@ -1,0 +1,166 @@
+.panel {
+  scroll-margin-top: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.35rem;
+  background: var(--surface-1);
+  box-shadow: var(--shadow-sm);
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.15rem;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 0.45rem;
+  color: var(--accent);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.sectionHeading h2 {
+  margin-bottom: 0;
+  color: var(--text-primary);
+  font-size: 1.18rem;
+  letter-spacing: -0.03em;
+}
+
+.pill {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.45rem 0.65rem;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.errorMessage {
+  margin-bottom: 0;
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.8rem;
+  color: #fecdd3;
+  background: rgba(251, 113, 133, 0.1);
+  font-size: 0.8rem;
+}
+
+.favoriteGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.7rem;
+}
+
+.favoriteCard {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  background: var(--surface-2);
+  transition:
+    border-color var(--transition),
+    transform var(--transition);
+}
+
+.favoriteCard:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.coinIcon {
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  border: 1px solid rgba(124, 227, 139, 0.24);
+  border-radius: 50%;
+  color: var(--accent);
+  background: var(--accent-muted);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.favoriteCard strong,
+.favoriteCard span {
+  display: block;
+}
+
+.favoriteCard strong {
+  color: var(--text-primary);
+  font-size: 0.83rem;
+}
+
+.favoriteCard span {
+  margin-top: 0.2rem;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+}
+
+.removeButton {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.48rem 0.6rem;
+  color: var(--text-secondary);
+  background: transparent;
+  font-size: 0.68rem;
+  transition:
+    color var(--transition),
+    border-color var(--transition),
+    background var(--transition);
+}
+
+.removeButton:hover {
+  border-color: rgba(251, 113, 133, 0.35);
+  color: var(--negative);
+  background: rgba(251, 113, 133, 0.08);
+}
+
+@media (max-width: 480px) {
+  .panel {
+    border-radius: 18px;
+    padding: 1rem;
+  }
+
+  .sectionHeading {
+    align-items: flex-start;
+    margin-bottom: 0.95rem;
+  }
+
+  .sectionHeading h2 {
+    font-size: 1.05rem;
+  }
+
+  .favoriteGrid {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+
+  .favoriteCard {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.6rem;
+    padding: 0.75rem;
+  }
+
+  .favoriteCard strong,
+  .favoriteCard span {
+    overflow-wrap: anywhere;
+  }
+
+  .removeButton {
+    min-height: 2.5rem;
+  }
+}

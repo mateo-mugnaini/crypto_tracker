@@ -1,0 +1,27 @@
+.emptyState {
+  align-items: center;
+  border: 1px dashed var(--border-strong);
+  border-radius: 12px;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.emptyState strong {
+  color: var(--text);
+}
+
+.icon {
+  align-items: center;
+  background: rgba(25, 198, 211, 0.1);
+  border-radius: 999px;
+  color: var(--accent);
+  display: inline-flex;
+  font-size: 1.4rem;
+  height: 2.2rem;
+  justify-content: center;
+  width: 2.2rem;
+}
