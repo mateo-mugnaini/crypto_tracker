@@ -31,6 +31,8 @@ historial, comparación de monedas y un sistema visual fintech responsive.
 - manejo de errores de red y del contrato del backend.
 - sistema UI compartido para botones, campos, alertas, skeletons, estados vacíos,
   toasts y confirmaciones de acciones destructivas.
+- vistas navegables para resumen, mercado, cartera, favoritos, historial y comparativa;
+  cada una puede abrirse directamente mediante su propia URL.
 
 El rediseño visual integral está documentado en
 [`docs/13-redisenio-ui-ux.md`](docs/13-redisenio-ui-ux.md).

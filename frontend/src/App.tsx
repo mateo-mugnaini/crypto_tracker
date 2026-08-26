@@ -9,6 +9,11 @@ import { PortfolioProvider } from "./features/portfolio/PortfolioContext";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
+import ComparePage from "./pages/compare/ComparePage";
+import FavoritesPage from "./pages/favorites/FavoritesPage";
+import HistoryPage from "./pages/history/HistoryPage";
+import MarketPage from "./pages/market/MarketPage";
+import PortfolioPage from "./pages/portfolio/PortfolioPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 
@@ -30,6 +35,11 @@ function AppContent() {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/market" element={<MarketPage />} />
+        <Route path="/portfolio" element={<PortfolioPage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
+        <Route path="/history" element={<HistoryPage />} />
+        <Route path="/compare" element={<ComparePage />} />
       </Route>
 
       <Route path="/" element={<Navigate replace to={fallbackPath} />} />

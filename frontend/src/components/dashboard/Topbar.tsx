@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 import { useAuth } from "../../auth/AuthContext";
 import { useMarket } from "../../features/market/MarketContext";
@@ -51,8 +51,8 @@ function ActionButtons() {
         </span>
       </span>
       <button
-        className={styles.iconButton}
         aria-label="Actualizar mercado"
+        className={styles.iconButton}
         disabled={isRefreshing}
         onClick={() => void refresh()}
         type="button"
@@ -75,20 +75,19 @@ function ActionButtons() {
   );
 }
 
-export default function Topbar() {
-  const [activeId, setActiveId] = useState(window.location.hash.slice(1) || "overview");
-  const links = [
-    ["overview", "Resumen", "overview"],
-    ["portfolio", "Mi cartera", "portfolio"],
-    ["market", "Mercado", "market"],
-    ["favorites", "Favoritos", "favorites"],
-    ["history", "Historial", "history"],
-    ["compare", "Comparativa", "compare"],
-  ] as const;
+const links = [
+  ["/dashboard", "Resumen", "overview"],
+  ["/portfolio", "Mi cartera", "portfolio"],
+  ["/market", "Mercado", "market"],
+  ["/favorites", "Favoritos", "favorites"],
+  ["/history", "Historial", "history"],
+  ["/compare", "Comparativa", "compare"],
+] as const;
 
+export default function Topbar() {
   return (
     <div className={styles.navigationRoot}>
-      <aside className={styles.sidebar} aria-label="Navegación principal">
+      <aside aria-label="Navegación principal" className={styles.sidebar}>
         <div className={styles.brand}>
           <span className={styles.brandMark}>C</span>
           <span>
@@ -100,17 +99,18 @@ export default function Topbar() {
         <div className={styles.navGroup}>
           <span className={styles.navLabel}>Workspace</span>
           <nav>
-            {links.map(([id, label, icon]) => (
-              <a
-                aria-current={activeId === id ? "page" : undefined}
-                className={`${styles.navLink} ${activeId === id ? styles.activeLink : ""}`}
-                href={`#${id}`}
-                key={id}
-                onClick={() => setActiveId(id)}
+            {links.map(([to, label, icon]) => (
+              <NavLink
+                className={({ isActive }) =>
+                  `${styles.navLink} ${isActive ? styles.activeLink : ""}`
+                }
+                end={to === "/dashboard"}
+                key={to}
+                to={to}
               >
                 <NavIcon kind={icon} />
                 <span>{label}</span>
-              </a>
+              </NavLink>
             ))}
           </nav>
         </div>
@@ -133,6 +133,21 @@ export default function Topbar() {
           </span>
         </div>
         <ActionButtons />
+        <nav aria-label="Navegación móvil" className={styles.mobileNav}>
+          {links.map(([to, label, icon]) => (
+            <NavLink
+              className={({ isActive }) =>
+                `${styles.mobileNavLink} ${isActive ? styles.mobileActiveLink : ""}`
+              }
+              end={to === "/dashboard"}
+              key={to}
+              to={to}
+            >
+              <NavIcon kind={icon} />
+              <span>{label}</span>
+            </NavLink>
+          ))}
+        </nav>
       </header>
 
       <div className={styles.desktopActions}>

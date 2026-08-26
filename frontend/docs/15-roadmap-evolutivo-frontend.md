@@ -8,9 +8,9 @@
 ## Estado de implementación
 
 - **Módulos 01–14:** implementados y documentados.
-- **Módulos 15–17:** implementados: calidad, tests, CI, timeout, cancelación,
+- **Módulos 15–18:** implementados: calidad, tests, CI, timeout, cancelación,
   validación de contratos y sincronización mercado-cartera.
-- **Módulos 18–26:** planificados; todavía no implementados.
+- **Módulos 19–26:** planificados; todavía no implementados.
 
 ## 1. Diagnóstico actual
 
@@ -188,6 +188,8 @@ requiere confirmación.
 **Prioridad:** P1  
 **Dependencias:** módulos 15 y 17.
 
+**Estado:** implementado y verificado localmente.
+
 Preparar la interfaz para crecer más allá de un único dashboard con anclas.
 
 **Alcance:**
@@ -199,6 +201,13 @@ Preparar la interfaz para crecer más allá de un único dashboard con anclas.
 - abrir automáticamente una sección cuando se llega desde una navegación;
 - sincronizar correctamente el estado activo con back/forward del navegador;
 - preservar o restaurar la posición de scroll cuando corresponda.
+
+**Implementado:** `/dashboard` conserva el resumen y las secciones ahora tienen
+vistas independientes en `/market`, `/portfolio`, `/favorites`, `/history` y
+`/compare`. `Topbar` utiliza `NavLink`, marca la ruta activa con
+`aria-current="page"` y ofrece navegación horizontal accesible en mobile. Todas
+las vistas comparten `DashboardLayout`, por lo que mantienen el mismo contexto
+de sesión, mercado y refresco.
 
 **Criterios de aceptación:**
 

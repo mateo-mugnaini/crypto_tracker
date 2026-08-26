@@ -213,6 +213,7 @@
     top: 0;
     z-index: 30;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
@@ -229,6 +230,42 @@
 
   .mobileHeader .brand > span:last-child {
     min-width: 0;
+  }
+
+  .mobileNav {
+    display: flex;
+    flex-basis: 100%;
+    gap: 0.35rem;
+    margin: 0 -0.25rem -0.1rem;
+    overflow-x: auto;
+    padding: 0.2rem 0.25rem 0.1rem;
+    scrollbar-width: thin;
+  }
+
+  .mobileNavLink {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    color: var(--text-muted);
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 0.7rem;
+    gap: 0.35rem;
+    min-height: 2.25rem;
+    padding: 0.45rem 0.7rem;
+    white-space: nowrap;
+  }
+
+  .mobileNavLink:hover,
+  .mobileActiveLink {
+    background: var(--primary-muted);
+    border-color: rgba(25, 198, 211, 0.25);
+    color: var(--text-primary);
+  }
+
+  .mobileNavLink .navIcon {
+    height: 0.9rem;
+    width: 0.9rem;
   }
 }
 
