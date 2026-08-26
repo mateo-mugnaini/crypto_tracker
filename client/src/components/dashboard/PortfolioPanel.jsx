@@ -373,333 +373,358 @@ export default function PortfolioPanel() {
               }),
             ],
           }),
-          _jsxs("div", {
-            className: styles.operationsHeader,
+          _jsxs("details", {
+            className: styles.advancedSection,
             children: [
+              _jsx("summary", {
+                className: styles.advancedSummary,
+                children: "Registrar una operación detallada",
+              }),
               _jsxs("div", {
+                className: styles.advancedSectionContent,
                 children: [
-                  _jsx("h3", {
-                    className: styles.subheading,
-                    children: "Registro de operaciones",
-                  }),
-                  _jsx("p", {
-                    className: styles.muted,
-                    children: "Compras y ventas declaradas en USD.",
-                  }),
-                ],
-              }),
-              editingOperationId &&
-                _jsx(Button, {
-                  onClick: resetOperationForm,
-                  variant: "ghost",
-                  children: "Cancelar edici\u00F3n",
-                }),
-            ],
-          }),
-          operationError && _jsx(Alert, { tone: "error", children: operationError }),
-          _jsxs("form", {
-            className: styles.operationForm,
-            onSubmit: handleOperationSubmit,
-            children: [
-              _jsx(Field, {
-                id: "operation-coin",
-                label: "Moneda",
-                children: _jsx("select", {
-                  disabled: isOperationSaving || coins.length === 0,
-                  id: "operation-coin",
-                  onChange: (event) => setOperationCoinId(event.target.value),
-                  value: operationCoinId,
-                  children: coins.map((coin) =>
-                    _jsxs(
-                      "option",
-                      {
-                        value: coin.id,
-                        children: [coin.name, " (", coin.symbol.toUpperCase(), ")"],
-                      },
-                      coin.id,
-                    ),
-                  ),
-                }),
-              }),
-              _jsx(Field, {
-                id: "operation-type",
-                label: "Tipo",
-                children: _jsxs("select", {
-                  disabled: isOperationSaving,
-                  id: "operation-type",
-                  onChange: (event) => setOperationType(event.target.value),
-                  value: operationType,
-                  children: [
-                    _jsx("option", { value: "buy", children: "Compra" }),
-                    _jsx("option", { value: "sell", children: "Venta" }),
-                  ],
-                }),
-              }),
-              _jsx(Field, {
-                id: "operation-quantity",
-                label: "Cantidad",
-                children: _jsx("input", {
-                  disabled: isOperationSaving,
-                  id: "operation-quantity",
-                  min: "0",
-                  step: "any",
-                  onChange: (event) => setOperationQuantity(event.target.value),
-                  placeholder: "0.10",
-                  type: "number",
-                  value: operationQuantity,
-                }),
-              }),
-              _jsx(Field, {
-                id: "operation-price",
-                label: "Precio USD por unidad",
-                children: _jsx("input", {
-                  disabled: isOperationSaving,
-                  id: "operation-price",
-                  min: "0",
-                  step: "any",
-                  onChange: (event) => setOperationPrice(event.target.value),
-                  placeholder: "40000",
-                  type: "number",
-                  value: operationPrice,
-                }),
-              }),
-              _jsx(Field, {
-                id: "operation-fee",
-                label: "Comisi\u00F3n USD",
-                hint: "Opcional",
-                children: _jsx("input", {
-                  disabled: isOperationSaving,
-                  id: "operation-fee",
-                  min: "0",
-                  step: "any",
-                  onChange: (event) => setOperationFee(event.target.value),
-                  type: "number",
-                  value: operationFee,
-                }),
-              }),
-              _jsx(Field, {
-                id: "operation-date",
-                label: "Fecha y hora",
-                children: _jsx("input", {
-                  disabled: isOperationSaving,
-                  id: "operation-date",
-                  onChange: (event) => setOperationDate(event.target.value),
-                  required: true,
-                  type: "datetime-local",
-                  value: operationDate,
-                }),
-              }),
-              _jsx(Field, {
-                id: "operation-note",
-                label: "Nota",
-                hint: "Opcional",
-                children: _jsx("input", {
-                  disabled: isOperationSaving,
-                  id: "operation-note",
-                  maxLength: 500,
-                  onChange: (event) => setOperationNote(event.target.value),
-                  placeholder: "Ej. Compra mensual",
-                  type: "text",
-                  value: operationNote,
-                }),
-              }),
-              _jsx(Button, {
-                disabled: isOperationSaving || coins.length === 0,
-                loading: isOperationSaving,
-                type: "submit",
-                children: editingOperationId
-                  ? "Guardar cambios"
-                  : "Registrar operación",
-              }),
-            ],
-          }),
-          isLoading &&
-            _jsx("p", {
-              className: styles.muted,
-              children: "Cargando posiciones\u2026",
-            }),
-          !isLoading &&
-            portfolio?.holdings.length === 0 &&
-            _jsx(EmptyState, {
-              description:
-                "Agrega una posici\u00F3n r\u00E1pida o registra una compra para comenzar.",
-              title: "Tu cartera todav\u00EDa est\u00E1 vac\u00EDa.",
-            }),
-          !isLoading &&
-            Boolean(portfolio?.holdings.length) &&
-            _jsx("div", {
-              className: styles.tableWrapper,
-              children: _jsxs("table", {
-                children: [
-                  _jsx("thead", {
-                    children: _jsxs("tr", {
-                      children: [
-                        _jsx("th", { children: "Activo" }),
-                        _jsx("th", { children: "Cantidad" }),
-                        _jsx("th", { children: "Valor actual" }),
-                        _jsx("th", { children: "Resultado" }),
-                        _jsx("th", { children: "Peso" }),
-                        _jsx("th", {}),
-                      ],
-                    }),
-                  }),
-                  _jsx("tbody", {
-                    children: portfolio?.holdings.map((holding) =>
-                      _jsxs(
-                        "tr",
-                        {
-                          children: [
-                            _jsxs("td", {
-                              children: [
-                                _jsx("strong", { children: holding.name }),
-                                _jsx("small", {
-                                  children: holding.symbol.toUpperCase(),
-                                }),
-                              ],
-                            }),
-                            _jsx("td", { children: holding.quantity }),
-                            _jsx("td", {
-                              children: formatMoney(holding.current_value),
-                            }),
-                            _jsxs("td", {
-                              className:
-                                holding.profit_loss !== null && holding.profit_loss >= 0
-                                  ? styles.positive
-                                  : styles.negative,
-                              children: [
-                                formatMoney(holding.profit_loss),
-                                _jsx("small", {
-                                  children: formatPercent(
-                                    holding.profit_loss_percentage,
-                                  ),
-                                }),
-                              ],
-                            }),
-                            _jsx("td", {
-                              children: formatPercent(holding.allocation_percentage),
-                            }),
-                            _jsx("td", {
-                              children: _jsx(Button, {
-                                onClick: () =>
-                                  setHoldingToRemove({
-                                    coinId: holding.coin_id,
-                                    name: holding.name,
-                                  }),
-                                variant: "danger",
-                                children: "Eliminar",
-                              }),
-                            }),
-                          ],
-                        },
-                        holding.coin_id,
-                      ),
-                    ),
-                  }),
-                ],
-              }),
-            }),
-          _jsxs("div", {
-            className: styles.operationsList,
-            children: [
-              _jsx("h3", {
-                className: styles.subheading,
-                children: "\u00DAltimas operaciones",
-              }),
-              isOperationsLoading &&
-                _jsx("p", {
-                  className: styles.muted,
-                  children: "Cargando operaciones\u2026",
-                }),
-              !isOperationsLoading &&
-                operations.length === 0 &&
-                _jsx("p", {
-                  className: styles.muted,
-                  children: "Todav\u00EDa no registraste operaciones.",
-                }),
-              !isOperationsLoading &&
-                operations.length > 0 &&
-                _jsx("div", {
-                  className: styles.tableWrapper,
-                  children: _jsxs("table", {
+                  _jsxs("div", {
+                    className: styles.operationsHeader,
                     children: [
-                      _jsx("thead", {
-                        children: _jsxs("tr", {
+                      _jsxs("div", {
+                        children: [
+                          _jsx("h3", {
+                            className: styles.subheading,
+                            children: "Registro de operaciones",
+                          }),
+                          _jsx("p", {
+                            className: styles.muted,
+                            children: "Compras y ventas declaradas en USD.",
+                          }),
+                        ],
+                      }),
+                      editingOperationId &&
+                        _jsx(Button, {
+                          onClick: resetOperationForm,
+                          variant: "ghost",
+                          children: "Cancelar edici\u00F3n",
+                        }),
+                    ],
+                  }),
+                  operationError &&
+                    _jsx(Alert, { tone: "error", children: operationError }),
+                  _jsxs("form", {
+                    className: styles.operationForm,
+                    onSubmit: handleOperationSubmit,
+                    children: [
+                      _jsx(Field, {
+                        id: "operation-coin",
+                        label: "Moneda",
+                        children: _jsx("select", {
+                          disabled: isOperationSaving || coins.length === 0,
+                          id: "operation-coin",
+                          onChange: (event) => setOperationCoinId(event.target.value),
+                          value: operationCoinId,
+                          children: coins.map((coin) =>
+                            _jsxs(
+                              "option",
+                              {
+                                value: coin.id,
+                                children: [
+                                  coin.name,
+                                  " (",
+                                  coin.symbol.toUpperCase(),
+                                  ")",
+                                ],
+                              },
+                              coin.id,
+                            ),
+                          ),
+                        }),
+                      }),
+                      _jsx(Field, {
+                        id: "operation-type",
+                        label: "Tipo",
+                        children: _jsxs("select", {
+                          disabled: isOperationSaving,
+                          id: "operation-type",
+                          onChange: (event) => setOperationType(event.target.value),
+                          value: operationType,
                           children: [
-                            _jsx("th", { children: "Fecha" }),
-                            _jsx("th", { children: "Activo" }),
-                            _jsx("th", { children: "Tipo" }),
-                            _jsx("th", { children: "Cantidad" }),
-                            _jsx("th", { children: "Total" }),
-                            _jsx("th", {}),
+                            _jsx("option", { value: "buy", children: "Compra" }),
+                            _jsx("option", { value: "sell", children: "Venta" }),
                           ],
                         }),
                       }),
-                      _jsx("tbody", {
-                        children: operations.map((operation) =>
-                          _jsxs(
-                            "tr",
-                            {
-                              children: [
-                                _jsx("td", {
-                                  children: new Date(
-                                    operation.executed_at,
-                                  ).toLocaleDateString("es-AR"),
-                                }),
-                                _jsxs("td", {
-                                  children: [
-                                    _jsx("strong", { children: operation.name }),
-                                    _jsx("small", {
-                                      children: operation.symbol.toUpperCase(),
-                                    }),
-                                  ],
-                                }),
-                                _jsx("td", {
-                                  children: _jsx(Badge, {
-                                    tone:
-                                      operation.operation_type === "buy"
-                                        ? "success"
-                                        : "danger",
-                                    children:
-                                      operation.operation_type === "buy"
-                                        ? "Compra"
-                                        : "Venta",
-                                  }),
-                                }),
-                                _jsx("td", { children: operation.quantity }),
-                                _jsx("td", {
-                                  children: formatMoney(
-                                    operation.quantity * operation.price_usd +
-                                      operation.fee_usd,
-                                  ),
-                                }),
-                                _jsxs("td", {
-                                  className: styles.operationActions,
-                                  children: [
-                                    _jsx(Button, {
-                                      onClick: () => startEditing(operation),
-                                      variant: "ghost",
-                                      children: "Editar",
-                                    }),
-                                    _jsx(Button, {
-                                      onClick: () =>
-                                        setOperationToRemove({
-                                          id: operation.id,
-                                          name: operation.name,
-                                        }),
-                                      variant: "danger",
-                                      children: "Eliminar",
-                                    }),
-                                  ],
-                                }),
-                              ],
-                            },
-                            operation.id,
-                          ),
-                        ),
+                      _jsx(Field, {
+                        id: "operation-quantity",
+                        label: "Cantidad",
+                        children: _jsx("input", {
+                          disabled: isOperationSaving,
+                          id: "operation-quantity",
+                          min: "0",
+                          step: "any",
+                          onChange: (event) => setOperationQuantity(event.target.value),
+                          placeholder: "0.10",
+                          type: "number",
+                          value: operationQuantity,
+                        }),
+                      }),
+                      _jsx(Field, {
+                        id: "operation-price",
+                        label: "Precio USD por unidad",
+                        children: _jsx("input", {
+                          disabled: isOperationSaving,
+                          id: "operation-price",
+                          min: "0",
+                          step: "any",
+                          onChange: (event) => setOperationPrice(event.target.value),
+                          placeholder: "40000",
+                          type: "number",
+                          value: operationPrice,
+                        }),
+                      }),
+                      _jsx(Field, {
+                        id: "operation-fee",
+                        label: "Comisi\u00F3n USD",
+                        hint: "Opcional",
+                        children: _jsx("input", {
+                          disabled: isOperationSaving,
+                          id: "operation-fee",
+                          min: "0",
+                          step: "any",
+                          onChange: (event) => setOperationFee(event.target.value),
+                          type: "number",
+                          value: operationFee,
+                        }),
+                      }),
+                      _jsx(Field, {
+                        id: "operation-date",
+                        label: "Fecha y hora",
+                        children: _jsx("input", {
+                          disabled: isOperationSaving,
+                          id: "operation-date",
+                          onChange: (event) => setOperationDate(event.target.value),
+                          required: true,
+                          type: "datetime-local",
+                          value: operationDate,
+                        }),
+                      }),
+                      _jsx(Field, {
+                        id: "operation-note",
+                        label: "Nota",
+                        hint: "Opcional",
+                        children: _jsx("input", {
+                          disabled: isOperationSaving,
+                          id: "operation-note",
+                          maxLength: 500,
+                          onChange: (event) => setOperationNote(event.target.value),
+                          placeholder: "Ej. Compra mensual",
+                          type: "text",
+                          value: operationNote,
+                        }),
+                      }),
+                      _jsx(Button, {
+                        disabled: isOperationSaving || coins.length === 0,
+                        loading: isOperationSaving,
+                        type: "submit",
+                        children: editingOperationId
+                          ? "Guardar cambios"
+                          : "Registrar operación",
                       }),
                     ],
                   }),
-                }),
+                  isLoading &&
+                    _jsx("p", {
+                      className: styles.muted,
+                      children: "Cargando posiciones\u2026",
+                    }),
+                  !isLoading &&
+                    portfolio?.holdings.length === 0 &&
+                    _jsx(EmptyState, {
+                      description:
+                        "Agrega una posici\u00F3n r\u00E1pida o registra una compra para comenzar.",
+                      title: "Tu cartera todav\u00EDa est\u00E1 vac\u00EDa.",
+                    }),
+                  !isLoading &&
+                    Boolean(portfolio?.holdings.length) &&
+                    _jsx("div", {
+                      className: styles.tableWrapper,
+                      children: _jsxs("table", {
+                        children: [
+                          _jsx("thead", {
+                            children: _jsxs("tr", {
+                              children: [
+                                _jsx("th", { children: "Activo" }),
+                                _jsx("th", { children: "Cantidad" }),
+                                _jsx("th", { children: "Valor actual" }),
+                                _jsx("th", { children: "Resultado" }),
+                                _jsx("th", { children: "Peso" }),
+                                _jsx("th", {}),
+                              ],
+                            }),
+                          }),
+                          _jsx("tbody", {
+                            children: portfolio?.holdings.map((holding) =>
+                              _jsxs(
+                                "tr",
+                                {
+                                  children: [
+                                    _jsxs("td", {
+                                      children: [
+                                        _jsx("strong", { children: holding.name }),
+                                        _jsx("small", {
+                                          children: holding.symbol.toUpperCase(),
+                                        }),
+                                      ],
+                                    }),
+                                    _jsx("td", { children: holding.quantity }),
+                                    _jsx("td", {
+                                      children: formatMoney(holding.current_value),
+                                    }),
+                                    _jsxs("td", {
+                                      className:
+                                        holding.profit_loss !== null &&
+                                        holding.profit_loss >= 0
+                                          ? styles.positive
+                                          : styles.negative,
+                                      children: [
+                                        formatMoney(holding.profit_loss),
+                                        _jsx("small", {
+                                          children: formatPercent(
+                                            holding.profit_loss_percentage,
+                                          ),
+                                        }),
+                                      ],
+                                    }),
+                                    _jsx("td", {
+                                      children: formatPercent(
+                                        holding.allocation_percentage,
+                                      ),
+                                    }),
+                                    _jsx("td", {
+                                      children: _jsx(Button, {
+                                        onClick: () =>
+                                          setHoldingToRemove({
+                                            coinId: holding.coin_id,
+                                            name: holding.name,
+                                          }),
+                                        variant: "danger",
+                                        children: "Eliminar",
+                                      }),
+                                    }),
+                                  ],
+                                },
+                                holding.coin_id,
+                              ),
+                            ),
+                          }),
+                        ],
+                      }),
+                    }),
+                  _jsxs("div", {
+                    className: styles.operationsList,
+                    children: [
+                      _jsx("h3", {
+                        className: styles.subheading,
+                        children: "\u00DAltimas operaciones",
+                      }),
+                      isOperationsLoading &&
+                        _jsx("p", {
+                          className: styles.muted,
+                          children: "Cargando operaciones\u2026",
+                        }),
+                      !isOperationsLoading &&
+                        operations.length === 0 &&
+                        _jsx("p", {
+                          className: styles.muted,
+                          children: "Todav\u00EDa no registraste operaciones.",
+                        }),
+                      !isOperationsLoading &&
+                        operations.length > 0 &&
+                        _jsx("div", {
+                          className: styles.tableWrapper,
+                          children: _jsxs("table", {
+                            children: [
+                              _jsx("thead", {
+                                children: _jsxs("tr", {
+                                  children: [
+                                    _jsx("th", { children: "Fecha" }),
+                                    _jsx("th", { children: "Activo" }),
+                                    _jsx("th", { children: "Tipo" }),
+                                    _jsx("th", { children: "Cantidad" }),
+                                    _jsx("th", { children: "Total" }),
+                                    _jsx("th", {}),
+                                  ],
+                                }),
+                              }),
+                              _jsx("tbody", {
+                                children: operations.map((operation) =>
+                                  _jsxs(
+                                    "tr",
+                                    {
+                                      children: [
+                                        _jsx("td", {
+                                          children: new Date(
+                                            operation.executed_at,
+                                          ).toLocaleDateString("es-AR"),
+                                        }),
+                                        _jsxs("td", {
+                                          children: [
+                                            _jsx("strong", {
+                                              children: operation.name,
+                                            }),
+                                            _jsx("small", {
+                                              children: operation.symbol.toUpperCase(),
+                                            }),
+                                          ],
+                                        }),
+                                        _jsx("td", {
+                                          children: _jsx(Badge, {
+                                            tone:
+                                              operation.operation_type === "buy"
+                                                ? "success"
+                                                : "danger",
+                                            children:
+                                              operation.operation_type === "buy"
+                                                ? "Compra"
+                                                : "Venta",
+                                          }),
+                                        }),
+                                        _jsx("td", { children: operation.quantity }),
+                                        _jsx("td", {
+                                          children: formatMoney(
+                                            operation.quantity * operation.price_usd +
+                                              operation.fee_usd,
+                                          ),
+                                        }),
+                                        _jsxs("td", {
+                                          className: styles.operationActions,
+                                          children: [
+                                            _jsx(Button, {
+                                              onClick: () => startEditing(operation),
+                                              variant: "ghost",
+                                              children: "Editar",
+                                            }),
+                                            _jsx(Button, {
+                                              onClick: () =>
+                                                setOperationToRemove({
+                                                  id: operation.id,
+                                                  name: operation.name,
+                                                }),
+                                              variant: "danger",
+                                              children: "Eliminar",
+                                            }),
+                                          ],
+                                        }),
+                                      ],
+                                    },
+                                    operation.id,
+                                  ),
+                                ),
+                              }),
+                            ],
+                          }),
+                        }),
+                    ],
+                  }),
+                ],
+              }),
             ],
           }),
         ],

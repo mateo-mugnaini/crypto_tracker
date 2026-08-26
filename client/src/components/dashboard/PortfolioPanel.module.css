@@ -62,6 +62,47 @@
   margin-top: 1.4rem;
 }
 
+.advancedSection {
+  margin-top: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+.advancedSummary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.8rem 0.9rem;
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.advancedSummary::-webkit-details-marker {
+  display: none;
+}
+
+.advancedSummary::after {
+  float: right;
+  color: var(--text-muted);
+  content: "+";
+  font-size: 1rem;
+}
+
+.advancedSection[open] .advancedSummary {
+  border-bottom: 1px solid var(--border);
+}
+
+.advancedSection[open] .advancedSummary::after {
+  content: "−";
+}
+
+.advancedSectionContent {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
 .operationsHeader .muted {
   margin: 0.25rem 0 0;
 }

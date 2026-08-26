@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { useMarket } from "../../features/market/MarketContext";
 import { useOptionalAlerts } from "../../features/alerts/AlertsContext";
@@ -33,16 +34,14 @@ const primaryLinks = [
   ["/dashboard", "Resumen", "overview"],
   ["/market", "Mercado", "market"],
   ["/portfolio", "Cartera", "portfolio"],
-  ["/favorites", "Favoritos", "favorites"],
 ];
 
 const analysisLinks = [
+  ["/favorites", "Favoritos", "favorites"],
   ["/history", "Historial", "history"],
   ["/compare", "Comparar", "compare"],
   ["/alerts", "Alertas", "alerts"],
 ];
-
-const links = [...primaryLinks, ...analysisLinks];
 
 function Brand() {
   return (
@@ -70,6 +69,32 @@ function NavigationLinks({ items, mobile = false }) {
       <span>{label}</span>
     </NavLink>
   ));
+}
+
+function MoreMenu({ mobile = false }) {
+  const { pathname } = useLocation();
+  const hasActiveItem = analysisLinks.some(([to]) => pathname.startsWith(to));
+  const [isOpen, setIsOpen] = useState(hasActiveItem);
+
+  useEffect(() => {
+    if (hasActiveItem) setIsOpen(true);
+  }, [hasActiveItem]);
+
+  return (
+    <details
+      className={mobile ? styles.mobileMoreMenu : styles.moreMenu}
+      onToggle={(event) => setIsOpen(event.currentTarget.open)}
+      open={isOpen}
+    >
+      <summary className={mobile ? styles.mobileMoreSummary : styles.moreSummary}>
+        <span className={styles.moreIcon}>•••</span>
+        <span>Más</span>
+      </summary>
+      <nav className={mobile ? styles.mobileMoreLinks : styles.moreLinks}>
+        <NavigationLinks items={analysisLinks} mobile={mobile} />
+      </nav>
+    </details>
+  );
 }
 
 function ActionButtons() {
@@ -149,10 +174,8 @@ export default function Topbar() {
           </nav>
         </div>
         <div className={styles.navGroup}>
-          <span className={styles.navLabel}>Herramientas</span>
-          <nav>
-            <NavigationLinks items={analysisLinks} />
-          </nav>
+          <span className={styles.navLabel}>Más</span>
+          <MoreMenu />
         </div>
         <div className={styles.sidebarFooter}>
           <span className={styles.statusDot} />
@@ -166,7 +189,8 @@ export default function Topbar() {
         <Brand />
         <ActionButtons />
         <nav aria-label="Navegación móvil" className={styles.mobileNav}>
-          <NavigationLinks items={links} mobile />
+          <NavigationLinks items={primaryLinks} mobile />
+          <MoreMenu mobile />
         </nav>
       </header>
       <div className={styles.desktopActions}>

@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { useMarket } from "../../features/market/MarketContext";
 import { useAlerts } from "../../features/alerts/AlertsContext";
 import { useToast } from "../ui/ToastProvider";
+import ConfirmDialog from "../ui/ConfirmDialog";
 import styles from "./AlertsPanel.module.css";
 const money = new Intl.NumberFormat("es-AR", {
   style: "currency",
@@ -32,6 +33,7 @@ export default function AlertsPanel() {
   const [condition, setCondition] = useState("above");
   const [targetPrice, setTargetPrice] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [alertToRemove, setAlertToRemove] = useState(null);
   const orderedCoins = useMemo(
     () => [...coins].sort((a, b) => a.name.localeCompare(b.name)),
     [coins],
@@ -61,11 +63,15 @@ export default function AlertsPanel() {
       setIsSaving(false);
     }
   };
-  const remove = async (alertId) => {
-    if (!window.confirm("¿Eliminar esta alerta?")) return;
+  const remove = (alert) => {
+    setAlertToRemove(alert);
+  };
+  const confirmRemove = async () => {
+    if (!alertToRemove) return;
     try {
-      await removeAlert(alertId);
+      await removeAlert(alertToRemove.id);
       showToast("Alerta eliminada.", "success");
+      setAlertToRemove(null);
     } catch (caughtError) {
       showToast(
         caughtError instanceof Error
@@ -231,7 +237,7 @@ export default function AlertsPanel() {
                             }),
                             _jsx("button", {
                               className: styles.deleteButton,
-                              onClick: () => void remove(alert.id),
+                              onClick: () => remove(alert),
                               type: "button",
                               children: "Eliminar",
                             }),
@@ -297,6 +303,15 @@ export default function AlertsPanel() {
             ],
           }),
         ],
+      }),
+      _jsx(ConfirmDialog, {
+        confirmLabel: "Eliminar alerta",
+        description: "Esta acción no se puede deshacer.",
+        isConfirming: status === "loading",
+        onCancel: () => setAlertToRemove(null),
+        onConfirm: () => void confirmRemove(),
+        open: alertToRemove !== null,
+        title: "¿Eliminar esta alerta?",
       }),
     ],
   });

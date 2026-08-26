@@ -197,6 +197,48 @@
   font-size: 0.7rem;
 }
 
+.secondarySection {
+  margin-top: 1rem;
+}
+
+.secondarySection > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1rem;
+  color: var(--text-secondary);
+  background: var(--surface-1);
+  font-size: 0.78rem;
+  font-weight: 800;
+  list-style: none;
+}
+
+.secondarySection > summary::-webkit-details-marker {
+  display: none;
+}
+
+.secondarySection > summary::after {
+  color: var(--text-muted);
+  content: "+";
+  font-size: 1rem;
+}
+
+.secondarySection[open] > summary {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+
+.secondarySection[open] > summary::after {
+  content: "−";
+}
+
+.secondarySection > .panel {
+  margin-top: 0.75rem;
+}
+
 @keyframes contentReveal {
   from {
     opacity: 0;

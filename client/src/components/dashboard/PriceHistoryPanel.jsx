@@ -189,87 +189,96 @@ export default function PriceHistoryPanel({ initialCoinId = "" }) {
               }),
             ],
           }),
-          _jsxs("form", {
-            className: styles.filterForm,
-            onSubmit: handleFilterSubmit,
+          _jsxs("details", {
+            className: styles.filterDetails,
             children: [
-              _jsxs("label", {
-                children: [
-                  "Desde",
-                  _jsx("input", {
-                    onChange: (event) =>
-                      updateDraftFilter("startDate", event.target.value),
-                    type: "date",
-                    value: draftFilters.startDate,
-                  }),
-                ],
+              _jsx("summary", {
+                className: styles.filterSummary,
+                children: "Cambiar período y filtros",
               }),
-              _jsxs("label", {
+              _jsxs("form", {
+                className: styles.filterForm,
+                onSubmit: handleFilterSubmit,
                 children: [
-                  "Hasta",
-                  _jsx("input", {
-                    onChange: (event) =>
-                      updateDraftFilter("endDate", event.target.value),
-                    type: "date",
-                    value: draftFilters.endDate,
-                  }),
-                ],
-              }),
-              _jsxs("label", {
-                children: [
-                  "Precio m\u00EDnimo",
-                  _jsx("input", {
-                    min: "0",
-                    onChange: (event) =>
-                      updateDraftFilter("minPrice", event.target.value),
-                    step: "any",
-                    type: "number",
-                    value: draftFilters.minPrice,
-                  }),
-                ],
-              }),
-              _jsxs("label", {
-                children: [
-                  "Precio m\u00E1ximo",
-                  _jsx("input", {
-                    min: "0",
-                    onChange: (event) =>
-                      updateDraftFilter("maxPrice", event.target.value),
-                    step: "any",
-                    type: "number",
-                    value: draftFilters.maxPrice,
-                  }),
-                ],
-              }),
-              _jsxs("label", {
-                children: [
-                  "Ordenar por",
-                  _jsxs("select", {
-                    onChange: (event) =>
-                      updateDraftFilter("sortBy", event.target.value),
-                    value: draftFilters.sortBy,
+                  _jsxs("label", {
                     children: [
-                      _jsx("option", { value: "recorded_at", children: "Fecha" }),
-                      _jsx("option", { value: "price", children: "Precio" }),
+                      "Desde",
+                      _jsx("input", {
+                        onChange: (event) =>
+                          updateDraftFilter("startDate", event.target.value),
+                        type: "date",
+                        value: draftFilters.startDate,
+                      }),
                     ],
                   }),
-                ],
-              }),
-              _jsxs("label", {
-                children: [
-                  "Direcci\u00F3n",
-                  _jsxs("select", {
-                    onChange: (event) =>
-                      updateDraftFilter("sortOrder", event.target.value),
-                    value: draftFilters.sortOrder,
+                  _jsxs("label", {
                     children: [
-                      _jsx("option", { value: "desc", children: "Descendente" }),
-                      _jsx("option", { value: "asc", children: "Ascendente" }),
+                      "Hasta",
+                      _jsx("input", {
+                        onChange: (event) =>
+                          updateDraftFilter("endDate", event.target.value),
+                        type: "date",
+                        value: draftFilters.endDate,
+                      }),
                     ],
                   }),
+                  _jsxs("label", {
+                    children: [
+                      "Precio m\u00EDnimo",
+                      _jsx("input", {
+                        min: "0",
+                        onChange: (event) =>
+                          updateDraftFilter("minPrice", event.target.value),
+                        step: "any",
+                        type: "number",
+                        value: draftFilters.minPrice,
+                      }),
+                    ],
+                  }),
+                  _jsxs("label", {
+                    children: [
+                      "Precio m\u00E1ximo",
+                      _jsx("input", {
+                        min: "0",
+                        onChange: (event) =>
+                          updateDraftFilter("maxPrice", event.target.value),
+                        step: "any",
+                        type: "number",
+                        value: draftFilters.maxPrice,
+                      }),
+                    ],
+                  }),
+                  _jsxs("label", {
+                    children: [
+                      "Ordenar por",
+                      _jsxs("select", {
+                        onChange: (event) =>
+                          updateDraftFilter("sortBy", event.target.value),
+                        value: draftFilters.sortBy,
+                        children: [
+                          _jsx("option", { value: "recorded_at", children: "Fecha" }),
+                          _jsx("option", { value: "price", children: "Precio" }),
+                        ],
+                      }),
+                    ],
+                  }),
+                  _jsxs("label", {
+                    children: [
+                      "Direcci\u00F3n",
+                      _jsxs("select", {
+                        onChange: (event) =>
+                          updateDraftFilter("sortOrder", event.target.value),
+                        value: draftFilters.sortOrder,
+                        children: [
+                          _jsx("option", { value: "desc", children: "Descendente" }),
+                          _jsx("option", { value: "asc", children: "Ascendente" }),
+                        ],
+                      }),
+                    ],
+                  }),
+                  _jsx("button", { type: "submit", children: "Aplicar filtros" }),
                 ],
               }),
-              _jsx("button", { type: "submit", children: "Aplicar filtros" }),
             ],
           }),
         ],

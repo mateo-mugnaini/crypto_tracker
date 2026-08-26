@@ -55,6 +55,42 @@
   flex-wrap: wrap;
 }
 
+.filterDetails {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+.filterSummary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.75rem 0.85rem;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.filterSummary::-webkit-details-marker {
+  display: none;
+}
+
+.filterSummary::after {
+  float: right;
+  color: var(--text-muted);
+  content: "+";
+  font-size: 1rem;
+}
+
+.filterDetails[open] .filterSummary {
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.filterDetails[open] .filterSummary::after {
+  content: "−";
+}
+
 .toolbar > label,
 .filterForm label {
   display: grid;
@@ -94,6 +130,10 @@
   justify-content: flex-end;
   flex-wrap: wrap;
   gap: 0.55rem;
+}
+
+.filterDetails .filterForm {
+  padding: 0.85rem;
 }
 
 .filterForm button,

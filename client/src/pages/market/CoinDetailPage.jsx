@@ -149,6 +149,11 @@ export default function CoinDetailPage() {
                 _jsxs("div", {
                   className: styles.actions,
                   children: [
+                    _jsx(Link, {
+                      className: styles.backLink,
+                      to: "/market",
+                      children: "Volver al mercado",
+                    }),
                     _jsx("button", {
                       "aria-label": favorite
                         ? `Quitar ${coin.name} de favoritos`

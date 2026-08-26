@@ -1,13 +1,20 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import PortfolioPanel from "../../components/dashboard/PortfolioPanel";
 import PortfolioAnalyticsPanel from "../../components/dashboard/PortfolioAnalyticsPanel";
 import DashboardLayout from "../dashboard/DashboardLayout";
+import styles from "../dashboard/DashboardPage.module.css";
+
 export default function PortfolioPage() {
-  return _jsxs(DashboardLayout, {
-    description:
-      "Registra tus posiciones para conocer cu\u00E1nto invertiste y c\u00F3mo evoluciona su valor.",
-    eyebrow: "Cartera",
-    title: "Seguí tu inversión.",
-    children: [_jsx(PortfolioPanel, {}), _jsx(PortfolioAnalyticsPanel, {})],
-  });
+  return (
+    <DashboardLayout
+      description="Registrá tus posiciones para saber cuánto invertiste y cómo evoluciona su valor."
+      eyebrow="Cartera"
+      title="Seguí tu inversión."
+    >
+      <PortfolioPanel />
+      <details className={styles.secondarySection}>
+        <summary>Ver análisis avanzado de la cartera</summary>
+        <PortfolioAnalyticsPanel />
+      </details>
+    </DashboardLayout>
+  );
 }
