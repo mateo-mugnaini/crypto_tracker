@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { api, setUnauthorizedHandler } from "../api/client";
+import { api, isRequestCancelled, setUnauthorizedHandler } from "../api/client";
 import type { User } from "../api/types";
 
 const TOKEN_STORAGE_KEY = "crypto_tracker_access_token";
@@ -51,15 +51,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     setToken(storedToken);
+    const controller = new AbortController();
+
     api
-      .getCurrentUser(storedToken)
+      .getCurrentUser(storedToken, { signal: controller.signal })
       .then((currentUser) => {
         setUser(currentUser);
         setStatus("authenticated");
       })
-      .catch(() => {
-        logout();
+      .catch((caughtError) => {
+        if (!isRequestCancelled(caughtError)) {
+          logout();
+        }
       });
+
+    return () => controller.abort();
   }, [logout]);
 
   const login = useCallback(async (email: string, password: string) => {

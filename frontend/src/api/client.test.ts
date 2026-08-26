@@ -89,4 +89,66 @@ describe("api client", () => {
       },
     );
   });
+
+  it("clasifica una respuesta exitosa que no cumple el contrato", async () => {
+    mockResponse({ success: true, data: [] });
+
+    await expect(api.getCoins()).rejects.toMatchObject({
+      code: "invalid_response",
+      kind: "contract",
+      status: 200,
+    });
+  });
+
+  it("cancela una solicitud cuando se aborta su signal", async () => {
+    const controller = new AbortController();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((_url: string, options: RequestInit) => {
+        if (options.signal?.aborted) {
+          return Promise.reject(new DOMException("Aborted", "AbortError"));
+        }
+
+        return new Promise((_, reject) => {
+          options.signal?.addEventListener("abort", () => {
+            reject(new DOMException("Aborted", "AbortError"));
+          });
+        });
+      }),
+    );
+    controller.abort();
+
+    await expect(api.getCoins({ signal: controller.signal })).rejects.toMatchObject({
+      code: "request_aborted",
+      kind: "aborted",
+    });
+  });
+
+  it("clasifica como timeout una solicitud que supera su límite", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        (_url: string, options: RequestInit) =>
+          new Promise((_, reject) => {
+            options.signal?.addEventListener("abort", () => {
+              reject(new DOMException("Aborted", "AbortError"));
+            });
+          }),
+      ),
+    );
+
+    try {
+      const request = api.getCoins({ timeoutMs: 25 });
+      const rejection = expect(request).rejects.toMatchObject({
+        code: "request_timeout",
+        kind: "timeout",
+      });
+      await vi.advanceTimersByTimeAsync(25);
+
+      await rejection;
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });

@@ -48,7 +48,11 @@ describe("FavoritesProvider", () => {
     await waitFor(() => {
       expect(screen.getByTestId("favorites-result")).toHaveTextContent("Bitcoin");
     });
-    expect(getCurrentUser).toHaveBeenCalledWith("access-token");
-    expect(getFavoriteDetails).toHaveBeenCalledWith(7, "access-token");
+    expect(getCurrentUser).toHaveBeenCalledWith("access-token", expect.anything());
+    expect(getFavoriteDetails).toHaveBeenCalledWith(
+      7,
+      "access-token",
+      expect.anything(),
+    );
   });
 });

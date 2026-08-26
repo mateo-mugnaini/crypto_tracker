@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 
-import { ApiError, api } from "../../api/client";
+import { ApiError, api, isRequestCancelled } from "../../api/client";
 import type {
   PriceHistoryRecord,
   PriceHistoryStatistics,
@@ -87,25 +87,34 @@ export default function PriceHistoryPanel() {
     }
 
     let cancelled = false;
+    const controller = new AbortController();
     setIsHistoryLoading(true);
     setHistoryError(null);
 
     Promise.all([
-      api.getPriceHistory(selectedCoinId, {
-        startDate: filters.startDate || undefined,
-        endDate: filters.endDate || undefined,
-        minPrice: filters.minPrice || undefined,
-        maxPrice: filters.maxPrice || undefined,
-        limit: PAGE_SIZE + 1,
-        offset: page * PAGE_SIZE,
-        sortBy: filters.sortBy,
-        sortOrder: filters.sortOrder,
-      }),
-      api.getPriceStatistics(selectedCoinId),
-      api.getPriceVariation(selectedCoinId, {
-        startDate: filters.startDate || undefined,
-        endDate: filters.endDate || undefined,
-      }),
+      api.getPriceHistory(
+        selectedCoinId,
+        {
+          startDate: filters.startDate || undefined,
+          endDate: filters.endDate || undefined,
+          minPrice: filters.minPrice || undefined,
+          maxPrice: filters.maxPrice || undefined,
+          limit: PAGE_SIZE + 1,
+          offset: page * PAGE_SIZE,
+          sortBy: filters.sortBy,
+          sortOrder: filters.sortOrder,
+        },
+        { signal: controller.signal },
+      ),
+      api.getPriceStatistics(selectedCoinId, { signal: controller.signal }),
+      api.getPriceVariation(
+        selectedCoinId,
+        {
+          startDate: filters.startDate || undefined,
+          endDate: filters.endDate || undefined,
+        },
+        { signal: controller.signal },
+      ),
     ])
       .then(([historyResponse, statisticsResponse, variationResponse]) => {
         if (cancelled) return;
@@ -116,7 +125,8 @@ export default function PriceHistoryPanel() {
         setVariation(variationResponse);
       })
       .catch((caughtError) => {
-        if (!cancelled) {
+        controller.abort();
+        if (!cancelled && !isRequestCancelled(caughtError)) {
           setHistoryError(getErrorMessage(caughtError));
           setRecords([]);
           setHasNextPage(false);
@@ -128,6 +138,7 @@ export default function PriceHistoryPanel() {
 
     return () => {
       cancelled = true;
+      controller.abort();
     };
   }, [filters, lastUpdated, page, selectedCoinId]);
 

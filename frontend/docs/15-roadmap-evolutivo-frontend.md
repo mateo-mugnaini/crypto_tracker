@@ -8,8 +8,9 @@
 ## Estado de implementación
 
 - **Módulos 01–14:** implementados y documentados.
-- **Módulo 15:** implementado: typecheck, tests, lint, formato, cobertura y CI.
-- **Módulos 16–26:** planificados; todavía no implementados.
+- **Módulos 15–16:** implementados: calidad, tests, CI, timeout, cancelación,
+  validación de contratos y sincronización mercado-cartera.
+- **Módulos 17–26:** planificados; todavía no implementados.
 
 ## 1. Diagnóstico actual
 
@@ -45,6 +46,10 @@ escalar y usar durante períodos largos.
 - HTML semántico en formularios, tablas, botones y acordeones.
 
 ### Deuda y oportunidades
+
+> La tabla de esta sección representa el diagnóstico inicial antes de comenzar
+> los módulos 15 y 16. El estado actualizado de esos módulos se indica en cada
+> sección correspondiente.
 
 | Área            | Situación actual                                                                                  | Impacto                                                                    | Prioridad |
 | --------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | --------- |
@@ -106,8 +111,23 @@ automática en CI.
 **Prioridad:** P0  
 **Dependencias:** módulo 15.
 
+**Estado:** implementado y verificado localmente.
+
 Endurecer `api/client.ts` y los contextos sin introducir una librería de estado
 innecesaria.
+
+**Implementación realizada:**
+
+- timeout por defecto de 10 segundos configurable con
+  `VITE_API_TIMEOUT_MS`;
+- cancelación mediante `AbortController` en autenticación, favoritos, cartera,
+  historial y comparativa;
+- clasificación de errores como red, timeout, cancelación, API o contrato;
+- validación runtime de las respuestas principales del backend;
+- invalidación explícita de la cache al forzar un refresco;
+- sincronización de la cartera con `lastUpdated` del mercado;
+- cancelación de requests hermanas cuando falla una carga compuesta de
+  historial o comparativa.
 
 **Alcance:**
 

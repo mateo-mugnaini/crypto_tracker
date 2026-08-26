@@ -1,8 +1,11 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import { useEffect } from "react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { api } from "../../api/client";
 import { AuthProvider } from "../../auth/AuthContext";
+import { MarketProvider, useMarket } from "../market/MarketContext";
 import { PortfolioProvider, usePortfolio } from "./PortfolioContext";
 
 const portfolio = {
@@ -36,6 +39,20 @@ function PortfolioProbe() {
   );
 }
 
+function MarketTrigger() {
+  const { loadCoins, refresh } = useMarket();
+
+  useEffect(() => {
+    void loadCoins();
+  }, [loadCoins]);
+
+  return (
+    <button onClick={() => void refresh()} type="button">
+      Actualizar mercado
+    </button>
+  );
+}
+
 afterEach(() => {
   sessionStorage.clear();
   vi.restoreAllMocks();
@@ -51,18 +68,33 @@ describe("PortfolioProvider", () => {
       username: "mateo",
     });
     const getPortfolio = vi.spyOn(api, "getPortfolio").mockResolvedValue(portfolio);
+    vi.spyOn(api, "getCoins").mockResolvedValue({
+      data: [],
+      message: "ok",
+      success: true,
+    });
 
     render(
       <AuthProvider>
-        <PortfolioProvider>
-          <PortfolioProbe />
-        </PortfolioProvider>
+        <MarketProvider>
+          <MarketTrigger />
+          <PortfolioProvider>
+            <PortfolioProbe />
+          </PortfolioProvider>
+        </MarketProvider>
       </AuthProvider>,
     );
 
     await waitFor(() => {
       expect(screen.getByTestId("portfolio-result")).toHaveTextContent("Bitcoin");
     });
-    expect(getPortfolio).toHaveBeenCalledWith("access-token");
+    expect(getPortfolio).toHaveBeenCalledWith("access-token", expect.anything());
+
+    const initialPortfolioRequests = getPortfolio.mock.calls.length;
+    await userEvent.click(screen.getByRole("button", { name: "Actualizar mercado" }));
+
+    await waitFor(() => {
+      expect(getPortfolio.mock.calls.length).toBeGreaterThan(initialPortfolioRequests);
+    });
   });
 });

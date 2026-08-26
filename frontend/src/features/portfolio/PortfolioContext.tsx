@@ -8,8 +8,10 @@ import {
   type ReactNode,
 } from "react";
 
-import { ApiError, api } from "../../api/client";
+import { ApiError, api, isRequestCancelled } from "../../api/client";
+import type { RequestOptions } from "../../api/client";
 import { useAuth } from "../../auth/AuthContext";
+import { useMarket } from "../market/MarketContext";
 import type { PortfolioHoldingInput, PortfolioResponse } from "../../api/types";
 
 interface PortfolioContextValue {
@@ -30,38 +32,48 @@ function getErrorMessage(caughtError: unknown, fallback: string) {
 
 export function PortfolioProvider({ children }: { children: ReactNode }) {
   const { status, token } = useAuth();
+  const { lastUpdated } = useMarket();
   const [portfolio, setPortfolio] = useState<PortfolioResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const refresh = useCallback(async () => {
-    if (!token) {
-      setPortfolio(null);
-      return;
-    }
+  const refresh = useCallback(
+    async (options: RequestOptions = {}) => {
+      if (!token) {
+        setPortfolio(null);
+        return;
+      }
 
-    setIsLoading(true);
-    setError(null);
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      setPortfolio(await api.getPortfolio(token));
-    } catch (caughtError) {
-      setError(getErrorMessage(caughtError, "No se pudo cargar la cartera."));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [token]);
+      try {
+        setPortfolio(await api.getPortfolio(token, options));
+      } catch (caughtError) {
+        if (!isRequestCancelled(caughtError)) {
+          setError(getErrorMessage(caughtError, "No se pudo cargar la cartera."));
+        }
+      } finally {
+        if (!options.signal?.aborted) {
+          setIsLoading(false);
+        }
+      }
+    },
+    [token],
+  );
 
   useEffect(() => {
     if (status === "authenticated") {
-      void refresh();
-      return;
+      const controller = new AbortController();
+      void refresh({ signal: controller.signal });
+
+      return () => controller.abort();
     }
 
     setPortfolio(null);
     setError(null);
-  }, [refresh, status]);
+  }, [lastUpdated, refresh, status]);
 
   const saveHolding = useCallback(
     async (input: PortfolioHoldingInput) => {

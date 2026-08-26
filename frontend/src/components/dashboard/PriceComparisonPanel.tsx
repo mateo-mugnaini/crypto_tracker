@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { ApiError, api } from "../../api/client";
+import { ApiError, api, isRequestCancelled } from "../../api/client";
 import type { PriceHistoryRecord } from "../../api/types";
 import { useMarket } from "../../features/market/MarketContext";
 import ComparisonChart, { type ComparisonSeries } from "./ComparisonChart";
@@ -61,20 +61,29 @@ export default function PriceComparisonPanel() {
     }
 
     let cancelled = false;
+    const controller = new AbortController();
     setIsLoading(true);
     setError(null);
 
     Promise.all([
-      api.getPriceHistory(firstCoinId, {
-        limit: HISTORY_LIMIT,
-        sortBy: "recorded_at",
-        sortOrder: "asc",
-      }),
-      api.getPriceHistory(secondCoinId, {
-        limit: HISTORY_LIMIT,
-        sortBy: "recorded_at",
-        sortOrder: "asc",
-      }),
+      api.getPriceHistory(
+        firstCoinId,
+        {
+          limit: HISTORY_LIMIT,
+          sortBy: "recorded_at",
+          sortOrder: "asc",
+        },
+        { signal: controller.signal },
+      ),
+      api.getPriceHistory(
+        secondCoinId,
+        {
+          limit: HISTORY_LIMIT,
+          sortBy: "recorded_at",
+          sortOrder: "asc",
+        },
+        { signal: controller.signal },
+      ),
     ])
       .then(([firstHistory, secondHistory]) => {
         if (cancelled) return;
@@ -96,7 +105,8 @@ export default function PriceComparisonPanel() {
         ]);
       })
       .catch((caughtError) => {
-        if (!cancelled) {
+        controller.abort();
+        if (!cancelled && !isRequestCancelled(caughtError)) {
           setError(getErrorMessage(caughtError));
           setSeries([]);
         }
@@ -107,6 +117,7 @@ export default function PriceComparisonPanel() {
 
     return () => {
       cancelled = true;
+      controller.abort();
     };
   }, [coins, firstCoinId, lastUpdated, secondCoinId]);
 

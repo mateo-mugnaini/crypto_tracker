@@ -10,6 +10,7 @@ historial, comparación de monedas y un sistema visual fintech responsive.
 - scaffolding Vite + React + TypeScript;
 - cliente HTTP centralizado;
 - configuración `VITE_API_BASE_URL`;
+- timeout configurable de API mediante `VITE_API_TIMEOUT_MS`;
 - login contra `POST /users/login`;
 - restauración de sesión mediante `GET /users/me`;
 - token guardado en `sessionStorage`;
@@ -66,6 +67,10 @@ npm run build
 
 El build ejecuta TypeScript en modo build y luego genera los assets de Vite.
 La cobertura se puede consultar con `npm run test:coverage`.
+
+`VITE_API_TIMEOUT_MS` controla el tiempo máximo de espera de cada request y usa
+`10000` ms si no se define. Las consultas dependientes de una vista pueden
+cancelarse con `AbortController` sin mostrar falsos errores al usuario.
 
 ## Arquitectura
 

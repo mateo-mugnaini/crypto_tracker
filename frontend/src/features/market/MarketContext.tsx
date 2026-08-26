@@ -9,7 +9,8 @@ import {
   type ReactNode,
 } from "react";
 
-import { ApiError, api } from "../../api/client";
+import { ApiError, api, isRequestCancelled } from "../../api/client";
+import type { RequestOptions } from "../../api/client";
 import type { Coin } from "../../api/types";
 
 const MARKET_CACHE_TTL_MS = 30_000;
@@ -25,8 +26,8 @@ interface MarketContextValue {
   isAutoRefreshEnabled: boolean;
   lastUpdated: Date | null;
   status: MarketStatus;
-  loadCoins(force?: boolean): Promise<boolean>;
-  refresh(): Promise<boolean>;
+  loadCoins(force?: boolean, options?: RequestOptions): Promise<boolean>;
+  refresh(options?: RequestOptions): Promise<boolean>;
 }
 
 const MarketContext = createContext<MarketContextValue | undefined>(undefined);
@@ -35,6 +36,10 @@ function getMarketError(caughtError: unknown) {
   return caughtError instanceof ApiError
     ? caughtError.message
     : "No se pudieron cargar las monedas.";
+}
+
+export function invalidateMarketCache() {
+  marketCache = null;
 }
 
 export function MarketProvider({ children }: { children: ReactNode }) {
@@ -51,13 +56,21 @@ export function MarketProvider({ children }: { children: ReactNode }) {
   const isAutoRefreshEnabled =
     Number.isFinite(autoRefreshIntervalMs) && autoRefreshIntervalMs > 0;
 
-  const loadCoins = useCallback(async (force = false) => {
+  const loadCoins = useCallback(async (force = false, options: RequestOptions = {}) => {
+    if (force) {
+      invalidateMarketCache();
+    }
+
     const now = Date.now();
 
     if (!force && marketCache && now - marketCache.timestamp < MARKET_CACHE_TTL_MS) {
       setCoins(marketCache.coins);
       setStatus("success");
-      setLastUpdated(new Date(marketCache.timestamp));
+      setLastUpdated((current) =>
+        current?.getTime() === marketCache?.timestamp
+          ? current
+          : new Date(marketCache!.timestamp),
+      );
       return true;
     }
 
@@ -69,7 +82,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     const request = api
-      .getCoins()
+      .getCoins(options)
       .then((response) => {
         const timestamp = Date.now();
         marketCache = { coins: response.data, timestamp };
@@ -79,8 +92,10 @@ export function MarketProvider({ children }: { children: ReactNode }) {
         return true;
       })
       .catch((caughtError) => {
-        setStatus("error");
-        setError(getMarketError(caughtError));
+        if (!isRequestCancelled(caughtError)) {
+          setStatus("error");
+          setError(getMarketError(caughtError));
+        }
         return false;
       })
       .finally(() => {
@@ -91,7 +106,10 @@ export function MarketProvider({ children }: { children: ReactNode }) {
     return request;
   }, []);
 
-  const refresh = useCallback(() => loadCoins(true), [loadCoins]);
+  const refresh = useCallback(
+    (options: RequestOptions = {}) => loadCoins(true, options),
+    [loadCoins],
+  );
 
   useEffect(() => {
     if (!isAutoRefreshEnabled) {

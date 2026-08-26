@@ -8,7 +8,8 @@ import {
   type ReactNode,
 } from "react";
 
-import { ApiError, api } from "../../api/client";
+import { ApiError, api, isRequestCancelled } from "../../api/client";
+import type { RequestOptions } from "../../api/client";
 import { useAuth } from "../../auth/AuthContext";
 import type { FavoriteDetails } from "../../api/types";
 
@@ -35,30 +36,41 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [updatingCoinIds, setUpdatingCoinIds] = useState<string[]>([]);
 
-  const refresh = useCallback(async () => {
-    if (!user || !token) {
-      setFavorites([]);
-      setIsLoading(false);
-      return;
-    }
+  const refresh = useCallback(
+    async (options: RequestOptions = {}) => {
+      if (!user || !token) {
+        setFavorites([]);
+        setIsLoading(false);
+        return;
+      }
 
-    setIsLoading(true);
-    setError(null);
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const response = await api.getFavoriteDetails(user.id, token);
-      setFavorites(response.data);
-    } catch (caughtError) {
-      setError(getFavoriteError(caughtError, "No se pudieron cargar tus favoritos."));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [token, user]);
+      try {
+        const response = await api.getFavoriteDetails(user.id, token, options);
+        setFavorites(response.data);
+      } catch (caughtError) {
+        if (!isRequestCancelled(caughtError)) {
+          setError(
+            getFavoriteError(caughtError, "No se pudieron cargar tus favoritos."),
+          );
+        }
+      } finally {
+        if (!options.signal?.aborted) {
+          setIsLoading(false);
+        }
+      }
+    },
+    [token, user],
+  );
 
   useEffect(() => {
     if (status === "authenticated") {
-      void refresh();
-      return;
+      const controller = new AbortController();
+      void refresh({ signal: controller.signal });
+
+      return () => controller.abort();
     }
 
     setFavorites([]);
