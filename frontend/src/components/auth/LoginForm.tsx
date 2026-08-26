@@ -2,6 +2,9 @@ import { useState, type FormEvent } from "react";
 
 import { ApiError } from "../../api/client";
 import { useAuth } from "../../auth/AuthContext";
+import Alert from "../ui/Alert";
+import Button from "../ui/Button";
+import Field from "../ui/Field";
 import styles from "./LoginForm.module.css";
 
 interface LoginFormProps {
@@ -42,42 +45,42 @@ export default function LoginForm({ notice, onRegister }: LoginFormProps) {
         <p className={styles.muted}>Ingresa para continuar con tu seguimiento.</p>
       </div>
 
-      {notice && <p className={styles.successMessage}>{notice}</p>}
+      {notice && <Alert tone="success">{notice}</Alert>}
 
-      <label>
-        Email
+      <Field id="login-email" label="Email">
         <input
-          type="email"
-          value={email}
+          autoComplete="email"
+          id="login-email"
           onChange={(event) => setEmail(event.target.value)}
           placeholder="mateo@example.com"
-          autoComplete="email"
           required
+          type="email"
+          value={email}
         />
-      </label>
+      </Field>
 
-      <label>
-        Contraseña
+      <Field id="login-password" label="Contraseña">
         <input
-          type="password"
-          value={password}
+          autoComplete="current-password"
+          id="login-password"
+          minLength={8}
           onChange={(event) => setPassword(event.target.value)}
           placeholder="Mínimo 8 caracteres"
-          autoComplete="current-password"
-          minLength={8}
           required
+          type="password"
+          value={password}
         />
-      </label>
+      </Field>
 
-      {error && <p className={styles.errorMessage}>{error}</p>}
+      {error && <Alert tone="error">{error}</Alert>}
 
-      <button disabled={isSubmitting} type="submit">
-        {isSubmitting ? "Ingresando…" : "Ingresar"}
-      </button>
+      <Button fullWidth loading={isSubmitting} type="submit">
+        Ingresar
+      </Button>
 
-      <button className={styles.linkButton} onClick={onRegister} type="button">
+      <Button className={styles.linkButton} onClick={onRegister} variant="ghost">
         Crear una cuenta
-      </button>
+      </Button>
     </form>
   );
 }

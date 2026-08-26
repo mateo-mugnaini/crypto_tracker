@@ -29,6 +29,8 @@ historial, comparación de monedas y un sistema visual fintech responsive.
 - precio actual de cada moneda obtenido desde el último registro de historial;
 - cartera personal no custodial con posiciones y rendimiento;
 - manejo de errores de red y del contrato del backend.
+- sistema UI compartido para botones, campos, alertas, skeletons, estados vacíos,
+  toasts y confirmaciones de acciones destructivas.
 
 El rediseño visual integral está documentado en
 [`docs/13-redisenio-ui-ux.md`](docs/13-redisenio-ui-ux.md).
@@ -90,6 +92,7 @@ src/
 │   └── favorites/
 │       └── FavoritesContext.tsx estado compartido de favoritos
 ├── components/
+│   ├── ui/                 componentes visuales y feedback compartidos
 │   ├── auth/
 │   │   ├── LoginForm.tsx
 │   │   ├── LoginForm.module.css

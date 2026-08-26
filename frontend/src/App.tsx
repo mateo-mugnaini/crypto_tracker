@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AuthProvider, useAuth } from "./auth/AuthContext";
+import { ToastProvider } from "./components/ui/ToastProvider";
 import styles from "./App.module.css";
 import { FavoritesProvider } from "./features/favorites/FavoritesContext";
 import { MarketProvider } from "./features/market/MarketContext";
@@ -40,13 +41,15 @@ function AppContent() {
 export default function App() {
   return (
     <AuthProvider>
-      <FavoritesProvider>
-        <MarketProvider>
-          <PortfolioProvider>
-            <AppContent />
-          </PortfolioProvider>
-        </MarketProvider>
-      </FavoritesProvider>
+      <ToastProvider>
+        <FavoritesProvider>
+          <MarketProvider>
+            <PortfolioProvider>
+              <AppContent />
+            </PortfolioProvider>
+          </MarketProvider>
+        </FavoritesProvider>
+      </ToastProvider>
     </AuthProvider>
   );
 }

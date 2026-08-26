@@ -1,0 +1,24 @@
+.field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.label {
+  color: var(--text);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.hint,
+.error {
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.hint {
+  color: var(--muted);
+}
+
+.error {
+  color: var(--danger);
+}

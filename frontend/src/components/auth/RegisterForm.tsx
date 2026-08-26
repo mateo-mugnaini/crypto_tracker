@@ -1,6 +1,9 @@
 import { useState, type FormEvent } from "react";
 
 import { ApiError, api } from "../../api/client";
+import Alert from "../ui/Alert";
+import Button from "../ui/Button";
+import Field from "../ui/Field";
 import styles from "./RegisterForm.module.css";
 
 interface RegisterFormProps {
@@ -51,70 +54,70 @@ export default function RegisterForm({ onLogin, onRegistered }: RegisterFormProp
         </p>
       </div>
 
-      <label>
-        Usuario
+      <Field id="register-username" label="Usuario">
         <input
-          type="text"
-          value={username}
+          autoComplete="username"
+          id="register-username"
+          maxLength={50}
+          minLength={3}
           onChange={(event) => setUsername(event.target.value)}
           placeholder="mateo"
-          autoComplete="username"
-          minLength={3}
-          maxLength={50}
           required
+          type="text"
+          value={username}
         />
-      </label>
+      </Field>
 
-      <label>
-        Email
+      <Field id="register-email" label="Email">
         <input
-          type="email"
-          value={email}
+          autoComplete="email"
+          id="register-email"
+          maxLength={255}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="mateo@example.com"
-          autoComplete="email"
-          maxLength={255}
           required
+          type="email"
+          value={email}
         />
-      </label>
+      </Field>
 
-      <label>
-        Contraseña
+      <Field id="register-password" label="Contraseña">
         <input
-          type="password"
-          value={password}
+          autoComplete="new-password"
+          id="register-password"
+          maxLength={128}
+          minLength={8}
           onChange={(event) => setPassword(event.target.value)}
           placeholder="Mínimo 8 caracteres"
-          autoComplete="new-password"
-          minLength={8}
-          maxLength={128}
           required
-        />
-      </label>
-
-      <label>
-        Repetir contraseña
-        <input
           type="password"
-          value={passwordConfirmation}
+          value={password}
+        />
+      </Field>
+
+      <Field id="register-password-confirmation" label="Repetir contraseña">
+        <input
+          autoComplete="new-password"
+          id="register-password-confirmation"
+          maxLength={128}
+          minLength={8}
           onChange={(event) => setPasswordConfirmation(event.target.value)}
           placeholder="Repite tu contraseña"
-          autoComplete="new-password"
-          minLength={8}
-          maxLength={128}
           required
+          type="password"
+          value={passwordConfirmation}
         />
-      </label>
+      </Field>
 
-      {error && <p className={styles.errorMessage}>{error}</p>}
+      {error && <Alert tone="error">{error}</Alert>}
 
-      <button disabled={isSubmitting} type="submit">
-        {isSubmitting ? "Creando…" : "Crear cuenta"}
-      </button>
+      <Button fullWidth loading={isSubmitting} type="submit">
+        Crear cuenta
+      </Button>
 
-      <button className={styles.linkButton} onClick={onLogin} type="button">
+      <Button className={styles.linkButton} onClick={onLogin} variant="ghost">
         Ya tengo una cuenta
-      </button>
+      </Button>
     </form>
   );
 }

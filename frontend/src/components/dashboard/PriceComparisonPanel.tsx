@@ -3,6 +3,10 @@ import { useEffect, useState } from "react";
 import { ApiError, api, isRequestCancelled } from "../../api/client";
 import type { PriceHistoryRecord } from "../../api/types";
 import { useMarket } from "../../features/market/MarketContext";
+import Alert from "../ui/Alert";
+import Badge from "../ui/Badge";
+import Button from "../ui/Button";
+import Field from "../ui/Field";
 import ComparisonChart, { type ComparisonSeries } from "./ComparisonChart";
 import styles from "./PriceComparisonPanel.module.css";
 
@@ -138,25 +142,25 @@ export default function PriceComparisonPanel() {
           <span className={styles.eyebrow}>Comparativa</span>
           <h2>Dos monedas, una tendencia</h2>
         </div>
-        <span className={styles.pill}>Últimos {HISTORY_LIMIT} registros</span>
+        <Badge>Últimos {HISTORY_LIMIT} registros</Badge>
       </summary>
 
       {(marketError || error) && (
         <div className={styles.errorState}>
-          <p className={styles.errorMessage}>{marketError || error}</p>
+          <Alert tone="error">{marketError || error}</Alert>
           {marketError && (
-            <button onClick={() => void loadCoins(true)} type="button">
+            <Button onClick={() => void loadCoins(true)} variant="secondary">
               Reintentar
-            </button>
+            </Button>
           )}
         </div>
       )}
 
       <div className={styles.selectGrid}>
-        <label>
-          Primera moneda
+        <Field id="comparison-first-coin" label="Primera moneda">
           <select
             disabled={isCoinsLoading || coins.length < 2}
+            id="comparison-first-coin"
             onChange={(event) => handleFirstCoinChange(event.target.value)}
             value={firstCoinId}
           >
@@ -166,11 +170,11 @@ export default function PriceComparisonPanel() {
               </option>
             ))}
           </select>
-        </label>
-        <label>
-          Segunda moneda
+        </Field>
+        <Field id="comparison-second-coin" label="Segunda moneda">
           <select
             disabled={isCoinsLoading || coins.length < 2}
+            id="comparison-second-coin"
             onChange={(event) => setSecondCoinId(event.target.value)}
             value={secondCoinId}
           >
@@ -182,7 +186,7 @@ export default function PriceComparisonPanel() {
                 </option>
               ))}
           </select>
-        </label>
+        </Field>
       </div>
 
       {isLoading && <p className={styles.muted}>Cargando comparación…</p>}

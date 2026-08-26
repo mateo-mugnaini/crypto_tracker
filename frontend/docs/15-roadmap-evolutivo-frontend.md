@@ -2,15 +2,15 @@
 
 > **Fecha de revisión:** 2026-08-26  
 > **Baseline:** módulos Frontend 01 a 14 implementados  
-> **Estado del módulo 15:** implementado y verificado localmente  
+> **Estado de los módulos 15-17:** implementados y verificados localmente
 > **Objetivo:** evolucionar el MVP hacia una aplicación mantenible, medible y útil para el seguimiento personal de criptoactivos.
 
 ## Estado de implementación
 
 - **Módulos 01–14:** implementados y documentados.
-- **Módulos 15–16:** implementados: calidad, tests, CI, timeout, cancelación,
+- **Módulos 15–17:** implementados: calidad, tests, CI, timeout, cancelación,
   validación de contratos y sincronización mercado-cartera.
-- **Módulos 17–26:** planificados; todavía no implementados.
+- **Módulos 18–26:** planificados; todavía no implementados.
 
 ## 1. Diagnóstico actual
 
@@ -153,6 +153,8 @@ innecesaria.
 **Prioridad:** P1  
 **Dependencias:** módulo 15.
 
+**Estado:** implementado y verificado localmente.
+
 Crear una pequeña capa de componentes reutilizables para que cada pantalla no
 resuelva sus propios estados visuales.
 
@@ -166,6 +168,12 @@ resuelva sus propios estados visuales.
 - `ConfirmDialog` para eliminar posiciones o acciones irreversibles;
 - `EmptyState` y `ErrorState` comunes;
 - tokens para espaciado, tamaños táctiles, z-index y breakpoints.
+
+**Implementado:** `Button`, `Field`, `Alert`, `Badge`, `Skeleton`, `EmptyState`,
+`ToastProvider` y `ConfirmDialog` viven en `src/components/ui/`. Los formularios
+de autenticación, mercado, comparativa, favoritos y cartera ya reutilizan esta
+capa; guardar y actualizar muestran feedback de éxito, y eliminar una posición
+requiere confirmación.
 
 **Criterios de aceptación:**
 
