@@ -20,7 +20,7 @@ export default function FavoritesPanel() {
             children: [
               _jsx("span", {
                 className: styles.eyebrow,
-                children: "Tu selecci\u00F3n",
+                children: "Tus guardados",
               }),
               _jsx("h2", { children: "Favoritos" }),
             ],

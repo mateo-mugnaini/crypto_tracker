@@ -11,7 +11,7 @@
 .dashboard {
   width: min(1380px, calc(100% - 5rem));
   margin: 0 auto;
-  padding: 6.5rem 0 4rem;
+  padding: 2.75rem 0 4rem;
   animation: contentReveal 650ms var(--transition) both;
 }
 
@@ -25,20 +25,20 @@
 }
 
 .pageHeader h1 {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.55rem;
   color: var(--text-primary);
-  font-size: clamp(2.25rem, 4.5vw, 4.4rem);
+  font-size: clamp(2rem, 3.5vw, 3.35rem);
   line-height: 0.98;
-  letter-spacing: -0.065em;
+  letter-spacing: -0.055em;
   text-wrap: balance;
 }
 
 .pageHeader p {
-  max-width: 560px;
+  max-width: 620px;
   margin-bottom: 0;
   color: var(--text-secondary);
-  font-size: 0.98rem;
-  line-height: 1.65;
+  font-size: 0.9rem;
+  line-height: 1.55;
 }
 
 .eyebrow {
@@ -85,7 +85,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.85rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .summaryCard {
@@ -150,6 +150,53 @@
   gap: 1rem;
 }
 
+.quickActions {
+  display: grid;
+  gap: 0.7rem;
+  margin-bottom: 1.25rem;
+}
+
+.quickActionsTitle {
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.quickActions > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.quickAction {
+  display: grid;
+  gap: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  color: inherit;
+  background: var(--surface-1);
+  text-decoration: none;
+  transition:
+    border-color var(--transition),
+    background var(--transition);
+}
+
+.quickAction:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-2);
+}
+
+.quickAction strong {
+  color: var(--text-primary);
+  font-size: 0.78rem;
+}
+
+.quickAction span {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
 @keyframes contentReveal {
   from {
     opacity: 0;
@@ -178,7 +225,7 @@
 
   .dashboard {
     width: min(100% - 2rem, 780px);
-    padding: 2rem 0 3rem;
+    padding: 1.75rem 0 3rem;
   }
 }
 
@@ -237,6 +284,10 @@
 
   .dashboardGrid {
     gap: 0.75rem;
+  }
+
+  .quickActions > div {
+    grid-template-columns: 1fr;
   }
 }
 

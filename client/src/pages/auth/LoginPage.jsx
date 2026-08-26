@@ -14,7 +14,7 @@ export default function LoginPage() {
         children: [
           _jsx("span", {
             className: styles.eyebrow,
-            children: "Crypto Tracker / Secure access",
+            children: "Crypto Tracker / Acceso",
           }),
           _jsx("h1", { children: "Seguimiento cripto, sin ruido." }),
           _jsx("p", {
@@ -26,7 +26,7 @@ export default function LoginPage() {
             children: [
               _jsx("span", { children: "Datos del mercado" }),
               _jsx("span", { children: "Historial y tendencias" }),
-              _jsx("span", { children: "Workspace personal" }),
+              _jsx("span", { children: "Tu espacio personal" }),
             ],
           }),
         ],

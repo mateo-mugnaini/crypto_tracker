@@ -171,28 +171,42 @@ export default function MarketExplorer() {
               }),
             ],
           }),
-          _jsxs("label", {
+        ],
+      }),
+      _jsxs("details", {
+        className: styles.advancedFilters,
+        children: [
+          _jsx("summary", {
+            className: styles.advancedSummary,
+            children: "Más filtros",
+          }),
+          _jsxs("div", {
+            className: styles.advancedContent,
             children: [
-              _jsx("span", { children: "Direcci\u00F3n" }),
-              _jsxs("select", {
-                onChange: (event) => setFilter("direction", event.target.value),
-                value: direction,
+              _jsxs("label", {
                 children: [
-                  _jsx("option", { value: "asc", children: "Ascendente" }),
-                  _jsx("option", { value: "desc", children: "Descendente" }),
+                  _jsx("span", { children: "Dirección" }),
+                  _jsxs("select", {
+                    onChange: (event) => setFilter("direction", event.target.value),
+                    value: direction,
+                    children: [
+                      _jsx("option", { value: "asc", children: "Ascendente" }),
+                      _jsx("option", { value: "desc", children: "Descendente" }),
+                    ],
+                  }),
                 ],
               }),
-            ],
-          }),
-          _jsxs("label", {
-            children: [
-              _jsx("span", { children: "Ranking m\u00E1ximo" }),
-              _jsx("input", {
-                min: "1",
-                onChange: (event) => setFilter("maxRank", event.target.value),
-                placeholder: "100",
-                type: "number",
-                value: maxRank,
+              _jsxs("label", {
+                children: [
+                  _jsx("span", { children: "Ranking máximo" }),
+                  _jsx("input", {
+                    min: "1",
+                    onChange: (event) => setFilter("maxRank", event.target.value),
+                    placeholder: "Ej. 100",
+                    type: "number",
+                    value: maxRank,
+                  }),
+                ],
               }),
             ],
           }),

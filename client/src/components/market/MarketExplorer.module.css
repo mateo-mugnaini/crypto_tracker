@@ -10,7 +10,7 @@
   align-items: end;
   display: grid;
   gap: 0.75rem;
-  grid-template-columns: minmax(220px, 1.6fr) repeat(3, minmax(130px, 1fr));
+  grid-template-columns: minmax(220px, 1.6fr) minmax(150px, 0.8fr);
 }
 
 .toolbar label,
@@ -41,6 +41,72 @@
 .toolbar select:focus {
   border-color: var(--primary);
   outline: 3px solid rgba(255, 138, 61, 0.14);
+}
+
+.advancedFilters {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+
+.advancedSummary {
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  list-style: none;
+  padding: 0.75rem 0.85rem;
+}
+
+.advancedSummary::-webkit-details-marker {
+  display: none;
+}
+
+.advancedSummary::after {
+  float: right;
+  color: var(--text-muted);
+  content: "+";
+  font-size: 1rem;
+  line-height: 0.8;
+}
+
+.advancedFilters[open] .advancedSummary {
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.advancedFilters[open] .advancedSummary::after {
+  content: "−";
+}
+
+.advancedContent {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 0.85rem;
+}
+
+.advancedContent label {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.advancedContent label > span {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.advancedContent input,
+.advancedContent select {
+  width: 100%;
+  min-height: 2.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.7rem;
+  color: var(--text-primary);
+  background: var(--surface-2);
+  font: inherit;
 }
 
 .filterRow {
@@ -266,6 +332,10 @@
   .filterRow {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .advancedContent {
+    grid-template-columns: 1fr;
   }
 
   .filterButton,

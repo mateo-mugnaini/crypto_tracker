@@ -5,8 +5,8 @@ export default function MarketPage() {
   return _jsx(DashboardLayout, {
     description:
       "Consulta los precios sincronizados y actualiza el valor de una moneda cuando lo necesites.",
-    eyebrow: "Market / Live snapshot",
-    title: "Explora el mercado.",
+    eyebrow: "Mercado",
+    title: "Buscá una moneda.",
     children: _jsx(MarketExplorer, {}),
   });
 }

@@ -5,8 +5,8 @@ export default function AlertsPage() {
   return _jsx(DashboardLayout, {
     description:
       "Configur\u00E1 avisos para enterarte cuando una moneda alcance el precio que te interesa.",
-    eyebrow: "Workspace / Price watch",
-    title: "Vigil\u00E1 el mercado.",
+    eyebrow: "Alertas",
+    title: "Dej\u00E1 que te avisemos.",
     children: _jsx(AlertsPanel, {}),
   });
 }

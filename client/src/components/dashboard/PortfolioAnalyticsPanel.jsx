@@ -105,7 +105,7 @@ export default function PortfolioAnalyticsPanel() {
             children: [
               _jsx("span", {
                 className: styles.eyebrow,
-                children: "Personal analytics",
+                children: "Análisis de cartera",
               }),
               _jsx("h2", { children: "C\u00F3mo evoluciona tu cartera" }),
               _jsx("p", {

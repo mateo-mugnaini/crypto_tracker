@@ -34,7 +34,7 @@ export default function LoginForm({ notice, onRegister }) {
     children: [
       _jsxs("div", {
         children: [
-          _jsx("span", { className: styles.eyebrow, children: "Workspace" }),
+          _jsx("span", { className: styles.eyebrow, children: "Acceso" }),
           _jsx("h2", { children: "Volver al mercado" }),
           _jsx("p", {
             className: styles.muted,

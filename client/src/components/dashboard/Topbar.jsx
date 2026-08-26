@@ -1,9 +1,9 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 import { useMarket } from "../../features/market/MarketContext";
 import { useOptionalAlerts } from "../../features/alerts/AlertsContext";
 import styles from "./Topbar.module.css";
+
 function NavIcon({ kind }) {
   const paths = {
     overview: "M4 13h6V4H4v9Zm10 7h6V4h-6v16ZM4 20h6v-3H4v3Zm10-7h6v-3h-6v3Z",
@@ -15,212 +15,163 @@ function NavIcon({ kind }) {
     compare: "M5 19V9m7 10V5m7 14v-7",
     alerts: "M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-4 13h-2",
   };
-  return _jsx("svg", {
-    "aria-hidden": "true",
-    className: styles.navIcon,
-    fill: "none",
-    viewBox: "0 0 24 24",
-    children: _jsx("path", {
-      d: paths[kind],
-      stroke: "currentColor",
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      strokeWidth: "1.8",
-    }),
-  });
+
+  return (
+    <svg aria-hidden="true" className={styles.navIcon} fill="none" viewBox="0 0 24 24">
+      <path
+        d={paths[kind]}
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
 }
+
+const primaryLinks = [
+  ["/dashboard", "Resumen", "overview"],
+  ["/market", "Mercado", "market"],
+  ["/portfolio", "Cartera", "portfolio"],
+  ["/favorites", "Favoritos", "favorites"],
+];
+
+const analysisLinks = [
+  ["/history", "Historial", "history"],
+  ["/compare", "Comparar", "compare"],
+  ["/alerts", "Alertas", "alerts"],
+];
+
+const links = [...primaryLinks, ...analysisLinks];
+
+function Brand() {
+  return (
+    <div className={styles.brand}>
+      <span className={styles.brandMark}>C</span>
+      <span>
+        <strong>Crypto Tracker</strong>
+        <small>Tu mercado, en claro</small>
+      </span>
+    </div>
+  );
+}
+
+function NavigationLinks({ items, mobile = false }) {
+  return items.map(([to, label, icon]) => (
+    <NavLink
+      className={({ isActive }) =>
+        `${mobile ? styles.mobileNavLink : styles.navLink} ${isActive ? (mobile ? styles.mobileActiveLink : styles.activeLink) : ""}`
+      }
+      end={to === "/dashboard"}
+      key={to}
+      to={to}
+    >
+      <NavIcon kind={icon} />
+      <span>{label}</span>
+    </NavLink>
+  ));
+}
+
 function ActionButtons() {
   const { logout, user } = useAuth();
   const { isAutoRefreshEnabled, refresh, status } = useMarket();
   const unreadCount = useOptionalAlerts()?.unreadCount ?? 0;
   const isRefreshing = status === "loading";
-  return _jsxs("div", {
-    className: styles.actions,
-    children: [
-      _jsxs("span", {
-        className: styles.userIdentity,
-        children: [
-          _jsx("span", {
-            className: styles.avatar,
-            children: user?.username?.slice(0, 1).toUpperCase(),
-          }),
-          _jsxs("span", {
-            children: [
-              _jsx("strong", { children: user?.username }),
-              _jsx("small", {
-                children: isAutoRefreshEnabled
-                  ? "Sincronización activa"
-                  : "Vista manual",
-              }),
-            ],
-          }),
-        ],
-      }),
-      _jsxs(NavLink, {
-        "aria-label": "Ver alertas",
-        className: styles.notificationButton,
-        title: unreadCount ? `${unreadCount} alertas nuevas` : "Ver alertas",
-        to: "/alerts",
-        children: [
-          _jsx("svg", {
-            "aria-hidden": "true",
-            fill: "none",
-            viewBox: "0 0 24 24",
-            children: _jsx("path", {
-              d: "M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-4 13h-2",
-              stroke: "currentColor",
-              strokeLinecap: "round",
-              strokeLinejoin: "round",
-              strokeWidth: "1.8",
-            }),
-          }),
-          unreadCount > 0 &&
-            _jsx("span", {
-              className: styles.notificationCount,
-              children: unreadCount > 9 ? "9+" : unreadCount,
-            }),
-        ],
-      }),
-      _jsxs("button", {
-        "aria-label": "Actualizar mercado",
-        className: styles.iconButton,
-        disabled: isRefreshing,
-        onClick: () => void refresh(),
-        type: "button",
-        children: [
-          _jsx("svg", {
-            "aria-hidden": "true",
-            fill: "none",
-            viewBox: "0 0 24 24",
-            children: _jsx("path", {
-              d: "M20 11a8 8 0 0 0-14.9-3M4 5v4h4m-4 4a8 8 0 0 0 14.9 3M20 19v-4h-4",
-              stroke: "currentColor",
-              strokeLinecap: "round",
-              strokeLinejoin: "round",
-              strokeWidth: "1.8",
-            }),
-          }),
-          _jsx("span", { children: isRefreshing ? "Actualizando" : "Actualizar" }),
-        ],
-      }),
-      _jsx("button", {
-        className: styles.logoutButton,
-        onClick: logout,
-        type: "button",
-        children: "Salir",
-      }),
-    ],
-  });
+
+  return (
+    <div className={styles.actions}>
+      <span className={styles.userIdentity}>
+        <span className={styles.avatar}>
+          {user?.username?.slice(0, 1).toUpperCase()}
+        </span>
+        <span>
+          <strong>{user?.username}</strong>
+          <small>
+            {isAutoRefreshEnabled ? "Actualización activa" : "Vista manual"}
+          </small>
+        </span>
+      </span>
+      <NavLink
+        aria-label="Ver alertas"
+        className={styles.notificationButton}
+        title={unreadCount ? `${unreadCount} alertas nuevas` : "Ver alertas"}
+        to="/alerts"
+      >
+        <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+          <path
+            d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-4 13h-2"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.8"
+          />
+        </svg>
+        {unreadCount > 0 && (
+          <span className={styles.notificationCount}>
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
+        )}
+      </NavLink>
+      <button
+        aria-label="Actualizar mercado"
+        className={styles.iconButton}
+        disabled={isRefreshing}
+        onClick={() => void refresh()}
+        type="button"
+      >
+        <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+          <path
+            d="M20 11a8 8 0 0 0-14.9-3M4 5v4h4m-4 4a8 8 0 0 0 14.9 3M20 19v-4h-4"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.8"
+          />
+        </svg>
+        <span>{isRefreshing ? "Actualizando" : "Actualizar"}</span>
+      </button>
+      <button className={styles.logoutButton} onClick={logout} type="button">
+        Salir
+      </button>
+    </div>
+  );
 }
-const links = [
-  ["/dashboard", "Resumen", "overview"],
-  ["/portfolio", "Mi cartera", "portfolio"],
-  ["/market", "Mercado", "market"],
-  ["/favorites", "Favoritos", "favorites"],
-  ["/history", "Historial", "history"],
-  ["/compare", "Comparativa", "compare"],
-  ["/alerts", "Alertas", "alerts"],
-];
+
 export default function Topbar() {
-  return _jsxs("div", {
-    className: styles.navigationRoot,
-    children: [
-      _jsxs("aside", {
-        "aria-label": "Navegaci\u00F3n principal",
-        className: styles.sidebar,
-        children: [
-          _jsxs("div", {
-            className: styles.brand,
-            children: [
-              _jsx("span", { className: styles.brandMark, children: "C" }),
-              _jsxs("span", {
-                children: [
-                  _jsx("strong", { children: "Crypto Tracker" }),
-                  _jsx("small", { children: "Market intelligence" }),
-                ],
-              }),
-            ],
-          }),
-          _jsxs("div", {
-            className: styles.navGroup,
-            children: [
-              _jsx("span", { className: styles.navLabel, children: "Workspace" }),
-              _jsx("nav", {
-                children: links.map(([to, label, icon]) =>
-                  _jsxs(
-                    NavLink,
-                    {
-                      className: ({ isActive }) =>
-                        `${styles.navLink} ${isActive ? styles.activeLink : ""}`,
-                      end: to === "/dashboard",
-                      to: to,
-                      children: [
-                        _jsx(NavIcon, { kind: icon }),
-                        _jsx("span", { children: label }),
-                      ],
-                    },
-                    to,
-                  ),
-                ),
-              }),
-            ],
-          }),
-          _jsxs("div", {
-            className: styles.sidebarFooter,
-            children: [
-              _jsx("span", { className: styles.statusDot }),
-              _jsxs("span", {
-                children: [
-                  _jsx("strong", { children: "API conectada" }),
-                  _jsx("small", { children: "Datos sincronizados" }),
-                ],
-              }),
-            ],
-          }),
-        ],
-      }),
-      _jsxs("header", {
-        className: styles.mobileHeader,
-        children: [
-          _jsxs("div", {
-            className: styles.brand,
-            children: [
-              _jsx("span", { className: styles.brandMark, children: "C" }),
-              _jsxs("span", {
-                children: [
-                  _jsx("strong", { children: "Crypto Tracker" }),
-                  _jsx("small", { children: "Market intelligence" }),
-                ],
-              }),
-            ],
-          }),
-          _jsx(ActionButtons, {}),
-          _jsx("nav", {
-            "aria-label": "Navegaci\u00F3n m\u00F3vil",
-            className: styles.mobileNav,
-            children: links.map(([to, label, icon]) =>
-              _jsxs(
-                NavLink,
-                {
-                  className: ({ isActive }) =>
-                    `${styles.mobileNavLink} ${isActive ? styles.mobileActiveLink : ""}`,
-                  end: to === "/dashboard",
-                  to: to,
-                  children: [
-                    _jsx(NavIcon, { kind: icon }),
-                    _jsx("span", { children: label }),
-                  ],
-                },
-                to,
-              ),
-            ),
-          }),
-        ],
-      }),
-      _jsx("div", {
-        className: styles.desktopActions,
-        children: _jsx(ActionButtons, {}),
-      }),
-    ],
-  });
+  return (
+    <div className={styles.navigationRoot}>
+      <aside aria-label="Navegación principal" className={styles.sidebar}>
+        <Brand />
+        <div className={styles.navGroup}>
+          <span className={styles.navLabel}>Navegar</span>
+          <nav>
+            <NavigationLinks items={primaryLinks} />
+          </nav>
+        </div>
+        <div className={styles.navGroup}>
+          <span className={styles.navLabel}>Herramientas</span>
+          <nav>
+            <NavigationLinks items={analysisLinks} />
+          </nav>
+        </div>
+        <div className={styles.sidebarFooter}>
+          <span className={styles.statusDot} />
+          <span>
+            <strong>Servicio conectado</strong>
+            <small>Datos listos para consultar</small>
+          </span>
+        </div>
+      </aside>
+      <header className={styles.mobileHeader}>
+        <Brand />
+        <ActionButtons />
+        <nav aria-label="Navegación móvil" className={styles.mobileNav}>
+          <NavigationLinks items={links} mobile />
+        </nav>
+      </header>
+      <div className={styles.desktopActions}>
+        <ActionButtons />
+      </div>
+    </div>
+  );
 }

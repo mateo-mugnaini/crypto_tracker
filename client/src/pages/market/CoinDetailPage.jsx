@@ -80,7 +80,7 @@ export default function CoinDetailPage() {
   return _jsxs(DashboardLayout, {
     description:
       "Consulta el precio actual, revisa el historial y decide si quer\u00E9s seguir esta moneda.",
-    eyebrow: "Market / Coin detail",
+    eyebrow: "Mercado / Detalle",
     title: coin?.name || "Detalle de moneda",
     children: [
       isLoading &&

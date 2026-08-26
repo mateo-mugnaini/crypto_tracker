@@ -12,7 +12,7 @@ export default function RegisterPage() {
         children: [
           _jsx("span", {
             className: styles.eyebrow,
-            children: "Crypto Tracker / Create account",
+            children: "Crypto Tracker / Crear cuenta",
           }),
           _jsx("h1", { children: "Tu mercado empieza aqu\u00ED." }),
           _jsx("p", {
@@ -22,7 +22,7 @@ export default function RegisterPage() {
           _jsxs("div", {
             className: styles.featureList,
             children: [
-              _jsx("span", { children: "Cuenta propia" }),
+              _jsx("span", { children: "Tu cuenta" }),
               _jsx("span", { children: "Datos persistentes" }),
               _jsx("span", { children: "Acceso seguro" }),
             ],
@@ -34,7 +34,7 @@ export default function RegisterPage() {
         onRegistered: () =>
           navigate("/login", {
             replace: true,
-            state: { notice: "Cuenta creada. Ya puedes iniciar sesión." },
+            state: { notice: "Cuenta creada. Ya podés iniciar sesión." },
           }),
       }),
     ],

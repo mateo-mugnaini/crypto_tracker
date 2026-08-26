@@ -85,7 +85,7 @@ export default function AlertsPanel() {
         children: [
           _jsxs("div", {
             children: [
-              _jsx("span", { className: styles.eyebrow, children: "Price watch" }),
+              _jsx("span", { className: styles.eyebrow, children: "Avisos" }),
               _jsx("h2", { children: "Alertas y notificaciones" }),
               _jsx("p", {
                 children:

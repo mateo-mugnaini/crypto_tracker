@@ -5,8 +5,8 @@ export default function FavoritesPage() {
   return _jsx(DashboardLayout, {
     description:
       "Ten\u00E9 a mano las monedas que m\u00E1s te interesan para seguirlas sin buscarlas.",
-    eyebrow: "Favorites / Watchlist",
-    title: "Tu selecci\u00F3n personal.",
+    eyebrow: "Favoritos",
+    title: "Tus monedas guardadas.",
     children: _jsx(FavoritesPanel, {}),
   });
 }

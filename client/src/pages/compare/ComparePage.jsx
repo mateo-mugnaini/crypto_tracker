@@ -5,8 +5,8 @@ export default function ComparePage() {
   return _jsx(DashboardLayout, {
     description:
       "Compara dos monedas en el mismo per\u00EDodo para distinguir tendencias relativas.",
-    eyebrow: "Compare / Relative performance",
-    title: "Pon\u00E9 dos tendencias lado a lado.",
+    eyebrow: "Comparar",
+    title: "Pon\u00E9 dos monedas lado a lado.",
     children: _jsx(PriceComparisonPanel, {}),
   });
 }

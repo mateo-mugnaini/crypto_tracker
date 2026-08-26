@@ -64,7 +64,11 @@
 }
 
 .navGroup {
-  margin-top: 3.25rem;
+  margin-top: 2.25rem;
+}
+
+.navGroup + .navGroup {
+  margin-top: 1.5rem;
 }
 
 .navLabel {

@@ -1,60 +1,48 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useMarket } from "../../features/market/MarketContext";
 import Topbar from "../../components/dashboard/Topbar";
 import styles from "./DashboardPage.module.css";
+
 export default function DashboardLayout({ children, description, eyebrow, title }) {
   const { isAutoRefreshEnabled, lastUpdated, liveStatus, status } = useMarket();
   const syncLabel =
     status === "loading"
-      ? "Actualizando mercado"
+      ? "Actualizando"
       : liveStatus === "connected"
-        ? "Canal live conectado"
+        ? "En vivo"
         : liveStatus === "connecting"
-          ? "Conectando canal live"
+          ? "Conectando"
           : liveStatus === "fallback"
-            ? "Fallback por polling"
+            ? "Actualización alternativa"
             : isAutoRefreshEnabled
-              ? "Sincronización automática activa"
-              : "Actualización manual disponible";
-  return _jsxs("div", {
-    className: styles.shell,
-    children: [
-      _jsx(Topbar, {}),
-      _jsx("div", {
-        className: styles.content,
-        children: _jsxs("main", {
-          className: styles.dashboard,
-          children: [
-            _jsxs("header", {
-              className: styles.pageHeader,
-              children: [
-                _jsxs("div", {
-                  children: [
-                    _jsx("span", { className: styles.eyebrow, children: eyebrow }),
-                    _jsx("h1", { children: title }),
-                    _jsx("p", { children: description }),
-                  ],
-                }),
-                _jsxs("div", {
-                  className: styles.headerMeta,
-                  children: [
-                    _jsxs("span", {
-                      className: styles.liveBadge,
-                      children: [_jsx("span", {}), " ", syncLabel],
-                    }),
-                    _jsx("small", {
-                      children: lastUpdated
-                        ? `Última lectura ${lastUpdated.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}`
-                        : "Esperando la primera lectura",
-                    }),
-                  ],
-                }),
-              ],
-            }),
-            children,
-          ],
-        }),
-      }),
-    ],
-  });
+              ? "Actualización activa"
+              : "Actualización manual";
+
+  return (
+    <div className={styles.shell}>
+      <Topbar />
+      <div className={styles.content}>
+        <main className={styles.dashboard}>
+          <header className={styles.pageHeader}>
+            <div>
+              <span className={styles.eyebrow}>{eyebrow}</span>
+              <h1>{title}</h1>
+              <p>{description}</p>
+            </div>
+            <div className={styles.headerMeta}>
+              <span className={styles.liveBadge}>
+                <span />
+                {syncLabel}
+              </span>
+              <small>
+                {lastUpdated
+                  ? `Última lectura ${lastUpdated.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}`
+                  : "Sin lecturas todavía"}
+              </small>
+            </div>
+          </header>
+          {children}
+        </main>
+      </div>
+    </div>
+  );
 }

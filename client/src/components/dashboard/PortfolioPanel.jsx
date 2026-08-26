@@ -196,7 +196,7 @@ export default function PortfolioPanel() {
             children: [
               _jsxs("div", {
                 children: [
-                  _jsx("span", { className: styles.eyebrow, children: "My portfolio" }),
+                  _jsx("span", { className: styles.eyebrow, children: "Mi cartera" }),
                   _jsx("h2", { children: "Tu cartera personal" }),
                 ],
               }),
