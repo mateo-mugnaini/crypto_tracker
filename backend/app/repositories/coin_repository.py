@@ -75,85 +75,73 @@ class CoinRepository:
     def find_all(self):
 
         connection = get_connection()
-
-        cursor = connection.cursor(dictionary=True)
-
-        query = f"""
-            {self._COIN_READ_QUERY}
-            ORDER BY c.market_cap_rank ASC
-        """
-
-        cursor.execute(query)
-
-        coins = cursor.fetchall()
-
-        cursor.close()
-
-        connection.close()
-
-        return coins
+        cursor = None
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = f"""
+                {self._COIN_READ_QUERY}
+                ORDER BY c.market_cap_rank ASC
+            """
+            cursor.execute(query)
+            return cursor.fetchall()
+        finally:
+            if cursor is not None:
+                cursor.close()
+            connection.close()
 
     def find_by_id(self, coin_id):
 
         connection = get_connection()
-
-        cursor = connection.cursor(dictionary=True)
-
-        query = f"""
-            {self._COIN_READ_QUERY}
-            WHERE c.id = %s
-        """
-
-        cursor.execute(query, (coin_id,))
-
-        coin = cursor.fetchone()
-
-        cursor.close()
-        connection.close()
-
-        return coin
+        cursor = None
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = f"""
+                {self._COIN_READ_QUERY}
+                WHERE c.id = %s
+            """
+            cursor.execute(query, (coin_id,))
+            return cursor.fetchone()
+        finally:
+            if cursor is not None:
+                cursor.close()
+            connection.close()
 
     def exists(self, coin_id):
 
         connection = get_connection()
-
-        cursor = connection.cursor()
-
-        query = """
-        SELECT 1
-        FROM coins
-        WHERE id = %s
-        LIMIT 1
-        """
-
-        cursor.execute(query, (coin_id,))
-
-        result = cursor.fetchone()
-
-        cursor.close()
-        connection.close()
-
-        return result is not None
+        cursor = None
+        try:
+            cursor = connection.cursor()
+            query = """
+            SELECT 1
+            FROM coins
+            WHERE id = %s
+            LIMIT 1
+            """
+            cursor.execute(query, (coin_id,))
+            return cursor.fetchone() is not None
+        finally:
+            if cursor is not None:
+                cursor.close()
+            connection.close()
 
     def update(self, coin):
 
         connection = get_connection()
-
-        cursor = connection.cursor()
-
-        query = """
-        UPDATE coins
-        SET
-            symbol = %s,
-            name = %s,
-            market_cap_rank = %s
-        WHERE id = %s
-        """
-
-        cursor.execute(query, (coin.symbol, coin.name, coin.market_cap_rank, coin.id))
-
-        connection.commit()
-
-        cursor.close()
-
-        connection.close()
+        cursor = None
+        try:
+            cursor = connection.cursor()
+            query = """
+            UPDATE coins
+            SET
+                symbol = %s,
+                name = %s,
+                market_cap_rank = %s
+            WHERE id = %s
+            """
+            cursor.execute(query, (coin.symbol, coin.name, coin.market_cap_rank, coin.id))
+            connection.commit()
+        finally:
+            if cursor is not None:
+                cursor.close()
+            connection.close()

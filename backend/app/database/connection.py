@@ -1,6 +1,8 @@
 from threading import Lock
+from time import monotonic, sleep
 
 import mysql.connector
+from mysql.connector.errors import PoolError
 from mysql.connector import pooling
 
 from app.config.settings import settings
@@ -32,7 +34,14 @@ def get_connection():
             if _connection_pool is None:
                 _connection_pool = _create_connection_pool()
 
-    return _connection_pool.get_connection()
+    deadline = monotonic() + settings.mysql_pool_acquire_timeout_seconds
+    while True:
+        try:
+            return _connection_pool.get_connection()
+        except PoolError:
+            if monotonic() >= deadline:
+                raise
+            sleep(0.05)
 
 
 def get_test_connection():

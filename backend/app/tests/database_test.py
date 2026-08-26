@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import patch
 
+from mysql.connector.errors import PoolError
+
 from app.database import connection as connection_module
 
 
@@ -28,3 +30,21 @@ class GetConnectionTest(unittest.TestCase):
             database=connection_module.settings.mysql_database,
         )
         self.assertEqual(mock_pool.get_connection.call_count, 2)
+
+    @patch("app.database.connection.sleep")
+    @patch("app.database.connection.pooling.MySQLConnectionPool")
+    def test_get_connection_retries_when_pool_is_temporarily_exhausted(
+        self, mock_pool_class, mock_sleep
+    ):
+        expected_connection = object()
+        mock_pool = mock_pool_class.return_value
+        mock_pool.get_connection.side_effect = [
+            PoolError("pool exhausted"),
+            expected_connection,
+        ]
+
+        with patch.object(connection_module, "_connection_pool", None):
+            connection = connection_module.get_connection()
+
+        self.assertIs(connection, expected_connection)
+        mock_sleep.assert_called_once_with(0.05)

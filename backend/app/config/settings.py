@@ -30,9 +30,16 @@ class Settings:
         self.mysql_password = os.getenv("MYSQL_PASSWORD")
         self.mysql_database = os.getenv("MYSQL_DATABASE")
         self.mysql_test_database = os.getenv("MYSQL_TEST_DATABASE")
-        self.mysql_pool_size = int(os.getenv("MYSQL_POOL_SIZE", 5))
+        self.mysql_pool_size = int(os.getenv("MYSQL_POOL_SIZE", 10))
         if self.mysql_pool_size < 1:
             raise ValueError("MYSQL_POOL_SIZE debe ser mayor que cero.")
+        self.mysql_pool_acquire_timeout_seconds = float(
+            os.getenv("MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS", 2)
+        )
+        if self.mysql_pool_acquire_timeout_seconds <= 0:
+            raise ValueError(
+                "MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS debe ser mayor que cero."
+            )
         self.jwt_secret_key = os.getenv("JWT_SECRET_KEY")
         self.jwt_algorithm = os.getenv("JWT_ALGORITHM", "HS256")
         self.jwt_access_token_minutes = int(os.getenv("JWT_ACCESS_TOKEN_MINUTES", 30))

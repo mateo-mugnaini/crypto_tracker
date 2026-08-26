@@ -36,7 +36,7 @@ Siguientes llamadas
 Reutilizar el pool y obtener otra conexión disponible
 ```
 
-El pool tiene un tamaño configurable mediante `MYSQL_POOL_SIZE`, con valor predeterminado `5`.
+El pool tiene un tamaño configurable mediante `MYSQL_POOL_SIZE`, con valor predeterminado `10` para el desarrollo local. Si todas las conexiones están ocupadas, `get_connection()` espera hasta `MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS` (por defecto, `2` segundos) antes de propagar el error.
 
 ## 3. Por qué la creación es lazy
 
@@ -86,7 +86,8 @@ No se usa el pool de aplicación para modificar la base de pruebas.
 En `.env.example`:
 
 ```env
-MYSQL_POOL_SIZE=5
+MYSQL_POOL_SIZE=10
+MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS=2
 ```
 
 La configuración rechaza valores menores que `1` para evitar inicializar un pool inválido.
@@ -151,7 +152,7 @@ Podrían aportar engine, pooling y manejo de sesiones, pero introducirían una n
 
 - El pool vive por proceso; varios workers crean pools independientes.
 - El tamaño total debe calcularse multiplicando pool por worker.
-- No se agregó health-check ni retry automático.
+- La adquisición incluye un retry corto y acotado cuando todas las conexiones están ocupadas; no sustituye un dimensionamiento correcto del pool.
 - No se cambió todavía la arquitectura de transacciones.
 - El pool no corrige fugas de cursores o conexiones si un repository no ejecuta su `finally` correctamente.
 - Una conexión caída puede requerir manejo adicional según la configuración y versión del driver.

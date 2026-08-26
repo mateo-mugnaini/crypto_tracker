@@ -8,6 +8,7 @@ from uuid import uuid4
 from fastapi import Body, Depends, FastAPI, Path, Query, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
+from mysql.connector.errors import PoolError
 
 from app.api.dependencies import (
     get_coin_controller,
@@ -342,6 +343,16 @@ async def rate_limit_exception_handler(_, exc):
         "rate_limit_exceeded",
         str(exc),
         headers={"Retry-After": str(exc.retry_after)},
+    )
+
+
+@app.exception_handler(PoolError)
+async def database_pool_exception_handler(_, exc):
+    return _error_response(
+        status.HTTP_503_SERVICE_UNAVAILABLE,
+        "database_unavailable",
+        "La base de datos está ocupada. Intenta nuevamente en unos segundos.",
+        headers={"Retry-After": "1"},
     )
 
 

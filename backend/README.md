@@ -75,7 +75,8 @@ Variables disponibles:
 | `MYSQL_PASSWORD` | Contraseña de MySQL. |
 | `MYSQL_DATABASE` | Base de datos usada por la aplicación. |
 | `MYSQL_TEST_DATABASE` | Base de datos usada por las pruebas de integración. |
-| `MYSQL_POOL_SIZE` | Cantidad máxima de conexiones del pool de aplicación; por defecto, 5. |
+| `MYSQL_POOL_SIZE` | Cantidad máxima de conexiones del pool de aplicación; por defecto, 10. |
+| `MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS` | Tiempo máximo para esperar una conexión libre del pool; por defecto, 2 segundos. |
 | `JWT_SECRET_KEY` | Clave secreta para firmar JWT; debe tener al menos 32 caracteres. |
 | `JWT_ALGORITHM` | Algoritmo JWT; por defecto, `HS256`. |
 | `JWT_ACCESS_TOKEN_MINUTES` | Duración del token de acceso; por defecto, 30 minutos. |

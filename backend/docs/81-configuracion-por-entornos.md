@@ -110,7 +110,8 @@ MYSQL_HOST=mysql.internal
 MYSQL_USER=crypto_tracker
 MYSQL_PASSWORD=provided-by-secret-manager
 MYSQL_DATABASE=crypto_tracker
-MYSQL_POOL_SIZE=5
+MYSQL_POOL_SIZE=10
+MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS=2
 JWT_SECRET_KEY=unique-secret-generated-for-this-environment
 CORS_ALLOWED_ORIGINS=https://frontend.example.com
 ```

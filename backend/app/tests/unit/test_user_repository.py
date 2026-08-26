@@ -70,6 +70,22 @@ def test_user_repository_find_by_id_returns_database_row(
 
 
 @patch("app.repositories.user_repository.get_connection")
+def test_user_repository_closes_resources_when_query_fails(
+    mock_get_connection,
+    database_mocks,
+):
+    connection, cursor = database_mocks
+    mock_get_connection.return_value = connection
+    cursor.execute.side_effect = RuntimeError("database failure")
+
+    with pytest.raises(RuntimeError, match="database failure"):
+        UserRepository().find_by_id(1)
+
+    cursor.close.assert_called_once_with()
+    connection.close.assert_called_once_with()
+
+
+@patch("app.repositories.user_repository.get_connection")
 @pytest.mark.parametrize(
     ("database_result", "expected"),
     [(None, False), ((1,), True)],

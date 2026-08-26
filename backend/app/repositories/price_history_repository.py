@@ -53,7 +53,7 @@ class PriceHistoryRepository:
 
     def save(self, price_history: PriceHistory) -> PriceHistory:
         connection = get_connection()
-        cursor = connection.cursor()
+        cursor = None
 
         query = """
             INSERT INTO price_history(
@@ -71,6 +71,7 @@ class PriceHistoryRepository:
         )
 
         try:
+            cursor = connection.cursor()
             cursor.execute(query, values)
 
             connection.commit()
@@ -80,7 +81,8 @@ class PriceHistoryRepository:
             return price_history
 
         finally:
-            cursor.close()
+            if cursor is not None:
+                cursor.close()
             connection.close()
 
     def find_by_coin_id(
@@ -102,7 +104,7 @@ class PriceHistoryRepository:
         )
 
         connection = get_connection()
-        cursor = connection.cursor(dictionary=True)
+        cursor = None
 
         query = """
             SELECT
@@ -142,6 +144,7 @@ class PriceHistoryRepository:
             params.append(offset)
 
         try:
+            cursor = connection.cursor(dictionary=True)
             cursor.execute(query, params)
 
             rows = cursor.fetchall()
@@ -157,12 +160,13 @@ class PriceHistoryRepository:
             ]
 
         finally:
-            cursor.close()
+            if cursor is not None:
+                cursor.close()
             connection.close()
 
     def get_statistics_by_coin_id(self, coin_id: str) -> dict:
         connection = get_connection()
-        cursor = connection.cursor(dictionary=True)
+        cursor = None
 
         query = """
             SELECT
@@ -175,11 +179,13 @@ class PriceHistoryRepository:
         """
 
         try:
+            cursor = connection.cursor(dictionary=True)
             cursor.execute(query, (coin_id,))
             return cursor.fetchone()
 
         finally:
-            cursor.close()
+            if cursor is not None:
+                cursor.close()
             connection.close()
 
     def get_initial_and_final_prices(
@@ -189,7 +195,7 @@ class PriceHistoryRepository:
         end_date: datetime | None = None,
     ) -> dict:
         connection = get_connection()
-        cursor = connection.cursor(dictionary=True)
+        cursor = None
 
         conditions = ["coin_id = %s"]
         params = [coin_id]
@@ -221,6 +227,7 @@ class PriceHistoryRepository:
         """
 
         try:
+            cursor = connection.cursor(dictionary=True)
             cursor.execute(initial_query, tuple(params))
             initial_row = cursor.fetchone()
 
@@ -237,7 +244,8 @@ class PriceHistoryRepository:
             }
 
         finally:
-            cursor.close()
+            if cursor is not None:
+                cursor.close()
             connection.close()
 
     def get_price_aggregations(
@@ -250,7 +258,7 @@ class PriceHistoryRepository:
         period_expression = self._get_aggregation_period_sql(period)
 
         connection = get_connection()
-        cursor = connection.cursor(dictionary=True)
+        cursor = None
 
         conditions = ["coin_id = %s"]
         params = [coin_id]
@@ -279,9 +287,11 @@ class PriceHistoryRepository:
         """
 
         try:
+            cursor = connection.cursor(dictionary=True)
             cursor.execute(query, tuple(params))
             return cursor.fetchall()
 
         finally:
-            cursor.close()
+            if cursor is not None:
+                cursor.close()
             connection.close()
