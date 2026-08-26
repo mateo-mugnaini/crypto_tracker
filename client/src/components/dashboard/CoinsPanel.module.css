@@ -1,10 +1,15 @@
-.panel {
+﻿.panel {
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
   scroll-margin-top: 1.5rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.35rem;
   background: var(--surface-1);
-  box-shadow: var(--shadow-sm);
+  box-shadow:
+    var(--shadow-sm),
+    inset 0 1px 0 rgba(255, 247, 240, 0.035);
 }
 
 .sectionHeading {
@@ -73,7 +78,7 @@
 }
 
 .errorState button {
-  border: 1px solid rgba(25, 198, 211, 0.3);
+  border: 1px solid rgba(255, 138, 61, 0.3);
   border-radius: var(--radius-sm);
   padding: 0.55rem 0.7rem;
   color: var(--primary);
@@ -113,7 +118,7 @@
   width: 2.35rem;
   height: 2.35rem;
   place-items: center;
-  border: 1px solid rgba(25, 198, 211, 0.22);
+  border: 1px solid rgba(255, 138, 61, 0.22);
   border-radius: 50%;
   color: var(--primary);
   background: var(--primary-muted);
@@ -174,7 +179,7 @@
 
 .favoriteButton:hover,
 .favoriteActive {
-  border-color: rgba(25, 198, 211, 0.25);
+  border-color: rgba(255, 138, 61, 0.25);
   color: var(--primary);
   background: var(--primary-muted);
 }
@@ -188,7 +193,7 @@
 }
 
 .updateButton:hover {
-  border-color: rgba(25, 198, 211, 0.4);
+  border-color: rgba(255, 138, 61, 0.4);
   color: var(--primary);
   background: var(--primary-muted);
 }
@@ -201,6 +206,9 @@
 
 @media (max-width: 620px) {
   .panel {
+    transition:
+      border-color var(--transition),
+      box-shadow var(--transition);
     border-radius: 18px;
     padding: 1rem;
   }

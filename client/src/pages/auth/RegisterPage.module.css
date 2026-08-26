@@ -1,4 +1,5 @@
 .layout {
+  position: relative;
   display: grid;
   width: min(1180px, calc(100% - 3rem));
   min-height: 100vh;
@@ -7,6 +8,19 @@
   align-items: center;
   gap: clamp(3rem, 9vw, 9rem);
   padding: 3rem 0;
+}
+
+.layout::before {
+  position: fixed;
+  top: 16%;
+  left: 42%;
+  width: 18rem;
+  height: 18rem;
+  border: 1px solid rgba(255, 138, 61, 0.12);
+  border-radius: 50%;
+  box-shadow: 0 0 90px rgba(255, 107, 26, 0.12);
+  content: "";
+  pointer-events: none;
 }
 
 .introPanel {
@@ -20,6 +34,7 @@
   font-size: clamp(2.8rem, 6vw, 5.7rem);
   line-height: 0.96;
   letter-spacing: -0.075em;
+  text-wrap: balance;
 }
 
 .introPanel p {

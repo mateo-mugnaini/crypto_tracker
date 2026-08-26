@@ -1,4 +1,4 @@
-.shell {
+﻿.shell {
   display: grid;
   min-height: 100vh;
   grid-template-columns: 236px minmax(0, 1fr);
@@ -12,6 +12,7 @@
   width: min(1380px, calc(100% - 5rem));
   margin: 0 auto;
   padding: 6.5rem 0 4rem;
+  animation: contentReveal 650ms var(--transition) both;
 }
 
 .pageHeader {
@@ -29,6 +30,7 @@
   font-size: clamp(2.25rem, 4.5vw, 4.4rem);
   line-height: 0.98;
   letter-spacing: -0.065em;
+  text-wrap: balance;
 }
 
 .pageHeader p {
@@ -95,12 +97,24 @@
   border-radius: var(--radius-md);
   padding: 1.15rem 1.25rem;
   background: var(--surface-1);
-  box-shadow: var(--shadow-sm);
+  box-shadow:
+    var(--shadow-sm),
+    inset 0 1px 0 rgba(255, 247, 240, 0.035);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition),
+    transform var(--transition);
+}
+
+.summaryCard:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-3px);
 }
 
 .summaryHighlight {
-  border-color: rgba(25, 198, 211, 0.25);
-  background: linear-gradient(135deg, rgba(25, 198, 211, 0.12), var(--surface-1) 70%);
+  border-color: rgba(255, 138, 61, 0.25);
+  background: linear-gradient(135deg, rgba(255, 138, 61, 0.12), var(--surface-1) 70%);
 }
 
 .summaryLabel {
@@ -134,6 +148,17 @@
 .dashboardGrid {
   display: grid;
   gap: 1rem;
+}
+
+@keyframes contentReveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 1100px) {

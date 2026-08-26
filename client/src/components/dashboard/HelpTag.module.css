@@ -1,4 +1,4 @@
-.root {
+﻿.root {
   position: relative;
   display: inline-flex;
 }
@@ -7,7 +7,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(25, 198, 211, 0.28);
+  border: 1px solid rgba(255, 138, 61, 0.28);
   border-radius: 999px;
   padding: 0.42rem 0.62rem;
   color: var(--primary);
@@ -24,7 +24,7 @@
 .trigger:focus-visible {
   border-color: var(--primary);
   color: var(--text-primary);
-  background: rgba(25, 198, 211, 0.2);
+  background: rgba(255, 138, 61, 0.2);
 }
 
 .mobileLabel {

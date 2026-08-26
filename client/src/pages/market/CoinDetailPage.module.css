@@ -1,4 +1,4 @@
-.loading {
+﻿.loading {
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -28,7 +28,7 @@
 .coinIcon {
   align-items: center;
   background: var(--primary-muted);
-  border: 1px solid rgba(25, 198, 211, 0.25);
+  border: 1px solid rgba(255, 138, 61, 0.25);
   border-radius: 50%;
   color: var(--primary);
   display: inline-flex;
@@ -88,7 +88,7 @@
 .favoriteButton:hover,
 .favoriteActive {
   background: var(--primary-muted);
-  border-color: rgba(25, 198, 211, 0.35);
+  border-color: rgba(255, 138, 61, 0.35);
   color: var(--primary);
 }
 

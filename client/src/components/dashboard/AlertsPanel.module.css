@@ -1,9 +1,14 @@
-.panel {
+﻿.panel {
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: clamp(1rem, 2vw, 1.5rem);
   background: var(--surface-1);
-  box-shadow: var(--shadow-sm);
+  box-shadow:
+    var(--shadow-sm),
+    inset 0 1px 0 rgba(255, 247, 240, 0.035);
 }
 
 .header,
@@ -84,7 +89,7 @@
 }
 .primaryButton {
   border-color: var(--primary);
-  color: #06121d;
+  color: #1a0c04;
   background: var(--primary);
   font-weight: 800;
 }

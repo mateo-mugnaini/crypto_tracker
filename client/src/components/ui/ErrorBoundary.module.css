@@ -1,4 +1,4 @@
-.fallback {
+﻿.fallback {
   display: grid;
   min-height: 100vh;
   align-content: center;
@@ -21,7 +21,7 @@
   border: 1px solid var(--primary);
   border-radius: var(--radius-sm);
   padding: 0.65rem 1rem;
-  color: #06121d;
+  color: #1a0c04;
   background: var(--primary);
   font: inherit;
   font-weight: 800;

@@ -1,4 +1,4 @@
-.alert {
+﻿.alert {
   border: 1px solid var(--border);
   border-radius: 10px;
   font-size: 0.88rem;
@@ -7,13 +7,13 @@
 }
 
 .info {
-  background: rgba(25, 198, 211, 0.08);
+  background: rgba(255, 138, 61, 0.08);
   color: var(--text);
 }
 
 .success {
-  background: rgba(124, 227, 139, 0.1);
-  border-color: rgba(124, 227, 139, 0.3);
+  background: rgba(255, 179, 71, 0.1);
+  border-color: rgba(255, 179, 71, 0.3);
   color: var(--success);
 }
 

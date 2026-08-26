@@ -1,10 +1,15 @@
-.panel {
+﻿.panel {
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
   scroll-margin-top: 1.5rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.35rem;
   background: var(--surface-1);
-  box-shadow: var(--shadow-sm);
+  box-shadow:
+    var(--shadow-sm),
+    inset 0 1px 0 rgba(255, 247, 240, 0.035);
 }
 
 .sectionHeading {
@@ -86,7 +91,7 @@
   width: 2.35rem;
   height: 2.35rem;
   place-items: center;
-  border: 1px solid rgba(124, 227, 139, 0.24);
+  border: 1px solid rgba(255, 179, 71, 0.24);
   border-radius: 50%;
   color: var(--accent);
   background: var(--accent-muted);
@@ -131,6 +136,9 @@
 
 @media (max-width: 480px) {
   .panel {
+    transition:
+      border-color var(--transition),
+      box-shadow var(--transition);
     border-radius: 18px;
     padding: 1rem;
   }

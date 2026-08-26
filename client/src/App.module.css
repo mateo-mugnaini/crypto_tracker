@@ -7,33 +7,47 @@
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-  color: #f8fafc;
-  background: #07111f;
+  color: #fff7f0;
+  background: #090a0d;
+  color-scheme: dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --background: #07111f;
-  --surface-1: #0b1728;
-  --surface-2: #102033;
-  --surface-3: #162a40;
-  --primary: #19c6d3;
-  --primary-hover: #35d8e2;
-  --primary-muted: rgba(25, 198, 211, 0.12);
-  --accent: #7ce38b;
-  --accent-muted: rgba(124, 227, 139, 0.12);
-  --positive: #34d399;
-  --negative: #fb7185;
-  --warning: #fbbf24;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border: rgba(148, 163, 184, 0.14);
-  --border-hover: rgba(148, 163, 184, 0.28);
-  --shadow-sm: 0 12px 32px rgba(0, 0, 0, 0.14);
-  --shadow-lg: 0 24px 70px rgba(0, 0, 0, 0.22);
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --transition: 180ms ease;
+  --background: #090a0d;
+  --background-deep: #050608;
+  --surface-1: #111318;
+  --surface-2: #171a20;
+  --surface-3: #20242c;
+  --surface-glass: rgba(17, 19, 24, 0.78);
+  --primary: #ff8a3d;
+  --primary-hover: #ffb06e;
+  --primary-strong: #ff6b1a;
+  --primary-muted: rgba(255, 138, 61, 0.12);
+  --accent: #ffb347;
+  --accent-muted: rgba(255, 179, 71, 0.12);
+  --positive: #43e6a2;
+  --negative: #ff6f91;
+  --warning: #ffd166;
+  --text-primary: #fff7f0;
+  --text-secondary: #b8b0aa;
+  --text-muted: #77726f;
+  --border: rgba(255, 247, 240, 0.11);
+  --border-hover: rgba(255, 138, 61, 0.42);
+  --border-strong: rgba(255, 247, 240, 0.2);
+  --text: var(--text-primary);
+  --muted: var(--text-secondary);
+  --success: var(--positive);
+  --danger: var(--negative);
+  --surface: var(--surface-1);
+  --surface-strong: var(--surface-2);
+  --shadow: var(--shadow-sm);
+  --shadow-sm: 0 18px 45px rgba(0, 0, 0, 0.22);
+  --shadow-lg: 0 28px 90px rgba(0, 0, 0, 0.42);
+  --shadow-glow:
+    0 0 0 1px rgba(255, 138, 61, 0.08), 0 18px 55px rgba(255, 107, 26, 0.11);
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+  --transition: 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 :global(*) {
@@ -50,9 +64,48 @@
   min-height: 100vh;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 72% 0%, rgba(25, 198, 211, 0.08), transparent 28rem),
-    radial-gradient(circle at 0% 100%, rgba(124, 227, 139, 0.05), transparent 30rem),
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    radial-gradient(circle at 82% -8%, rgba(255, 138, 61, 0.17), transparent 28rem),
+    radial-gradient(circle at -12% 110%, rgba(255, 179, 71, 0.08), transparent 30rem),
     var(--background);
+  background-size:
+    44px 44px,
+    44px 44px,
+    auto,
+    auto,
+    auto;
+}
+
+:global(body)::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 0%,
+    transparent 0 22rem,
+    rgba(0, 0, 0, 0.28)
+  );
+  content: "";
+}
+
+:global(::-webkit-scrollbar) {
+  width: 10px;
+}
+
+:global(::-webkit-scrollbar-track) {
+  background: var(--background-deep);
+}
+
+:global(::-webkit-scrollbar-thumb) {
+  border: 3px solid var(--background-deep);
+  border-radius: 999px;
+  background: var(--surface-3);
+}
+
+:global(::-webkit-scrollbar-thumb:hover) {
+  background: var(--primary-strong);
 }
 
 :global(button),
@@ -76,8 +129,13 @@
 :global(textarea:focus-visible),
 :global(summary:focus-visible),
 :global(a:focus-visible) {
-  outline: 3px solid var(--primary);
-  outline-offset: 3px;
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
+:global(::selection) {
+  color: #1a0c04;
+  background: var(--primary);
 }
 
 :global(h1),
@@ -116,9 +174,9 @@
 :global([data-dashboard-accordion] > summary::after) {
   display: none;
   margin-left: auto;
-  color: var(--text-muted);
+  color: var(--primary);
   content: "+";
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   font-weight: 400;
   line-height: 1;
 }
@@ -131,12 +189,41 @@
   margin-bottom: 0 !important;
 }
 
+:global([data-dashboard-accordion]) {
+  position: relative;
+  overflow: hidden;
+  animation: panelReveal 500ms var(--transition) both;
+}
+
+:global([data-dashboard-accordion]::before) {
+  position: absolute;
+  top: 0;
+  right: 12%;
+  left: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  box-shadow: 0 0 16px rgba(255, 138, 61, 0.6);
+  content: "";
+  opacity: 0.7;
+}
+
 .centeredState {
   display: grid;
   min-height: 100vh;
   place-items: center;
   color: var(--text-secondary);
   background: var(--background);
+}
+
+@keyframes panelReveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -158,7 +245,7 @@
   :global([data-dashboard-accordion] > summary) {
     position: relative;
     cursor: pointer;
-    padding-right: 1.5rem;
+    padding-right: 1.75rem;
   }
 
   :global([data-dashboard-accordion] > summary::after) {

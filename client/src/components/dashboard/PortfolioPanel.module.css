@@ -1,12 +1,17 @@
-.panel {
+﻿.panel {
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
   display: grid;
   gap: 1.15rem;
   scroll-margin-top: 1.5rem;
-  border: 1px solid rgba(124, 227, 139, 0.2);
+  border: 1px solid rgba(255, 179, 71, 0.2);
   border-radius: var(--radius-lg);
   padding: 1.35rem;
-  background: linear-gradient(135deg, rgba(124, 227, 139, 0.07), var(--surface-1) 38%);
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(135deg, rgba(255, 179, 71, 0.07), var(--surface-1) 38%);
+  box-shadow:
+    var(--shadow-sm),
+    inset 0 1px 0 rgba(255, 247, 240, 0.035);
 }
 
 .sectionHeading {
@@ -82,7 +87,7 @@
 }
 .refreshButton,
 .holdingForm > button {
-  border: 1px solid rgba(124, 227, 139, 0.28);
+  border: 1px solid rgba(255, 179, 71, 0.28);
   border-radius: var(--radius-sm);
   padding: 0.55rem 0.7rem;
   color: var(--accent);
@@ -108,7 +113,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 0.85rem;
-  background: rgba(16, 32, 51, 0.78);
+  background: rgba(32, 36, 44, 0.78);
 }
 .summaryGrid span,
 .summaryGrid small {
@@ -185,7 +190,7 @@
 .holdingForm > button,
 .operationForm > button {
   min-height: 2.45rem;
-  color: #07111f;
+  color: #170b04;
   background: var(--accent);
   font-weight: 800;
 }
@@ -196,7 +201,7 @@
   border-radius: var(--radius-md);
   padding: 1rem;
   color: var(--text-secondary);
-  background: rgba(16, 32, 51, 0.5);
+  background: rgba(32, 36, 44, 0.5);
 }
 .emptyState strong {
   color: var(--text-primary);
@@ -269,6 +274,9 @@
 
 @media (max-width: 620px) {
   .panel {
+    transition:
+      border-color var(--transition),
+      box-shadow var(--transition);
     border-radius: 18px;
     padding: 1rem;
   }

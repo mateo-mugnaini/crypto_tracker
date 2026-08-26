@@ -1,4 +1,4 @@
-.badge {
+﻿.badge {
   border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--muted);
@@ -14,8 +14,8 @@
 }
 
 .success {
-  background: rgba(124, 227, 139, 0.1);
-  border-color: rgba(124, 227, 139, 0.3);
+  background: rgba(255, 179, 71, 0.1);
+  border-color: rgba(255, 179, 71, 0.3);
   color: var(--success);
 }
 
