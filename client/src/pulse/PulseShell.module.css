@@ -1,0 +1,294 @@
+.app {
+  min-height: 100vh;
+  background: #f7f8fa;
+  color: #17191d;
+}
+
+.header {
+  position: relative;
+  z-index: 20;
+  background: #ffffff;
+  border-bottom: 1px solid #e6e8ec;
+}
+
+.headerInner,
+.statusBar,
+.main {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.headerInner {
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #17191d;
+  font-size: 1.13rem;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.brandMark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: #ff6b35;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.nav {
+  position: relative;
+  z-index: 21;
+  display: flex;
+  align-items: stretch;
+  align-self: stretch;
+  gap: 5px;
+  overflow: visible;
+}
+
+.navLink,
+.more summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 68px;
+  padding: 0 13px;
+  border-bottom: 2px solid transparent;
+  color: #737a85;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.navLink:hover,
+.navLinkActive,
+.more summary:hover,
+.moreActive summary {
+  color: #17191d;
+}
+
+.navLinkActive,
+.moreActive summary {
+  border-bottom-color: #ff6b35;
+}
+
+.more {
+  position: relative;
+}
+
+.more summary {
+  list-style: none;
+}
+
+.more summary::-webkit-details-marker {
+  display: none;
+}
+
+.more summary::after {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 8px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  content: "";
+  transform: rotate(45deg);
+}
+
+.moreMenu {
+  position: absolute;
+  z-index: 10;
+  top: 60px;
+  right: 0;
+  display: grid;
+  min-width: 160px;
+  padding: 7px;
+  border: 1px solid #e1e4e8;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgb(31 36 43 / 12%);
+}
+
+.moreMenu a {
+  padding: 10px 11px;
+  border-radius: 8px;
+  color: #555c67;
+  font-size: 0.86rem;
+  text-decoration: none;
+}
+
+.moreMenu a:hover {
+  background: #fff2ed;
+  color: #d95022;
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: auto;
+}
+
+.userName {
+  max-width: 130px;
+  overflow: hidden;
+  color: #555c67;
+  font-size: 0.84rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logoutButton,
+.refreshButton {
+  border: 1px solid #dfe2e7;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #555c67;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 8px 11px;
+}
+
+.logoutButton:hover,
+.refreshButton:hover:not(:disabled) {
+  border-color: #ff6b35;
+  color: #d95022;
+}
+
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 43px;
+  border-bottom: 1px solid #e6e8ec;
+  color: #8a9099;
+}
+
+.statusText {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.76rem;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #afb5bd;
+}
+
+.statusLive {
+  background: #21a366;
+  box-shadow: 0 0 0 3px rgb(33 163 102 / 12%);
+}
+
+.refreshButton {
+  border: 0;
+  background: transparent;
+  padding-right: 0;
+}
+
+.main {
+  padding: 43px 0 72px;
+}
+
+.pageHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 29px;
+}
+
+.pageHeading h1 {
+  margin: 0;
+  color: #17191d;
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
+  letter-spacing: -0.045em;
+  line-height: 1.1;
+}
+
+.pageHeading p {
+  max-width: 570px;
+  margin: 9px 0 0;
+  color: #737a85;
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.pageActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+@media (max-width: 760px) {
+  .headerInner,
+  .statusBar,
+  .main {
+    width: min(100% - 28px, 620px);
+  }
+
+  .headerInner {
+    min-height: auto;
+    flex-wrap: wrap;
+    gap: 0;
+    padding-top: 15px;
+  }
+
+  .account {
+    gap: 9px;
+  }
+
+  .userName {
+    display: none;
+  }
+
+  .nav {
+    order: 3;
+    width: 100%;
+    min-height: 49px;
+    overflow: visible;
+  }
+
+  .navLink,
+  .more summary {
+    min-height: 49px;
+    padding: 0 10px;
+    white-space: nowrap;
+  }
+
+  .moreMenu {
+    top: 44px;
+    right: auto;
+    left: 0;
+  }
+
+  .statusBar {
+    min-height: 39px;
+  }
+
+  .main {
+    padding-top: 30px;
+  }
+
+  .pageHeading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+}

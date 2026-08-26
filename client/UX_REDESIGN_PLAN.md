@@ -510,6 +510,22 @@ agregada nueva, se documentará antes de tocar contratos. La modificación míni
 probable sería un endpoint de resumen, pero no forma parte de esta auditoría ni
 se implementa ahora.
 
+## Estado de implementación
+
+La primera implementación de este plan ya está integrada en `src/pulse`. Se
+creó una presentación nueva desde cero y `App.jsx` la usa como recorrido activo.
+
+- Fase 1: implementada con `PulseShell` y navegación primaria de tres destinos.
+- Fase 2: implementada con `PulseHome` y resumen reducido.
+- Fase 3: implementada con `PulseMarket` y `PulseCoinDetail`.
+- Fase 4: implementada con `PulsePortfolio` y alta básica de posiciones.
+- Fase 5: implementada con `PulseTools` para las herramientas secundarias.
+- Fase 6: validada con formato, lint, 23 tests y build de producción.
+
+La experiencia nueva conserva las rutas y los proveedores existentes. Los
+componentes anteriores no se eliminan para no romper referencias ni tests, pero
+quedan fuera de la composición activa de `App.jsx`.
+
 ## Pendientes deliberados
 
 - no se elimina todavía ninguna ruta;

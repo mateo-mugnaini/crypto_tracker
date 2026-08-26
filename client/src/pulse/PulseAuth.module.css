@@ -1,0 +1,142 @@
+.page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+  background: #f7f8fa;
+}
+
+.card {
+  width: min(100%, 390px);
+  padding: 32px;
+  border: 1px solid #e3e5e9;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 30px;
+  color: #17191d;
+  font-size: 1.1rem;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: #ff6b35;
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.card h1 {
+  margin: 0;
+  color: #17191d;
+  font-size: 1.75rem;
+  letter-spacing: -0.05em;
+}
+
+.intro {
+  margin: 9px 0 24px;
+  color: #737a85;
+  font-size: 0.87rem;
+  line-height: 1.5;
+}
+
+.form {
+  display: grid;
+  gap: 15px;
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+}
+
+.field label {
+  color: #555c67;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.field input {
+  min-height: 44px;
+  box-sizing: border-box;
+  border: 1px solid #dfe2e7;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #25292f;
+  font: inherit;
+  font-size: 0.88rem;
+  outline: none;
+  padding: 0 12px;
+}
+
+.field input:focus {
+  border-color: #ff8e66;
+  box-shadow: 0 0 0 3px rgb(255 107 53 / 12%);
+}
+
+.submit {
+  min-height: 44px;
+  margin-top: 3px;
+  border: 0;
+  border-radius: 9px;
+  background: #ff6b35;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.87rem;
+  font-weight: 750;
+}
+
+.submit:hover:not(:disabled) {
+  background: #e95a28;
+}
+
+.submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.error {
+  margin: 0;
+  border-radius: 8px;
+  background: #fff1ec;
+  color: #a54424;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  padding: 10px 12px;
+}
+
+.success {
+  margin: 0 0 15px;
+  border-radius: 8px;
+  background: #edf9f1;
+  color: #197344;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  padding: 10px 12px;
+}
+
+.footnote {
+  margin: 22px 0 0;
+  color: #8a9099;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.footnote a {
+  color: #d95022;
+  font-weight: 700;
+  text-decoration: none;
+}
