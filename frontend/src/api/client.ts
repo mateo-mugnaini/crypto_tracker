@@ -26,18 +26,10 @@ import type {
   PriceAlertInput,
   PriceAlertListResponse,
 } from "./types";
+import { runtimeConfig } from "../config/runtime";
 
-const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"
-).replace(/\/$/, "");
-const DEFAULT_TIMEOUT_MS = 10_000;
-const configuredTimeout = Number(
-  import.meta.env.VITE_API_TIMEOUT_MS || DEFAULT_TIMEOUT_MS,
-);
-const API_TIMEOUT_MS =
-  Number.isFinite(configuredTimeout) && configuredTimeout > 0
-    ? configuredTimeout
-    : DEFAULT_TIMEOUT_MS;
+const API_BASE_URL = runtimeConfig.apiBaseUrl;
+const API_TIMEOUT_MS = runtimeConfig.apiTimeoutMs;
 
 let unauthorizedHandler: (() => void) | null = null;
 

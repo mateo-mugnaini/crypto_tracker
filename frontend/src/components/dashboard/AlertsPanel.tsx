@@ -82,7 +82,11 @@ export default function AlertsPanel() {
   };
 
   return (
-    <section className={styles.panel}>
+    <section
+      aria-busy={status === "loading" || isSaving}
+      aria-label="Alertas y notificaciones"
+      className={styles.panel}
+    >
       <div className={styles.header}>
         <div>
           <span className={styles.eyebrow}>Price watch</span>

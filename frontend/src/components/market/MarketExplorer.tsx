@@ -159,7 +159,11 @@ export default function MarketExplorer() {
   }
 
   return (
-    <section aria-label="Explorador de mercado" className={styles.panel}>
+    <section
+      aria-busy={isLoading || updatingPriceId !== null}
+      aria-label="Explorador de mercado"
+      className={styles.panel}
+    >
       <div className={styles.toolbar}>
         <label className={styles.searchField}>
           <span>Buscar moneda</span>

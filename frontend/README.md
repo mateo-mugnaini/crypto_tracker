@@ -160,3 +160,20 @@ La cartera está documentada en
 El roadmap evolutivo, con la auditoría técnica y los módulos propuestos para
 la siguiente etapa, está en
 [`docs/15-roadmap-evolutivo-frontend.md`](docs/15-roadmap-evolutivo-frontend.md).
+
+## Calidad, seguridad y despliegue
+
+Ejecuta `npm run check` para correr formato, TypeScript, lint, tests con
+cobertura y build en una sola operacion. En produccion define
+`VITE_API_BASE_URL` con una URL absoluta de la API. Las variables `VITE_*` son
+publicas y nunca deben contener secretos.
+
+La guia de QA responsive y accesibilidad esta en
+[`docs/16-qa-responsive-accessibility.md`](docs/16-qa-responsive-accessibility.md).
+La guia de seguridad, rendimiento y despliegue esta en
+[`docs/17-seguridad-rendimiento-despliegue.md`](docs/17-seguridad-rendimiento-despliegue.md).
+Con el backend corriendo, `npm run healthcheck` verifica el endpoint local de
+salud.
+
+La PWA y su prueba offline local estan documentadas en
+[`docs/18-pwa-local.md`](docs/18-pwa-local.md).

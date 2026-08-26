@@ -13,7 +13,9 @@
 - **Módulo 21:** implementado: alertas de precio y centro de notificaciones.
 - **Módulo 22:** implementado: stream SSE autenticado con reconexión y fallback a polling.
 - **Módulo 23:** implementado: analítica personal, visualizaciones y exportación CSV.
-- **Módulos 24–26:** planificados.
+- **Módulo 24:** base de accesibilidad implementada; QA responsive manual documentado.
+- **Módulo 25:** validación de runtime, chunks por ruta, Error Boundary y pipeline unificado implementados.
+- **Módulo 26:** base PWA y experiencia offline implementadas; preferencias avanzadas quedan pendientes.
 
 ## 1. Diagnóstico actual
 
@@ -365,6 +367,7 @@ ver precios.
 ### Módulo 24 — Accesibilidad y QA responsive
 
 **Prioridad:** P1  
+**Estado:** base de accesibilidad implementada y validada con tests; matriz manual documentada. La automatización Playwright + axe queda como siguiente inversión E2E.
 **Dependencias:** módulos 15, 17 y 18.
 
 Convertir el responsive actual en una práctica verificable y no solo en reglas
@@ -392,6 +395,7 @@ CSS.
 ### Módulo 25 — Seguridad, rendimiento y despliegue
 
 **Prioridad:** P1  
+**Estado:** base implementada y validada con `npm run check`; headers del hosting, observabilidad y migración a cookie HttpOnly quedan pendientes de coordinar con el despliegue y el backend.
 **Dependencias:** módulos 15, 16 y 24.
 
 Preparar el frontend para un entorno público.
@@ -418,6 +422,7 @@ Preparar el frontend para un entorno público.
 ### Módulo 26 — PWA y experiencia de uso prolongado
 
 **Prioridad:** P2  
+**Estado:** shell PWA, fallback offline y aviso de conexión implementados y validados; tema, densidad y moneda configurable quedan pendientes.
 **Dependencias:** módulos 22, 24 y 25.
 
 Mejorar la experiencia para usuarios que consultan el tracker con frecuencia.

@@ -211,6 +211,7 @@ export default function PortfolioPanel() {
   return (
     <>
       <details
+        aria-busy={isLoading || isSaving || isOperationSaving}
         className={styles.panel}
         data-dashboard-accordion="true"
         id="portfolio"

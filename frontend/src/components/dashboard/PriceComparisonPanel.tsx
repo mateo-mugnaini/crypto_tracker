@@ -136,7 +136,13 @@ export default function PriceComparisonPanel() {
   const secondChange = getPercentageChange(series[1]?.records || []);
 
   return (
-    <details className={styles.panel} data-dashboard-accordion="true" id="compare" open>
+    <details
+      aria-busy={isLoading || isCoinsLoading}
+      className={styles.panel}
+      data-dashboard-accordion="true"
+      id="compare"
+      open
+    >
       <summary className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>Comparativa</span>

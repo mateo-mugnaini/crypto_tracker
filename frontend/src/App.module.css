@@ -57,7 +57,8 @@
 
 :global(button),
 :global(input),
-:global(select) {
+:global(select),
+:global(textarea) {
   font: inherit;
 }
 
@@ -72,8 +73,10 @@
 :global(button:focus-visible),
 :global(input:focus-visible),
 :global(select:focus-visible),
+:global(textarea:focus-visible),
+:global(summary:focus-visible),
 :global(a:focus-visible) {
-  outline: 2px solid var(--primary);
+  outline: 3px solid var(--primary);
   outline-offset: 3px;
 }
 
@@ -147,6 +150,7 @@
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }
 

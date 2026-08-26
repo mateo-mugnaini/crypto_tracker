@@ -13,6 +13,7 @@ import { ApiError, api, isRequestCancelled } from "../../api/client";
 import type { RequestOptions } from "../../api/client";
 import type { Coin, MarketSnapshotEvent } from "../../api/types";
 import { useOptionalAuth } from "../../auth/AuthContext";
+import { runtimeConfig } from "../../config/runtime";
 
 const MARKET_CACHE_TTL_MS = 30_000;
 
@@ -118,12 +119,9 @@ export function MarketProvider({ children }: { children: ReactNode }) {
   );
   const [liveStatus, setLiveStatus] = useState<LiveStatus>("disabled");
   const requestRef = useRef<Promise<boolean> | null>(null);
-  const autoRefreshIntervalMs = Number(
-    import.meta.env.VITE_MARKET_REFRESH_INTERVAL_MS || 0,
-  );
-  const isAutoRefreshEnabled =
-    Number.isFinite(autoRefreshIntervalMs) && autoRefreshIntervalMs > 0;
-  const liveEnabled = import.meta.env.VITE_MARKET_LIVE_ENABLED !== "false";
+  const autoRefreshIntervalMs = runtimeConfig.marketRefreshIntervalMs;
+  const isAutoRefreshEnabled = autoRefreshIntervalMs > 0;
+  const liveEnabled = runtimeConfig.marketLiveEnabled;
 
   const loadCoins = useCallback(async (force = false, options: RequestOptions = {}) => {
     if (force) {

@@ -45,4 +45,40 @@ describe("ConfirmDialog", () => {
     await user.keyboard("{Escape}");
     expect(onCancel).toHaveBeenCalledOnce();
   });
+
+  it("mantiene el foco dentro del diálogo y lo devuelve al control de origen", async () => {
+    const user = userEvent.setup();
+    const trigger = document.createElement("button");
+    trigger.textContent = "Abrir";
+    document.body.append(trigger);
+    trigger.focus();
+
+    const view = render(
+      <ConfirmDialog
+        description="Se borrarÃ¡ la posiciÃ³n."
+        onCancel={vi.fn()}
+        onConfirm={vi.fn()}
+        open
+        title="Â¿Eliminar posiciÃ³n?"
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Cancelar" })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Confirmar" })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Cancelar" })).toHaveFocus();
+
+    view.rerender(
+      <ConfirmDialog
+        description="Se borrarÃ¡ la posiciÃ³n."
+        onCancel={vi.fn()}
+        onConfirm={vi.fn()}
+        open={false}
+        title="Â¿Eliminar posiciÃ³n?"
+      />,
+    );
+    expect(trigger).toHaveFocus();
+    trigger.remove();
+  });
 });

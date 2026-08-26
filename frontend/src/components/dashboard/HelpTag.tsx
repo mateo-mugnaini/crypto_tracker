@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 
 import styles from "./HelpTag.module.css";
 
@@ -9,11 +9,25 @@ interface HelpTagProps {
 
 export default function HelpTag({ title = "Ayuda", children }: HelpTagProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const popupId = useId();
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setIsOpen(false);
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
 
   return (
     <span className={`${styles.root} ${isOpen ? styles.open : ""}`}>
       <button
         aria-expanded={isOpen}
+        aria-controls={popupId}
+        aria-describedby={popupId}
         aria-label={title}
         className={styles.trigger}
         onClick={(event) => {
@@ -25,7 +39,7 @@ export default function HelpTag({ title = "Ayuda", children }: HelpTagProps) {
         <span className={styles.desktopLabel}>{title}</span>
         <span className={styles.mobileLabel}>?</span>
       </button>
-      <span className={styles.popup} role="tooltip">
+      <span className={styles.popup} id={popupId} role="tooltip">
         {children}
       </span>
     </span>
