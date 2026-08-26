@@ -22,9 +22,7 @@ interface FavoritesContextValue {
   removeFavorite(coinId: string): Promise<void>;
 }
 
-const FavoritesContext = createContext<FavoritesContextValue | undefined>(
-  undefined,
-);
+const FavoritesContext = createContext<FavoritesContextValue | undefined>(undefined);
 
 function getFavoriteError(caughtError: unknown, fallback: string) {
   return caughtError instanceof ApiError ? caughtError.message : fallback;
@@ -51,9 +49,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       const response = await api.getFavoriteDetails(user.id, token);
       setFavorites(response.data);
     } catch (caughtError) {
-      setError(
-        getFavoriteError(caughtError, "No se pudieron cargar tus favoritos."),
-      );
+      setError(getFavoriteError(caughtError, "No se pudieron cargar tus favoritos."));
     } finally {
       setIsLoading(false);
     }
@@ -80,9 +76,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         await action();
         await refresh();
       } catch (caughtError) {
-        setError(
-          getFavoriteError(caughtError, "No se pudo actualizar el favorito."),
-        );
+        setError(getFavoriteError(caughtError, "No se pudo actualizar el favorito."));
       } finally {
         setUpdatingCoinIds((current) =>
           current.filter((currentCoinId) => currentCoinId !== coinId),
@@ -98,14 +92,10 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      const favoriteExists = favorites.some(
-        (favorite) => favorite.coin_id === coinId,
-      );
+      const favoriteExists = favorites.some((favorite) => favorite.coin_id === coinId);
 
       if (favoriteExists) {
-        await updateFavorite(coinId, () =>
-          api.removeFavorite(user.id, coinId, token),
-        );
+        await updateFavorite(coinId, () => api.removeFavorite(user.id, coinId, token));
         return;
       }
 
@@ -120,9 +110,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      await updateFavorite(coinId, () =>
-        api.removeFavorite(user.id, coinId, token),
-      );
+      await updateFavorite(coinId, () => api.removeFavorite(user.id, coinId, token));
     },
     [token, updateFavorite, user],
   );
@@ -142,9 +130,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <FavoritesContext.Provider value={value}>
-      {children}
-    </FavoritesContext.Provider>
+    <FavoritesContext.Provider value={value}>{children}</FavoritesContext.Provider>
   );
 }
 

@@ -14,7 +14,10 @@
   background: var(--primary-muted);
   font-size: 0.68rem;
   font-weight: 800;
-  transition: border-color var(--transition), background var(--transition), color var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    color var(--transition);
 }
 
 .trigger:hover,

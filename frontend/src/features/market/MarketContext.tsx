@@ -39,9 +39,7 @@ function getMarketError(caughtError: unknown) {
 
 export function MarketProvider({ children }: { children: ReactNode }) {
   const [coins, setCoins] = useState<Coin[]>(marketCache?.coins || []);
-  const [status, setStatus] = useState<MarketStatus>(
-    marketCache ? "success" : "idle",
-  );
+  const [status, setStatus] = useState<MarketStatus>(marketCache ? "success" : "idle");
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(
     marketCache ? new Date(marketCache.timestamp) : null,

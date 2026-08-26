@@ -29,8 +29,7 @@ function formatDate(value: number) {
 function normalizeRecords(records: PriceHistoryRecord[]) {
   const ordered = [...records].sort(
     (left, right) =>
-      new Date(left.recorded_at).getTime() -
-      new Date(right.recorded_at).getTime(),
+      new Date(left.recorded_at).getTime() - new Date(right.recorded_at).getTime(),
   );
   const basePrice = ordered[0]?.price ?? 0;
 

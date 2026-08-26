@@ -33,8 +33,7 @@ export default function PriceHistoryChart({ records }: PriceHistoryChartProps) {
 
   const orderedRecords = [...records].sort(
     (left, right) =>
-      new Date(left.recorded_at).getTime() -
-      new Date(right.recorded_at).getTime(),
+      new Date(left.recorded_at).getTime() - new Date(right.recorded_at).getTime(),
   );
   const prices = orderedRecords.map((record) => record.price);
   const minimum = Math.min(...prices);
@@ -44,8 +43,7 @@ export default function PriceHistoryChart({ records }: PriceHistoryChartProps) {
   const chartHeight = HEIGHT - PADDING.top - PADDING.bottom;
 
   const getX = (index: number) =>
-    PADDING.left +
-    (index / Math.max(orderedRecords.length - 1, 1)) * chartWidth;
+    PADDING.left + (index / Math.max(orderedRecords.length - 1, 1)) * chartWidth;
   const getY = (price: number) =>
     PADDING.top + chartHeight - ((price - minimum) / range) * chartHeight;
 
@@ -105,11 +103,7 @@ export default function PriceHistoryChart({ records }: PriceHistoryChartProps) {
             </g>
           );
         })}
-        <text
-          className={styles.axisLabel}
-          x={PADDING.left}
-          y={HEIGHT - 12}
-        >
+        <text className={styles.axisLabel} x={PADDING.left} y={HEIGHT - 12}>
           {formatDate(orderedRecords[0].recorded_at)}
         </text>
         <text
@@ -134,7 +128,11 @@ export default function PriceHistoryChart({ records }: PriceHistoryChartProps) {
             </title>
           </circle>
         ))}
-        <text className={styles.middleLabel} x={WIDTH - PADDING.right} y={PADDING.top + chartHeight / 2 + 4}>
+        <text
+          className={styles.middleLabel}
+          x={WIDTH - PADDING.right}
+          y={PADDING.top + chartHeight / 2 + 4}
+        >
           {formatPrice(middleValue)}
         </text>
       </svg>

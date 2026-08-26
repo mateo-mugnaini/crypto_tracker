@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import { ApiError, api } from "../../api/client";
 import type { PriceHistoryRecord } from "../../api/types";
 import { useMarket } from "../../features/market/MarketContext";
-import ComparisonChart, {
-  type ComparisonSeries,
-} from "./ComparisonChart";
+import ComparisonChart, { type ComparisonSeries } from "./ComparisonChart";
 import styles from "./PriceComparisonPanel.module.css";
 
 const SERIES_COLORS = ["#19C6D3", "#7CE38B"];
@@ -22,8 +20,7 @@ function getPercentageChange(records: PriceHistoryRecord[]) {
 
   const ordered = [...records].sort(
     (left, right) =>
-      new Date(left.recorded_at).getTime() -
-      new Date(right.recorded_at).getTime(),
+      new Date(left.recorded_at).getTime() - new Date(right.recorded_at).getTime(),
   );
   const initial = ordered[0].price;
   const final = ordered[ordered.length - 1].price;
@@ -188,14 +185,26 @@ export default function PriceComparisonPanel() {
         <div className={styles.changeGrid}>
           <div>
             <span>{series[0].label}</span>
-            <strong className={firstChange !== null && firstChange >= 0 ? styles.up : styles.down}>
-              {firstChange === null ? "—" : `${firstChange >= 0 ? "+" : ""}${firstChange.toFixed(2)}%`}
+            <strong
+              className={
+                firstChange !== null && firstChange >= 0 ? styles.up : styles.down
+              }
+            >
+              {firstChange === null
+                ? "—"
+                : `${firstChange >= 0 ? "+" : ""}${firstChange.toFixed(2)}%`}
             </strong>
           </div>
           <div>
             <span>{series[1].label}</span>
-            <strong className={secondChange !== null && secondChange >= 0 ? styles.up : styles.down}>
-              {secondChange === null ? "—" : `${secondChange >= 0 ? "+" : ""}${secondChange.toFixed(2)}%`}
+            <strong
+              className={
+                secondChange !== null && secondChange >= 0 ? styles.up : styles.down
+              }
+            >
+              {secondChange === null
+                ? "—"
+                : `${secondChange >= 0 ? "+" : ""}${secondChange.toFixed(2)}%`}
             </strong>
           </div>
         </div>

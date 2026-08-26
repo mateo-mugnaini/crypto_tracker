@@ -57,10 +57,15 @@ La aplicación estará disponible normalmente en `http://localhost:5173`.
 ## Verificación
 
 ```powershell
+npm run typecheck
+npm run lint
+npm run format:check
+npm test
 npm run build
 ```
 
 El build ejecuta TypeScript en modo build y luego genera los assets de Vite.
+La cobertura se puede consultar con `npm run test:coverage`.
 
 ## Arquitectura
 
@@ -137,3 +142,7 @@ La etapa de precio actual está documentada en
 [`docs/12-precio-actual.md`](docs/12-precio-actual.md).
 La cartera está documentada en
 [`docs/14-cartera-personal.md`](docs/14-cartera-personal.md).
+
+El roadmap evolutivo, con la auditoría técnica y los módulos propuestos para
+la siguiente etapa, está en
+[`docs/15-roadmap-evolutivo-frontend.md`](docs/15-roadmap-evolutivo-frontend.md).

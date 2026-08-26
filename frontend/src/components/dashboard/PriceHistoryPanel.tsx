@@ -63,9 +63,7 @@ export default function PriceHistoryPanel() {
   } = useMarket();
   const [selectedCoinId, setSelectedCoinId] = useState("");
   const [records, setRecords] = useState<PriceHistoryRecord[]>([]);
-  const [statistics, setStatistics] = useState<PriceHistoryStatistics | null>(
-    null,
-  );
+  const [statistics, setStatistics] = useState<PriceHistoryStatistics | null>(null);
   const [variation, setVariation] = useState<PriceHistoryVariation | null>(null);
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [draftFilters, setDraftFilters] = useState<Filters>(initialFilters);
@@ -133,10 +131,7 @@ export default function PriceHistoryPanel() {
     };
   }, [filters, lastUpdated, page, selectedCoinId]);
 
-  function updateDraftFilter<Key extends keyof Filters>(
-    key: Key,
-    value: Filters[Key],
-  ) {
+  function updateDraftFilter<Key extends keyof Filters>(key: Key, value: Filters[Key]) {
     setDraftFilters((current) => ({ ...current, [key]: value }));
   }
 
@@ -236,10 +231,7 @@ export default function PriceHistoryPanel() {
             Ordenar por
             <select
               onChange={(event) =>
-                updateDraftFilter(
-                  "sortBy",
-                  event.target.value as Filters["sortBy"],
-                )
+                updateDraftFilter("sortBy", event.target.value as Filters["sortBy"])
               }
               value={draftFilters.sortBy}
             >

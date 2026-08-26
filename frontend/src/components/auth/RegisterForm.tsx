@@ -46,7 +46,9 @@ export default function RegisterForm({ onLogin, onRegistered }: RegisterFormProp
       <div>
         <span className={styles.eyebrow}>Nuevo workspace</span>
         <h2>Crear tu cuenta</h2>
-        <p className={styles.muted}>Guarda tus favoritos y consulta tu mercado desde un solo lugar.</p>
+        <p className={styles.muted}>
+          Guarda tus favoritos y consulta tu mercado desde un solo lugar.
+        </p>
       </div>
 
       <label>

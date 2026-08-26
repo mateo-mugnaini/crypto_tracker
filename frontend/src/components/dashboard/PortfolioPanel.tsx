@@ -21,7 +21,8 @@ function formatPercent(value: number | null) {
 
 export default function PortfolioPanel() {
   const { coins } = useMarket();
-  const { error, isLoading, isSaving, portfolio, refresh, removeHolding, saveHolding } = usePortfolio();
+  const { error, isLoading, isSaving, portfolio, refresh, removeHolding, saveHolding } =
+    usePortfolio();
   const [coinId, setCoinId] = useState("");
   const [quantity, setQuantity] = useState("");
   const [averageBuyPrice, setAverageBuyPrice] = useState("");
@@ -61,7 +62,12 @@ export default function PortfolioPanel() {
   }
 
   return (
-    <details className={styles.panel} data-dashboard-accordion="true" id="portfolio" open>
+    <details
+      className={styles.panel}
+      data-dashboard-accordion="true"
+      id="portfolio"
+      open
+    >
       <summary className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>My portfolio</span>
@@ -69,23 +75,34 @@ export default function PortfolioPanel() {
         </div>
         <div className={styles.headingActions}>
           <HelpTag title="Cómo funciona la cartera">
-            <strong>¿Qué debes ingresar?</strong><br />
-            Selecciona una moneda, indica cuántas unidades tienes y escribe el
-            precio medio que pagaste por cada una. El valor actual se obtiene
-            del último precio disponible.
+            <strong>¿Qué debes ingresar?</strong>
+            <br />
+            Selecciona una moneda, indica cuántas unidades tienes y escribe el precio
+            medio que pagaste por cada una. El valor actual se obtiene del último precio
+            disponible.
           </HelpTag>
-          <button className={styles.refreshButton} disabled={isLoading} onClick={(event) => { event.stopPropagation(); void refresh(); }} type="button">
+          <button
+            className={styles.refreshButton}
+            disabled={isLoading}
+            onClick={(event) => {
+              event.stopPropagation();
+              void refresh();
+            }}
+            type="button"
+          >
             {isLoading ? "Actualizando…" : "Actualizar"}
           </button>
         </div>
       </summary>
 
       <p className={styles.description}>
-        Registra tus posiciones para entender cuánto invertiste y cómo evolucionan.
-        Esta cartera no custodia fondos ni claves privadas.
+        Registra tus posiciones para entender cuánto invertiste y cómo evolucionan. Esta
+        cartera no custodia fondos ni claves privadas.
       </p>
 
-      {(error || formError) && <p className={styles.errorMessage}>{error || formError}</p>}
+      {(error || formError) && (
+        <p className={styles.errorMessage}>{error || formError}</p>
+      )}
 
       <div className={styles.summaryGrid}>
         <div>
@@ -98,29 +115,59 @@ export default function PortfolioPanel() {
         </div>
         <div>
           <span>Rendimiento</span>
-          <strong className={(portfolio?.total_profit_loss ?? 0) >= 0 ? styles.positive : styles.negative}>
+          <strong
+            className={
+              (portfolio?.total_profit_loss ?? 0) >= 0
+                ? styles.positive
+                : styles.negative
+            }
+          >
             {formatMoney(portfolio?.total_profit_loss ?? null)}
           </strong>
-          <small>{formatPercent(portfolio?.total_profit_loss_percentage ?? null)}</small>
+          <small>
+            {formatPercent(portfolio?.total_profit_loss_percentage ?? null)}
+          </small>
         </div>
       </div>
 
       <form className={styles.holdingForm} onSubmit={handleSubmit}>
         <label>
           Moneda
-          <select disabled={coins.length === 0 || isSaving} onChange={(event) => setCoinId(event.target.value)} value={coinId}>
+          <select
+            disabled={coins.length === 0 || isSaving}
+            onChange={(event) => setCoinId(event.target.value)}
+            value={coinId}
+          >
             {coins.map((coin) => (
-              <option key={coin.id} value={coin.id}>{coin.name} ({coin.symbol.toUpperCase()})</option>
+              <option key={coin.id} value={coin.id}>
+                {coin.name} ({coin.symbol.toUpperCase()})
+              </option>
             ))}
           </select>
         </label>
         <label>
           Cantidad
-          <input disabled={isSaving} min="0" onChange={(event) => setQuantity(event.target.value)} placeholder="0.50" step="any" type="number" value={quantity} />
+          <input
+            disabled={isSaving}
+            min="0"
+            onChange={(event) => setQuantity(event.target.value)}
+            placeholder="0.50"
+            step="any"
+            type="number"
+            value={quantity}
+          />
         </label>
         <label>
           Precio medio USD
-          <input disabled={isSaving} min="0" onChange={(event) => setAverageBuyPrice(event.target.value)} placeholder="40000" step="any" type="number" value={averageBuyPrice} />
+          <input
+            disabled={isSaving}
+            min="0"
+            onChange={(event) => setAverageBuyPrice(event.target.value)}
+            placeholder="40000"
+            step="any"
+            type="number"
+            value={averageBuyPrice}
+          />
         </label>
         <button disabled={isSaving || coins.length === 0} type="submit">
           {isSaving ? "Guardando…" : "Guardar posición"}
@@ -139,19 +186,44 @@ export default function PortfolioPanel() {
         <div className={styles.tableWrapper}>
           <table>
             <thead>
-              <tr><th>Activo</th><th>Cantidad</th><th>Valor actual</th><th>Resultado</th><th>Peso</th><th /></tr>
+              <tr>
+                <th>Activo</th>
+                <th>Cantidad</th>
+                <th>Valor actual</th>
+                <th>Resultado</th>
+                <th>Peso</th>
+                <th />
+              </tr>
             </thead>
             <tbody>
               {portfolio?.holdings.map((holding) => (
                 <tr key={holding.coin_id}>
-                  <td><strong>{holding.name}</strong><small>{holding.symbol.toUpperCase()}</small></td>
+                  <td>
+                    <strong>{holding.name}</strong>
+                    <small>{holding.symbol.toUpperCase()}</small>
+                  </td>
                   <td>{holding.quantity}</td>
                   <td>{formatMoney(holding.current_value)}</td>
-                  <td className={holding.profit_loss !== null && holding.profit_loss >= 0 ? styles.positive : styles.negative}>
-                    {formatMoney(holding.profit_loss)}<small>{formatPercent(holding.profit_loss_percentage)}</small>
+                  <td
+                    className={
+                      holding.profit_loss !== null && holding.profit_loss >= 0
+                        ? styles.positive
+                        : styles.negative
+                    }
+                  >
+                    {formatMoney(holding.profit_loss)}
+                    <small>{formatPercent(holding.profit_loss_percentage)}</small>
                   </td>
                   <td>{formatPercent(holding.allocation_percentage)}</td>
-                  <td><button className={styles.removeButton} onClick={() => void removeHolding(holding.coin_id)} type="button">Eliminar</button></td>
+                  <td>
+                    <button
+                      className={styles.removeButton}
+                      onClick={() => void removeHolding(holding.coin_id)}
+                      type="button"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

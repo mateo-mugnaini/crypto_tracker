@@ -89,7 +89,10 @@
   padding: 0.75rem 0.8rem;
   color: var(--text-secondary);
   font-size: 0.83rem;
-  transition: color var(--transition), background var(--transition), border-color var(--transition);
+  transition:
+    color var(--transition),
+    background var(--transition),
+    border-color var(--transition);
 }
 
 .navLink:hover {
@@ -173,7 +176,10 @@
   color: var(--text-secondary);
   background: var(--surface-1);
   font-size: 0.72rem;
-  transition: border-color var(--transition), color var(--transition), background var(--transition);
+  transition:
+    border-color var(--transition),
+    color var(--transition),
+    background var(--transition);
 }
 
 .iconButton:hover:not(:disabled),

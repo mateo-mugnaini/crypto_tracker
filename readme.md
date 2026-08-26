@@ -7,7 +7,8 @@ Proyecto didactico de backend para aprender Python con una arquitectura profesio
 - Backend en Python con consumo de CoinGecko.
 - Capa de configuracion, API, servicio, repositorio y base de datos separadas.
 - Pruebas unitarias aisladas sin red ni MySQL real.
-- Frontend inicial con React, TypeScript y Vite; autenticación y dashboard de monedas en progreso.
+- Frontend funcional con React, TypeScript y Vite; autenticación, dashboard,
+  favoritos, historial, comparativa y cartera implementados.
 
 ## Estructura principal
 

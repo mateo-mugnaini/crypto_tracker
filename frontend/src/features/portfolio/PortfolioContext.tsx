@@ -102,11 +102,21 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ portfolio, error, isLoading, isSaving, refresh, saveHolding, removeHolding }),
+    () => ({
+      portfolio,
+      error,
+      isLoading,
+      isSaving,
+      refresh,
+      saveHolding,
+      removeHolding,
+    }),
     [error, isLoading, isSaving, portfolio, refresh, saveHolding, removeHolding],
   );
 
-  return <PortfolioContext.Provider value={value}>{children}</PortfolioContext.Provider>;
+  return (
+    <PortfolioContext.Provider value={value}>{children}</PortfolioContext.Provider>
+  );
 }
 
 export function usePortfolio() {

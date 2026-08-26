@@ -2,16 +2,16 @@ import { useFavorites } from "../../features/favorites/FavoritesContext";
 import styles from "./FavoritesPanel.module.css";
 
 export default function FavoritesPanel() {
-  const {
-    error,
-    favorites,
-    isLoading,
-    removeFavorite,
-    updatingCoinIds,
-  } = useFavorites();
+  const { error, favorites, isLoading, removeFavorite, updatingCoinIds } =
+    useFavorites();
 
   return (
-    <details className={styles.panel} data-dashboard-accordion="true" id="favorites" open>
+    <details
+      className={styles.panel}
+      data-dashboard-accordion="true"
+      id="favorites"
+      open
+    >
       <summary className={styles.sectionHeading}>
         <div>
           <span className={styles.eyebrow}>Tu selección</span>

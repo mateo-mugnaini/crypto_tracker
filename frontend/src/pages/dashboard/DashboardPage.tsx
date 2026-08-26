@@ -10,11 +10,12 @@ import styles from "./DashboardPage.module.css";
 export default function DashboardPage() {
   const { coins, isAutoRefreshEnabled, lastUpdated, status } = useMarket();
   const pricedCoins = coins.filter((coin) => coin.current_price !== null).length;
-  const syncLabel = status === "loading"
-    ? "Actualizando mercado"
-    : isAutoRefreshEnabled
-      ? "Sincronización automática activa"
-      : "Actualización manual disponible";
+  const syncLabel =
+    status === "loading"
+      ? "Actualizando mercado"
+      : isAutoRefreshEnabled
+        ? "Sincronización automática activa"
+        : "Actualización manual disponible";
 
   return (
     <div className={styles.shell}>
@@ -27,8 +28,8 @@ export default function DashboardPage() {
               <span className={styles.eyebrow}>Overview / Market intelligence</span>
               <h1>Tu mercado, con contexto.</h1>
               <p>
-                Una vista clara para seguir precios, detectar tendencias y
-                entender qué está pasando con tus activos.
+                Una vista clara para seguir precios, detectar tendencias y entender qué
+                está pasando con tus activos.
               </p>
             </div>
             <div className={styles.headerMeta}>
@@ -51,7 +52,10 @@ export default function DashboardPage() {
             </article>
             <article className={styles.summaryCard}>
               <span className={styles.summaryLabel}>Precios disponibles</span>
-              <strong>{pricedCoins}<small> / {coins.length || "—"}</small></strong>
+              <strong>
+                {pricedCoins}
+                <small> / {coins.length || "—"}</small>
+              </strong>
               <small>Último snapshot persistido</small>
             </article>
             <article className={styles.summaryCard}>

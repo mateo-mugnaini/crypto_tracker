@@ -71,7 +71,9 @@
   border-radius: var(--radius-md);
   padding: 0.85rem;
   background: var(--surface-2);
-  transition: border-color var(--transition), transform var(--transition);
+  transition:
+    border-color var(--transition),
+    transform var(--transition);
 }
 
 .favoriteCard:hover {
@@ -115,7 +117,10 @@
   color: var(--text-secondary);
   background: transparent;
   font-size: 0.68rem;
-  transition: color var(--transition), border-color var(--transition), background var(--transition);
+  transition:
+    color var(--transition),
+    border-color var(--transition),
+    background var(--transition);
 }
 
 .removeButton:hover {

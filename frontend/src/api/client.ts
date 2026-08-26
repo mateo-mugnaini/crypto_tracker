@@ -43,9 +43,11 @@ export class ApiError extends Error {
   }
 }
 
-function getErrorDetails(
-  payload: ApiErrorPayload,
-): { code: string; message: string; fields: unknown[] } {
+function getErrorDetails(payload: ApiErrorPayload): {
+  code: string;
+  message: string;
+  fields: unknown[];
+} {
   if (Array.isArray(payload.detail)) {
     return {
       code: "validation_error",
@@ -93,12 +95,7 @@ async function request<T>(
       headers,
     });
   } catch {
-    throw new ApiError(
-      0,
-      "network_error",
-      "No se pudo conectar con la API.",
-      null,
-    );
+    throw new ApiError(0, "network_error", "No se pudo conectar con la API.", null);
   }
 
   if (response.status === 204) {
@@ -107,9 +104,7 @@ async function request<T>(
 
   const requestId = response.headers.get("X-Request-ID");
   const payload = (await response.json().catch(() => null)) as
-    | T
-    | ApiErrorPayload
-    | null;
+    T | ApiErrorPayload | null;
 
   if (!response.ok) {
     if (response.status === 401) {
@@ -153,10 +148,9 @@ export const api = {
   },
 
   updateCurrentPrice(coinId: string) {
-    return request<PriceHistoryRecord>(
-      `/coins/${encodeURIComponent(coinId)}/price`,
-      { method: "POST" },
-    );
+    return request<PriceHistoryRecord>(`/coins/${encodeURIComponent(coinId)}/price`, {
+      method: "POST",
+    });
   },
 
   getFavoriteDetails(userId: number, token: string) {
@@ -170,11 +164,7 @@ export const api = {
 
   getFavorites(userId: number, token: string) {
     const query = new URLSearchParams({ user_id: String(userId) });
-    return request<FavoriteListResponse>(
-      `/favorites?${query.toString()}`,
-      {},
-      token,
-    );
+    return request<FavoriteListResponse>(`/favorites?${query.toString()}`, {}, token);
   },
 
   addFavorite(userId: number, coinId: string, token: string) {

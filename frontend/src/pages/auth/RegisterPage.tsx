@@ -12,8 +12,8 @@ export default function RegisterPage() {
         <span className={styles.eyebrow}>Crypto Tracker / Create account</span>
         <h1>Tu mercado empieza aquí.</h1>
         <p>
-          Crea tu espacio personal para seguir favoritos, revisar precios y
-          analizar la evolución de tus monedas.
+          Crea tu espacio personal para seguir favoritos, revisar precios y analizar la
+          evolución de tus monedas.
         </p>
         <div className={styles.featureList}>
           <span>Cuenta propia</span>
