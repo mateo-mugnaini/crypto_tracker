@@ -1,12 +1,12 @@
 ﻿.emptyState {
   align-items: center;
   border: 1px dashed var(--border-strong);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   color: var(--muted);
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
-  padding: 1.5rem;
+  padding: 1.35rem;
   text-align: center;
 }
 
@@ -16,8 +16,8 @@
 
 .icon {
   align-items: center;
-  background: rgba(255, 138, 61, 0.1);
-  border-radius: 999px;
+  background: var(--primary-muted);
+  border-radius: var(--radius-sm);
   color: var(--accent);
   display: inline-flex;
   font-size: 1.4rem;

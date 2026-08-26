@@ -1,11 +1,12 @@
 .field {
   display: grid;
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
 .label {
   color: var(--text);
-  font-size: 0.86rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
   font-weight: 700;
 }
 

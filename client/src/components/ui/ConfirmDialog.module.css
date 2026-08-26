@@ -1,6 +1,6 @@
 .backdrop {
   align-items: center;
-  background: rgba(3, 9, 15, 0.76);
+  background: rgba(4, 5, 7, 0.82);
   display: flex;
   inset: 0;
   justify-content: center;
@@ -12,17 +12,17 @@
 .dialog {
   background: var(--surface);
   border: 1px solid var(--border-strong);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
   max-width: 440px;
-  padding: 1.5rem;
+  padding: 1.35rem;
   width: 100%;
 }
 
 .icon {
   align-items: center;
   background: rgba(255, 107, 122, 0.12);
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   color: var(--danger);
   display: inline-flex;
   font-weight: 800;

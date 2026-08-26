@@ -4,21 +4,8 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: clamp(1.4rem, 3vw, 2rem);
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(145deg, rgba(23, 26, 32, 0.96), var(--surface-glass));
-  box-shadow: var(--shadow-lg), var(--shadow-glow);
-}
-
-.card::before {
-  position: absolute;
-  top: 0;
-  right: 18%;
-  left: 18%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--primary), transparent);
-  box-shadow: 0 0 24px rgba(255, 138, 61, 0.7);
-  content: "";
+  background: var(--surface-1);
+  box-shadow: var(--shadow-lg);
 }
 
 .card h2 {

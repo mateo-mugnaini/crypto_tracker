@@ -108,13 +108,13 @@
 
 .summaryCard:hover {
   border-color: var(--border-hover);
-  box-shadow: var(--shadow-glow);
+  box-shadow: var(--shadow-sm);
   transform: translateY(-3px);
 }
 
 .summaryHighlight {
   border-color: rgba(255, 138, 61, 0.25);
-  background: linear-gradient(135deg, rgba(255, 138, 61, 0.12), var(--surface-1) 70%);
+  background: var(--surface-1);
 }
 
 .summaryLabel {
