@@ -1,4 +1,4 @@
-const CACHE_NAME = "crypto-tracker-shell-v1";
+const CACHE_NAME = "pulso-shell-v1";
 const SHELL_URLS = ["/", "/index.html", "/manifest.webmanifest", "/icon.svg"];
 
 self.addEventListener("install", (event) => {

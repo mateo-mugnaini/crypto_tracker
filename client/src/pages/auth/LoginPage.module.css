@@ -9,6 +9,40 @@
   padding: 3rem 0;
 }
 
+.brandLockup {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 3.25rem;
+}
+
+.brandLockup > span:last-child {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.brandLockup strong {
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.brandLockup small {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.brandMark {
+  display: grid;
+  width: 2.3rem;
+  height: 2.3rem;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  color: #251006;
+  background: var(--primary);
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
 .introPanel {
   max-width: 680px;
 }
@@ -68,6 +102,10 @@
 }
 
 @media (max-width: 780px) {
+  .brandLockup {
+    margin-bottom: 2rem;
+  }
+
   .layout {
     grid-template-columns: 1fr;
     gap: 2.25rem;

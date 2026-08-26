@@ -35,10 +35,10 @@ export default function LoginForm({ notice, onRegister }) {
       _jsxs("div", {
         children: [
           _jsx("span", { className: styles.eyebrow, children: "Acceso" }),
-          _jsx("h2", { children: "Volver al mercado" }),
+          _jsx("h2", { children: "Entrá a Pulso" }),
           _jsx("p", {
             className: styles.muted,
-            children: "Ingresa para continuar con tu seguimiento.",
+            children: "Ingresá para continuar con tu seguimiento.",
           }),
         ],
       }),

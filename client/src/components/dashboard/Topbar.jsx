@@ -49,8 +49,8 @@ function Brand() {
     <div className={styles.brand}>
       <span className={styles.brandMark}>C</span>
       <span>
-        <strong>Crypto Tracker</strong>
-        <small>Tu mercado, en claro</small>
+        <strong>Pulso</strong>
+        <small>Seguimiento cripto</small>
       </span>
     </div>
   );

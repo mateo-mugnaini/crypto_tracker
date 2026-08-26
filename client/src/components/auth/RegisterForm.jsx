@@ -39,8 +39,8 @@ export default function RegisterForm({ onLogin, onRegistered }) {
     children: [
       _jsxs("div", {
         children: [
-          _jsx("span", { className: styles.eyebrow, children: "Nuevo workspace" }),
-          _jsx("h2", { children: "Crear tu cuenta" }),
+          _jsx("span", { className: styles.eyebrow, children: "Crear cuenta" }),
+          _jsx("h2", { children: "Empezá con Pulso" }),
           _jsx("p", {
             className: styles.muted,
             children: "Guarda tus favoritos y consulta tu mercado desde un solo lugar.",

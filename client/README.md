@@ -1,6 +1,7 @@
-# Crypto Tracker — Frontend
+# Pulso — Frontend
 
-Cliente de Crypto Tracker con React, JavaScript, Vite y CSS Modules.
+Cliente de Pulso con React, JavaScript, Vite y CSS Modules. La aplicación concentra
+mercado, cartera, favoritos y alertas en una experiencia de seguimiento clara.
 
 ## Estado
 
