@@ -615,11 +615,11 @@ export const api = {
     );
   },
 
-  updateCurrentPrice(coinId: string, options: RequestOptions = {}) {
+  updateCurrentPrice(coinId: string, token: string, options: RequestOptions = {}) {
     return request<PriceHistoryRecord>(
       `/coins/${encodeURIComponent(coinId)}/price`,
       { method: "POST" },
-      undefined,
+      token,
       options,
       isPriceHistoryRecord,
     );

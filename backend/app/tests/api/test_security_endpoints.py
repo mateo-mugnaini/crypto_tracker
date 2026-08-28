@@ -42,6 +42,26 @@ def test_market_stream_requires_bearer_token(api_client):
     assert response.json()["detail"]["code"] == "authentication_required"
 
 
+@pytest.mark.parametrize(
+    "url",
+    ["/coins/sync", "/coins/bitcoin", "/coins/bitcoin/price"],
+)
+def test_expensive_coin_mutations_require_bearer_token(api_client, url):
+    response = api_client.post(url)
+
+    assert response.status_code == 401
+    assert response.json()["detail"]["code"] == "authentication_required"
+
+
+def test_security_headers_are_present(api_client):
+    response = api_client.get("/")
+
+    assert response.headers["x-content-type-options"] == "nosniff"
+    assert response.headers["x-frame-options"] == "DENY"
+    assert response.headers["referrer-policy"] == "strict-origin-when-cross-origin"
+    assert "geolocation=()" in response.headers["permissions-policy"]
+
+
 def test_login_returns_429_after_configured_number_of_requests(api_client):
     controller = Mock()
     controller.login.return_value = "jwt-token"

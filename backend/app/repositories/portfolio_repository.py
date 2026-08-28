@@ -109,11 +109,30 @@ class PortfolioRepository:
                 cursor.close()
             connection.close()
 
-    def create_operation(self, operation) -> int:
+    def create_operation(self, operation) -> int | None:
         connection = get_connection()
         cursor = None
         try:
             cursor = connection.cursor()
+            # Lock the user's row so two concurrent sales cannot both observe
+            # the same balance and oversell it.
+            cursor.execute("SELECT id FROM users WHERE id = %s FOR UPDATE", (operation.user_id,))
+            if operation.operation_type == "sell":
+                cursor.execute(
+                    """
+                    SELECT COALESCE(
+                        SUM(CASE WHEN operation_type = 'buy' THEN quantity ELSE -quantity END),
+                        0
+                    )
+                    FROM portfolio_operations
+                    WHERE user_id = %s AND coin_id = %s
+                    """,
+                    (operation.user_id, operation.coin_id),
+                )
+                available_quantity = float((cursor.fetchone() or (0,))[0] or 0)
+                if operation.quantity > available_quantity + 1e-12:
+                    connection.rollback()
+                    return None
             query = """
             INSERT INTO portfolio_operations
             (
@@ -188,11 +207,28 @@ class PortfolioRepository:
                 cursor.close()
             connection.close()
 
-    def update_operation(self, operation) -> bool:
+    def update_operation(self, operation) -> bool | None:
         connection = get_connection()
         cursor = None
         try:
             cursor = connection.cursor()
+            cursor.execute("SELECT id FROM users WHERE id = %s FOR UPDATE", (operation.user_id,))
+            if operation.operation_type == "sell":
+                cursor.execute(
+                    """
+                    SELECT COALESCE(
+                        SUM(CASE WHEN operation_type = 'buy' THEN quantity ELSE -quantity END),
+                        0
+                    )
+                    FROM portfolio_operations
+                    WHERE user_id = %s AND coin_id = %s AND id <> %s
+                    """,
+                    (operation.user_id, operation.coin_id, operation.id),
+                )
+                available_quantity = float((cursor.fetchone() or (0,))[0] or 0)
+                if operation.quantity > available_quantity + 1e-12:
+                    connection.rollback()
+                    return None
             query = """
             UPDATE portfolio_operations
             SET coin_id = %s, operation_type = %s, quantity = %s,

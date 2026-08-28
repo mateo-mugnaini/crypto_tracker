@@ -197,6 +197,7 @@ def test_post_price_returns_saved_current_price(api_client):
         "recorded_at": datetime(2026, 8, 25, 12, 0),
     }
     api_app.app.dependency_overrides[get_price_history_controller] = lambda: controller
+    api_app.app.dependency_overrides[get_current_user] = lambda: {"id": 1}
 
     response = api_client.post("/coins/bitcoin/price")
 

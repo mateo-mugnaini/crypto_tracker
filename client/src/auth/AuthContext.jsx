@@ -7,8 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { api, isRequestCancelled, setUnauthorizedHandler } from "../api/client";
-const TOKEN_STORAGE_KEY = "crypto_tracker_access_token";
+import { api, setUnauthorizedHandler } from "../api/client";
 const AuthContext = createContext(undefined);
 export function AuthProvider({ children }) {
   const [status, setStatus] = useState("loading");
@@ -16,7 +15,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const logout = useCallback(() => {
-    sessionStorage.removeItem(TOKEN_STORAGE_KEY);
     setToken(null);
     setUser(null);
     setError(null);
@@ -24,30 +22,11 @@ export function AuthProvider({ children }) {
   }, []);
   useEffect(() => setUnauthorizedHandler(logout), [logout]);
   useEffect(() => {
-    const storedToken = sessionStorage.getItem(TOKEN_STORAGE_KEY);
-    if (!storedToken) {
-      setStatus("anonymous");
-      return;
-    }
-    setToken(storedToken);
-    const controller = new AbortController();
-    api
-      .getCurrentUser(storedToken, { signal: controller.signal })
-      .then((currentUser) => {
-        setUser(currentUser);
-        setStatus("authenticated");
-      })
-      .catch((caughtError) => {
-        if (!isRequestCancelled(caughtError)) {
-          logout();
-        }
-      });
-    return () => controller.abort();
+    setStatus("anonymous");
   }, [logout]);
   const login = useCallback(async (email, password) => {
     setError(null);
     const tokenResponse = await api.login(email, password);
-    sessionStorage.setItem(TOKEN_STORAGE_KEY, tokenResponse.access_token);
     const currentUser = await api.getCurrentUser(tokenResponse.access_token);
     setToken(tokenResponse.access_token);
     setUser(currentUser);

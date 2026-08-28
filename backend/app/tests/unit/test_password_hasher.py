@@ -32,3 +32,13 @@ def test_password_hasher_rejects_malformed_or_unknown_hashes():
 
     assert hasher.verify("secure-password", "invalid") is False
     assert hasher.verify("secure-password", "bcrypt$invalid") is False
+
+
+def test_password_hasher_rejects_untrusted_scrypt_cost_parameters():
+    hasher = PasswordHasher()
+    password_hash = hasher.hash("secure-password")
+    _, _, _, _, salt, expected = password_hash.split("$")
+
+    assert hasher.verify(
+        "secure-password", f"scrypt$1073741824$8$1${salt}${expected}"
+    ) is False

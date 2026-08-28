@@ -13,16 +13,23 @@ _connection_pool_lock = Lock()
 
 
 def _create_connection_pool():
-    return pooling.MySQLConnectionPool(
-        pool_name="crypto_tracker_app",
-        pool_size=settings.mysql_pool_size,
-        pool_reset_session=True,
-        host=settings.mysql_host,
-        port=settings.mysql_port,
-        user=settings.mysql_user,
-        password=settings.mysql_password,
-        database=settings.mysql_database,
-    )
+    connection_config = {
+        "pool_name": "crypto_tracker_app",
+        "pool_size": settings.mysql_pool_size,
+        "pool_reset_session": True,
+        "host": settings.mysql_host,
+        "port": settings.mysql_port,
+        "user": settings.mysql_user,
+        "password": settings.mysql_password,
+        "database": settings.mysql_database,
+    }
+    if settings.mysql_ssl_ca:
+        connection_config.update(
+            ssl_ca=settings.mysql_ssl_ca,
+            ssl_verify_cert=True,
+            ssl_verify_identity=True,
+        )
+    return pooling.MySQLConnectionPool(**connection_config)
 
 
 def get_connection():
@@ -48,10 +55,17 @@ def get_test_connection():
     if not settings.mysql_test_database:
         raise RuntimeError("MYSQL_TEST_DATABASE no está configurada.")
 
-    return mysql.connector.connect(
-        host=settings.mysql_host,
-        port=settings.mysql_port,
-        user=settings.mysql_user,
-        password=settings.mysql_password,
-        database=settings.mysql_test_database,
-    )
+    connection_config = {
+        "host": settings.mysql_host,
+        "port": settings.mysql_port,
+        "user": settings.mysql_user,
+        "password": settings.mysql_password,
+        "database": settings.mysql_test_database,
+    }
+    if settings.mysql_ssl_ca:
+        connection_config.update(
+            ssl_ca=settings.mysql_ssl_ca,
+            ssl_verify_cert=True,
+            ssl_verify_identity=True,
+        )
+    return mysql.connector.connect(**connection_config)

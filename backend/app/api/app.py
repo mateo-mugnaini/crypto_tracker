@@ -9,6 +9,7 @@ from fastapi import Body, Depends, FastAPI, Path, Query, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from mysql.connector.errors import PoolError
+from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 from app.api.dependencies import (
     get_coin_controller,
@@ -22,7 +23,10 @@ from app.api.dependencies import (
     get_alert_controller,
     get_portfolio_analytics_controller,
     get_current_user,
+    get_coin_update_rate_limit,
     get_login_rate_limit,
+    get_register_rate_limit,
+    sse_connection_limiter,
 )
 from app.container import Container
 from app.config.settings import settings
@@ -175,6 +179,9 @@ app = FastAPI(
 )
 app.state.request_metrics = RequestMetrics()
 
+if settings.app_env == "production":
+    app.add_middleware(HTTPSRedirectMiddleware)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_allowed_origins,
@@ -216,6 +223,16 @@ async def log_http_request(request, call_next):
         duration_ms = round((perf_counter() - started_at) * 1000, 2)
         metrics.record(response.status_code, duration_ms)
         response.headers["X-Request-ID"] = request_id
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = (
+            "camera=(), microphone=(), geolocation=()"
+        )
+        if settings.app_env == "production":
+            response.headers["Strict-Transport-Security"] = (
+                "max-age=31536000; includeSubDomains"
+            )
         logger.info(
             "HTTP request completed.",
             extra={
@@ -443,6 +460,8 @@ def get_all_coins(
 )
 def sync_coins(
     controller: CoinController = Depends(get_coin_controller),
+    _: None = Depends(get_current_user),
+    __: None = Depends(get_coin_update_rate_limit),
 ):
 
     return controller.sync_coins()
@@ -457,7 +476,10 @@ def sync_coins(
     responses={status.HTTP_404_NOT_FOUND: {"model": ErrorResponse}},
 )
 def get_coin(
-    coin_id: str = Path(..., min_length=1, description="ID de la criptomoneda"),
+    coin_id: str = Path(
+        ..., min_length=1, max_length=64, pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$",
+        description="ID de la criptomoneda",
+    ),
     controller: CoinController = Depends(get_coin_controller),
 ):
 
@@ -474,9 +496,13 @@ def get_coin(
 )
 def update_coin(
     coin_id: str = Path(
-        ..., min_length=1, description="ID de la criptomoneda en CoinGecko"
+        ..., min_length=1, max_length=64,
+        pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$",
+        description="ID de la criptomoneda en CoinGecko",
     ),
     controller: CoinController = Depends(get_coin_controller),
+    _: None = Depends(get_current_user),
+    __: None = Depends(get_coin_update_rate_limit),
 ):
 
     return controller.update_coin(coin_id)
@@ -493,8 +519,10 @@ async def market_stream(
     current_user: dict = Depends(get_current_user),
 ):
     """Stream the latest scheduler snapshots to one authenticated client."""
-    del current_user
     hub: MarketEventHub = request.app.state.market_event_hub
+    connection_key = f"user:{current_user['id']}"
+    if not sse_connection_limiter.acquire(connection_key):
+        raise RateLimitExceededException(retry_after=60)
     queue = hub.subscribe()
 
     async def events():
@@ -518,6 +546,7 @@ async def market_stream(
                     yield _sse_event(event)
         finally:
             hub.unsubscribe(queue)
+            sse_connection_limiter.release(connection_key)
 
     return StreamingResponse(
         events(),
@@ -650,7 +679,7 @@ def get_portfolio(
     responses={
         status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse},
         status.HTTP_404_NOT_FOUND: {"model": ErrorResponse},
-        status.HTTP_422_UNPROCESSABLE_ENTITY: {"model": ErrorResponse},
+        status.HTTP_422_UNPROCESSABLE_CONTENT: {"model": ErrorResponse},
     },
 )
 def save_portfolio_holding(
@@ -894,6 +923,7 @@ def mark_notification_read(
 def register_user(
     request: UserRegisterRequest,
     controller: UserController = Depends(get_user_controller),
+    _: None = Depends(get_register_rate_limit),
 ):
     return controller.register_user(request.username, request.email, request.password)
 
@@ -945,9 +975,13 @@ def update_coin_price(
     coin_id: str = Path(
         ...,
         min_length=1,
+        max_length=64,
+        pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$",
         description="ID de la criptomoneda en CoinGecko",
     ),
     controller: PriceHistoryController = Depends(get_price_history_controller),
+    _: None = Depends(get_current_user),
+    __: None = Depends(get_coin_update_rate_limit),
 ):
     return controller.update_price(coin_id)
 
@@ -964,6 +998,8 @@ def get_price_history(
     coin_id: str = Path(
         ...,
         min_length=1,
+        max_length=64,
+        pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$",
         description="ID de la criptomoneda",
     ),
     filters: PriceHistoryQueryParams = Depends(get_price_history_query_params),
@@ -993,6 +1029,8 @@ def get_price_statistics(
     coin_id: str = Path(
         ...,
         min_length=1,
+        max_length=64,
+        pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$",
         description="ID de la criptomoneda",
     ),
     controller: PriceHistoryController = Depends(get_price_history_controller),
@@ -1011,6 +1049,8 @@ def get_price_variation(
     coin_id: str = Path(
         ...,
         min_length=1,
+        max_length=64,
+        pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$",
         description="ID de la criptomoneda",
     ),
     filters: PriceHistoryDateRangeQueryParams = Depends(
@@ -1037,6 +1077,8 @@ def get_price_aggregations(
     coin_id: str = Path(
         ...,
         min_length=1,
+        max_length=64,
+        pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$",
         description="ID de la criptomoneda",
     ),
     filters: PriceHistoryAggregationQueryParams = Depends(

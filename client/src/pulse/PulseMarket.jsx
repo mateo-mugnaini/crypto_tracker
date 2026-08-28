@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 import { useFavorites } from "../features/favorites/FavoritesContext";
 import { useMarket } from "../features/market/MarketContext";
 import { useToast } from "../components/ui/ToastProvider";
@@ -12,6 +13,7 @@ export default function PulseMarket() {
   const { coins, error, loadCoins, refresh, status } = useMarket();
   const { isFavorite, toggleFavorite, updatingCoinIds } = useFavorites();
   const { showToast } = useToast();
+  const { token } = useAuth();
   const [query, setQuery] = useState("");
   const [updatingId, setUpdatingId] = useState(null);
 
@@ -28,9 +30,13 @@ export default function PulseMarket() {
   }, [coins, query]);
 
   async function updatePrice(coin) {
+    if (!token) {
+      showToast("Tu sesiÃ³n no estÃ¡ disponible. VolvÃ© a iniciar sesiÃ³n.", "error");
+      return;
+    }
     setUpdatingId(coin.id);
     try {
-      await api.updateCurrentPrice(coin.id);
+      await api.updateCurrentPrice(coin.id, token);
       await refresh();
       showToast(`${coin.name} fue actualizada.`, "success");
     } catch (caughtError) {

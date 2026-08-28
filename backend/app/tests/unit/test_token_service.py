@@ -20,3 +20,8 @@ def test_token_service_creates_jwt_with_user_subject():
 def test_token_service_rejects_short_secret():
     with pytest.raises(RuntimeError, match="al menos 32"):
         TokenService("short")
+
+
+def test_token_service_rejects_unapproved_algorithm():
+    with pytest.raises(RuntimeError, match="no está permitido"):
+        TokenService("test-secret-key-with-at-least-thirty-two-bytes", algorithm="none")

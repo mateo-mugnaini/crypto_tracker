@@ -4,12 +4,17 @@ import jwt
 
 
 class TokenService:
+    VALID_ALGORITHMS = {"HS256", "HS384", "HS512"}
+
     def __init__(self, secret_key: str, algorithm: str = "HS256", expires_minutes: int = 30):
         if not isinstance(secret_key, str) or len(secret_key) < 32:
             raise RuntimeError("JWT_SECRET_KEY debe tener al menos 32 caracteres.")
 
         if not isinstance(expires_minutes, int) or expires_minutes <= 0:
             raise RuntimeError("JWT_ACCESS_TOKEN_MINUTES debe ser mayor que cero.")
+
+        if algorithm not in self.VALID_ALGORITHMS:
+            raise RuntimeError("JWT_ALGORITHM no está permitido.")
 
         self.secret_key = secret_key
         self.algorithm = algorithm

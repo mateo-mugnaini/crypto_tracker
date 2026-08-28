@@ -181,6 +181,10 @@ class PortfolioService:
             note=operation_request.note,
         )
         operation.id = self.portfolio_repository.create_operation(operation)
+        if operation.id is None:
+            raise InsufficientPortfolioBalanceException(
+                "La cantidad a vender supera el saldo disponible de la moneda."
+            )
         return self.portfolio_repository.find_operation(user_id, operation.id)
 
     def update_operation(self, user_id: int, operation_id: int, operation_request):
@@ -200,7 +204,11 @@ class PortfolioService:
             note=operation_request.note,
             operation_id=current["id"],
         )
-        self.portfolio_repository.update_operation(operation)
+        updated = self.portfolio_repository.update_operation(operation)
+        if updated is None:
+            raise InsufficientPortfolioBalanceException(
+                "La cantidad a vender supera el saldo disponible de la moneda."
+            )
         return self.portfolio_repository.find_operation(user_id, operation_id)
 
     def remove_operation(self, user_id: int, operation_id: int):

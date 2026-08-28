@@ -47,7 +47,7 @@ describe("AuthProvider", () => {
     await waitFor(() => {
       expect(screen.getByTestId("auth-status")).toHaveTextContent("authenticated");
     });
-    expect(sessionStorage.getItem("crypto_tracker_access_token")).toBe("access-token");
+    expect(sessionStorage.getItem("crypto_tracker_access_token")).toBeNull();
     expect(onRegister).not.toHaveBeenCalled();
   });
 });

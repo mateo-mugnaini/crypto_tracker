@@ -14,7 +14,7 @@ from app.controllers.user_controller import UserController
 from app.controllers.portfolio_controller import PortfolioController
 from app.controllers.alert_controller import AlertController
 from app.controllers.portfolio_analytics_controller import PortfolioAnalyticsController
-from app.api.rate_limiter import InMemoryRateLimiter
+from app.api.rate_limiter import InMemoryConnectionLimiter, InMemoryRateLimiter
 from app.config.settings import settings
 from app.exceptions.api_exception import AuthenticationException, RateLimitExceededException
 from app.schemas.price_history import (
@@ -28,6 +28,17 @@ bearer_scheme = HTTPBearer(auto_error=False)
 login_rate_limiter = InMemoryRateLimiter(
     max_requests=settings.rate_limit_login_max_requests,
     window_seconds=settings.rate_limit_login_window_seconds,
+)
+register_rate_limiter = InMemoryRateLimiter(
+    max_requests=settings.rate_limit_register_max_requests,
+    window_seconds=settings.rate_limit_register_window_seconds,
+)
+coin_update_rate_limiter = InMemoryRateLimiter(
+    max_requests=settings.rate_limit_coin_update_max_requests,
+    window_seconds=settings.rate_limit_coin_update_window_seconds,
+)
+sse_connection_limiter = InMemoryConnectionLimiter(
+    max_connections=settings.rate_limit_sse_max_connections_per_user,
 )
 
 
@@ -83,6 +94,22 @@ def get_login_rate_limit(request: Request) -> None:
     client_ip = request.client.host if request.client else "unknown"
     allowed, retry_after, _ = login_rate_limiter.allow(client_ip)
 
+    if not allowed:
+        raise RateLimitExceededException(retry_after=retry_after)
+
+
+def get_register_rate_limit(request: Request) -> None:
+    """Limita altas de cuentas por IP para evitar abuso automatizado."""
+    client_ip = request.client.host if request.client else "unknown"
+    allowed, retry_after, _ = register_rate_limiter.allow(client_ip)
+    if not allowed:
+        raise RateLimitExceededException(retry_after=retry_after)
+
+
+def get_coin_update_rate_limit(request: Request) -> None:
+    """Limita actualizaciones manuales que consumen CoinGecko y DB."""
+    client_ip = request.client.host if request.client else "unknown"
+    allowed, retry_after, _ = coin_update_rate_limiter.allow(client_ip)
     if not allowed:
         raise RateLimitExceededException(retry_after=retry_after)
 

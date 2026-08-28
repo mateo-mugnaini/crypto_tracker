@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { api } from "../../api/client";
-import { AuthProvider } from "../../auth/AuthContext";
+import { AuthProvider, useAuth } from "../../auth/AuthContext";
 import { MarketProvider, useMarket } from "../market/MarketContext";
 import { PortfolioProvider, usePortfolio } from "./PortfolioContext";
 const portfolio = {
@@ -46,13 +46,23 @@ function MarketTrigger() {
     children: "Actualizar mercado",
   });
 }
+function Authenticate() {
+  const { login } = useAuth();
+  useEffect(() => {
+    void login("mateo@example.com", "password123");
+  }, [login]);
+  return null;
+}
 afterEach(() => {
   sessionStorage.clear();
   vi.restoreAllMocks();
 });
 describe("PortfolioProvider", () => {
   it("carga la cartera autenticada y sus posiciones", async () => {
-    sessionStorage.setItem("crypto_tracker_access_token", "access-token");
+    vi.spyOn(api, "login").mockResolvedValue({
+      access_token: "access-token",
+      token_type: "bearer",
+    });
     vi.spyOn(api, "getCurrentUser").mockResolvedValue({
       created_at: "2026-01-01T00:00:00Z",
       email: "mateo@example.com",
@@ -80,6 +90,7 @@ describe("PortfolioProvider", () => {
       _jsx(AuthProvider, {
         children: _jsxs(MarketProvider, {
           children: [
+            _jsx(Authenticate, {}),
             _jsx(MarketTrigger, {}),
             _jsx(PortfolioProvider, { children: _jsx(PortfolioProbe, {}) }),
           ],

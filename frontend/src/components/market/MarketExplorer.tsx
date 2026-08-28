@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { ApiError, api } from "../../api/client";
+import { useAuth } from "../../auth/AuthContext";
 import { useFavorites } from "../../features/favorites/FavoritesContext";
 import { useMarket } from "../../features/market/MarketContext";
 import type { Coin } from "../../api/types";
@@ -77,6 +78,7 @@ export default function MarketExplorer() {
   const { coins, error, loadCoins, refresh, status } = useMarket();
   const { isFavorite, toggleFavorite, updatingCoinIds } = useFavorites();
   const { showToast } = useToast();
+  const { token } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [updatingPriceId, setUpdatingPriceId] = useState<string | null>(null);
   const isLoading = status === "idle" || status === "loading";
@@ -121,9 +123,13 @@ export default function MarketExplorer() {
   }
 
   async function handlePriceUpdate(coin: Coin) {
+    if (!token) {
+      showToast("Tu sesión no está disponible. Volvé a iniciar sesión.", "error");
+      return;
+    }
     setUpdatingPriceId(coin.id);
     try {
-      await api.updateCurrentPrice(coin.id);
+      await api.updateCurrentPrice(coin.id, token);
       await refresh();
       showToast(`Precio de ${coin.name} actualizado.`, "success");
     } catch (caughtError) {

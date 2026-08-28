@@ -42,6 +42,7 @@ def test_production_validation_accepts_explicit_safe_configuration(monkeypatch):
     monkeypatch.setenv("MYSQL_USER", "crypto_tracker")
     monkeypatch.setenv("MYSQL_PASSWORD", "database-password")
     monkeypatch.setenv("MYSQL_DATABASE", "crypto_tracker")
+    monkeypatch.setenv("MYSQL_SSL_CA", "C:\\certs\\mysql-ca.pem")
     monkeypatch.setenv(
         "JWT_SECRET_KEY",
         "a-secure-production-secret-with-more-than-32-chars",

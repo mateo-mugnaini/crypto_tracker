@@ -8,6 +8,7 @@ load_dotenv()
 class Settings:
     VALID_APP_ENVS = {"development", "test", "production"}
     VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+    VALID_JWT_ALGORITHMS = {"HS256", "HS384", "HS512"}
 
     def __init__(self):
         self.app_env = os.getenv("APP_ENV", "development").strip().lower()
@@ -40,6 +41,7 @@ class Settings:
             raise ValueError(
                 "MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS debe ser mayor que cero."
             )
+        self.mysql_ssl_ca = os.getenv("MYSQL_SSL_CA")
         self.jwt_secret_key = os.getenv("JWT_SECRET_KEY")
         self.jwt_algorithm = os.getenv("JWT_ALGORITHM", "HS256")
         self.jwt_access_token_minutes = int(os.getenv("JWT_ACCESS_TOKEN_MINUTES", 30))
@@ -56,6 +58,21 @@ class Settings:
         )
         self.rate_limit_login_window_seconds = int(
             os.getenv("RATE_LIMIT_LOGIN_WINDOW_SECONDS", 60)
+        )
+        self.rate_limit_register_max_requests = int(
+            os.getenv("RATE_LIMIT_REGISTER_MAX_REQUESTS", 5)
+        )
+        self.rate_limit_register_window_seconds = int(
+            os.getenv("RATE_LIMIT_REGISTER_WINDOW_SECONDS", 3600)
+        )
+        self.rate_limit_coin_update_max_requests = int(
+            os.getenv("RATE_LIMIT_COIN_UPDATE_MAX_REQUESTS", 10)
+        )
+        self.rate_limit_coin_update_window_seconds = int(
+            os.getenv("RATE_LIMIT_COIN_UPDATE_WINDOW_SECONDS", 60)
+        )
+        self.rate_limit_sse_max_connections_per_user = int(
+            os.getenv("RATE_LIMIT_SSE_MAX_CONNECTIONS_PER_USER", 2)
         )
         self.price_update_enabled = os.getenv(
             "PRICE_UPDATE_ENABLED", "false"
@@ -85,6 +102,9 @@ class Settings:
             if not isinstance(value, str) or not value.strip():
                 errors.append(name)
 
+        if not isinstance(self.coingecko_base_url, str) or not self.coingecko_base_url.lower().startswith("https://"):
+            errors.append("COINGECKO_BASE_URL")
+
         if (
             not isinstance(self.jwt_secret_key, str)
             or len(self.jwt_secret_key) < 32
@@ -92,10 +112,14 @@ class Settings:
         ):
             errors.append("JWT_SECRET_KEY")
 
+        if self.jwt_algorithm not in self.VALID_JWT_ALGORITHMS:
+            errors.append("JWT_ALGORITHM")
+
         if not self.cors_allowed_origins or any(
             origin == "*"
             or "localhost" in origin
             or "127.0.0.1" in origin
+            or not origin.lower().startswith("https://")
             for origin in self.cors_allowed_origins
         ):
             errors.append("CORS_ALLOWED_ORIGINS")
@@ -104,12 +128,24 @@ class Settings:
             errors.append("REQUEST_TIMEOUT")
         if self.mysql_port < 1 or self.mysql_port > 65535:
             errors.append("MYSQL_PORT")
+        if not isinstance(self.mysql_ssl_ca, str) or not self.mysql_ssl_ca.strip():
+            errors.append("MYSQL_SSL_CA")
         if self.jwt_access_token_minutes <= 0:
             errors.append("JWT_ACCESS_TOKEN_MINUTES")
         if self.rate_limit_login_max_requests <= 0:
             errors.append("RATE_LIMIT_LOGIN_MAX_REQUESTS")
         if self.rate_limit_login_window_seconds <= 0:
             errors.append("RATE_LIMIT_LOGIN_WINDOW_SECONDS")
+        if self.rate_limit_register_max_requests <= 0:
+            errors.append("RATE_LIMIT_REGISTER_MAX_REQUESTS")
+        if self.rate_limit_register_window_seconds <= 0:
+            errors.append("RATE_LIMIT_REGISTER_WINDOW_SECONDS")
+        if self.rate_limit_coin_update_max_requests <= 0:
+            errors.append("RATE_LIMIT_COIN_UPDATE_MAX_REQUESTS")
+        if self.rate_limit_coin_update_window_seconds <= 0:
+            errors.append("RATE_LIMIT_COIN_UPDATE_WINDOW_SECONDS")
+        if self.rate_limit_sse_max_connections_per_user <= 0:
+            errors.append("RATE_LIMIT_SSE_MAX_CONNECTIONS_PER_USER")
 
         if errors:
             fields = ", ".join(errors)

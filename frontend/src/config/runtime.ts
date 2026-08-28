@@ -22,6 +22,9 @@ function getApiBaseUrl() {
   if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
     throw new Error("VITE_API_BASE_URL solo puede utilizar http o https.");
   }
+  if (!isLocalBuild && parsedUrl.protocol !== "https:") {
+    throw new Error("VITE_API_BASE_URL debe utilizar HTTPS fuera de desarrollo.");
+  }
 
   return apiBaseUrl.replace(/\/$/, "");
 }

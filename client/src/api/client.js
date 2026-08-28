@@ -497,11 +497,11 @@ export const api = {
       isCoinResponse,
     );
   },
-  updateCurrentPrice(coinId, options = {}) {
+  updateCurrentPrice(coinId, token, options = {}) {
     return request(
       `/coins/${encodeURIComponent(coinId)}/price`,
       { method: "POST" },
-      undefined,
+      token,
       options,
       isPriceHistoryRecord,
     );

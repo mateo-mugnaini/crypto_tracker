@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { ApiError, api } from "../../api/client";
+import { useAuth } from "../../auth/AuthContext";
 import { useFavorites } from "../../features/favorites/FavoritesContext";
 import { useMarket } from "../../features/market/MarketContext";
 import Badge from "../ui/Badge";
@@ -24,6 +25,7 @@ export default function CoinsPanel() {
   const { coins, error, loadCoins, refresh, status } = useMarket();
   const { isFavorite, toggleFavorite, updatingCoinIds } = useFavorites();
   const { showToast } = useToast();
+  const { token } = useAuth();
   const [priceUpdatingCoinId, setPriceUpdatingCoinId] = useState<string | null>(null);
   const [priceError, setPriceError] = useState<string | null>(null);
   const [updatedCoinName, setUpdatedCoinName] = useState<string | null>(null);
@@ -34,12 +36,16 @@ export default function CoinsPanel() {
   }, [loadCoins]);
 
   async function handlePriceUpdate(coinId: string, coinName: string) {
+    if (!token) {
+      setPriceError("Tu sesión no está disponible. Volvé a iniciar sesión.");
+      return;
+    }
     setPriceUpdatingCoinId(coinId);
     setPriceError(null);
     setUpdatedCoinName(null);
 
     try {
-      await api.updateCurrentPrice(coinId);
+      await api.updateCurrentPrice(coinId, token);
       setUpdatedCoinName(coinName);
       await refresh();
       showToast(`Precio de ${coinName} actualizado.`, "success");
