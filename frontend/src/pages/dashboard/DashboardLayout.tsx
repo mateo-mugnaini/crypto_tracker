@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { useMarket } from "../../features/market/MarketContext";
+import { useI18n } from "../../i18n/I18nContext";
 import Topbar from "../../components/dashboard/Topbar";
 import styles from "./DashboardPage.module.css";
 
@@ -18,18 +19,20 @@ export default function DashboardLayout({
   title,
 }: DashboardLayoutProps) {
   const { isAutoRefreshEnabled, lastUpdated, liveStatus, status } = useMarket();
+  const { locale, t } = useI18n();
+  const dateLocale = locale === "it" ? "it-IT" : locale === "en" ? "en-US" : "es-AR";
   const syncLabel =
     status === "loading"
-      ? "Actualizando mercado"
+      ? t("refresh_market")
       : liveStatus === "connected"
-        ? "Canal live conectado"
+        ? t("live_connected")
         : liveStatus === "connecting"
-          ? "Conectando canal live"
+          ? t("live_connecting")
           : liveStatus === "fallback"
-            ? "Fallback por polling"
+            ? "Polling fallback"
             : isAutoRefreshEnabled
               ? "Sincronización automática activa"
-              : "Actualización manual disponible";
+              : t("manual_view");
 
   return (
     <div className={styles.shell}>
@@ -38,9 +41,9 @@ export default function DashboardLayout({
         <main className={styles.dashboard}>
           <header className={styles.pageHeader}>
             <div>
-              <span className={styles.eyebrow}>{eyebrow}</span>
-              <h1>{title}</h1>
-              <p>{description}</p>
+              <span className={styles.eyebrow}>{t(eyebrow)}</span>
+              <h1>{t(title)}</h1>
+              <p>{t(description)}</p>
             </div>
             <div className={styles.headerMeta}>
               <span className={styles.liveBadge}>
@@ -48,8 +51,13 @@ export default function DashboardLayout({
               </span>
               <small>
                 {lastUpdated
-                  ? `Última lectura ${lastUpdated.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" })}`
-                  : "Esperando la primera lectura"}
+                  ? t("last_reading", {
+                      time: lastUpdated.toLocaleTimeString(dateLocale, {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      }),
+                    })
+                  : t("not_synced")}
               </small>
             </div>
           </header>

@@ -5,6 +5,7 @@ import { useAuth } from "../auth/AuthContext";
 import { useFavorites } from "../features/favorites/FavoritesContext";
 import { useMarket } from "../features/market/MarketContext";
 import { useToast } from "../components/ui/ToastProvider";
+import { useI18n } from "../i18n/I18nContext";
 import PulseShell from "./PulseShell";
 import { formatCurrency, formatDate, initials } from "./pulseUtils";
 import styles from "./PulseViews.module.css";
@@ -20,6 +21,7 @@ export default function PulseCoinDetail() {
   );
   const [error, setError] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     const cachedCoin = coins.find((item) => item.id === coinId);
@@ -32,15 +34,14 @@ export default function PulseCoinDetail() {
       .getCoin(coinId, { signal: controller.signal })
       .then((response) => setCoin(response.data))
       .catch((caughtError) => {
-        if (!controller.signal.aborted)
-          setError(caughtError.message || "No se pudo cargar la moneda.");
+        if (!controller.signal.aborted) setError(caughtError.message || t("no_coin"));
       });
     return () => controller.abort();
-  }, [coinId]);
+  }, [coinId, t]);
 
   async function updatePrice() {
     if (!token) {
-      showToast("Tu sesiÃ³n no estÃ¡ disponible. VolvÃ© a iniciar sesiÃ³n.", "error");
+      showToast(t("session_unavailable"), "error");
       return;
     }
     setIsUpdating(true);
@@ -49,23 +50,23 @@ export default function PulseCoinDetail() {
       await refresh();
       const response = await api.getCoin(coinId);
       setCoin(response.data);
-      showToast("Precio actualizado.", "success");
+      showToast(t("price_updated", { name: coinId }), "success");
     } catch (caughtError) {
-      showToast(caughtError.message || "No se pudo actualizar el precio.", "error");
+      showToast(caughtError.message || t("generic_error"), "error");
     } finally {
       setIsUpdating(false);
     }
   }
 
   return (
-    <PulseShell title={coin?.name || "Moneda"}>
+    <PulseShell title={coin?.name || t("coin")}>
       <div className={styles.stack}>
         <Link className={styles.backLink} to="/market">
-          ← Volver al mercado
+          ← {t("detail_back")}
         </Link>
         {error && <div className={styles.notice}>{error}</div>}
         {!coin && !error ? (
-          <div className={styles.empty}>Cargando moneda…</div>
+          <div className={styles.empty}>{t("loading_coin")}</div>
         ) : (
           coin && (
             <>
@@ -90,7 +91,9 @@ export default function PulseCoinDetail() {
                       onClick={() => void toggleFavorite(coin.id)}
                       type="button"
                     >
-                      {isFavorite(coin.id) ? "★ En favoritos" : "☆ Agregar a favoritos"}
+                      {isFavorite(coin.id)
+                        ? `★ ${t("remove_favorite_short")}`
+                        : `☆ ${t("add_favorite_short")}`}
                     </button>
                     <button
                       className={styles.secondaryButton}
@@ -98,13 +101,13 @@ export default function PulseCoinDetail() {
                       onClick={() => void updatePrice()}
                       type="button"
                     >
-                      {isUpdating ? "Actualizando…" : "Actualizar precio"}
+                      {isUpdating ? t("refreshing") : t("update_price")}
                     </button>
                     <Link
                       className={styles.secondaryButton}
                       to={`/portfolio?coin=${coin.id}`}
                     >
-                      Sumar a cartera
+                      {t("add_portfolio")}
                     </Link>
                   </div>
                 </div>
@@ -112,19 +115,19 @@ export default function PulseCoinDetail() {
                   {formatCurrency(coin.current_price)}
                 </strong>
               </section>
-              <section className={styles.infoGrid} aria-label="Datos de la moneda">
+              <section className={styles.infoGrid} aria-label={t("coin_data")}>
                 <div className={styles.infoItem}>
-                  <span>Última actualización</span>
+                  <span>{t("last_update")}</span>
                   <strong>{formatDate(coin.updated_at || coin.recorded_at)}</strong>
                 </div>
                 <div className={styles.infoItem}>
-                  <span>Identificador</span>
+                  <span>{t("identifier")}</span>
                   <strong>{coin.id}</strong>
                 </div>
                 <div className={styles.infoItem}>
-                  <span>Más información</span>
+                  <span>{t("more_info")}</span>
                   <Link className={styles.textLink} to={`/history?coin=${coin.id}`}>
-                    Ver historial de precios
+                    {t("history_link")}
                   </Link>
                 </div>
               </section>

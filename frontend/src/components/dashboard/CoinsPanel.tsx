@@ -4,6 +4,7 @@ import { ApiError, api } from "../../api/client";
 import { useAuth } from "../../auth/AuthContext";
 import { useFavorites } from "../../features/favorites/FavoritesContext";
 import { useMarket } from "../../features/market/MarketContext";
+import { useI18n } from "../../i18n/I18nContext";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import EmptyState from "../ui/EmptyState";
@@ -29,6 +30,7 @@ export default function CoinsPanel() {
   const [priceUpdatingCoinId, setPriceUpdatingCoinId] = useState<string | null>(null);
   const [priceError, setPriceError] = useState<string | null>(null);
   const [updatedCoinName, setUpdatedCoinName] = useState<string | null>(null);
+  const { t } = useI18n();
   const isLoading = status === "idle" || status === "loading";
 
   useEffect(() => {
@@ -64,14 +66,14 @@ export default function CoinsPanel() {
     <details className={styles.panel} data-dashboard-accordion="true" id="market" open>
       <summary className={styles.sectionHeading}>
         <div>
-          <span className={styles.eyebrow}>Mercado local</span>
-          <h2>Monedas sincronizadas</h2>
+          <span className={styles.eyebrow}>{t("market_eyebrow")}</span>
+          <h2>{t("coins_synced")}</h2>
         </div>
         <Badge>{coins.length} monedas</Badge>
       </summary>
 
       {isLoading && (
-        <div className={styles.coinGrid} aria-label="Cargando monedas" role="status">
+        <div className={styles.coinGrid} aria-label={t("loading_coins")} role="status">
           {[1, 2, 3].map((item) => (
             <article className={styles.coinCard} key={item}>
               <Skeleton height="2.25rem" width="2.25rem" />
@@ -85,7 +87,7 @@ export default function CoinsPanel() {
         <div className={styles.errorState}>
           <p className={styles.errorMessage}>{error}</p>
           <Button onClick={() => void loadCoins(true)} variant="secondary">
-            Reintentar
+            {t("reload")}
           </Button>
         </div>
       )}
@@ -97,11 +99,11 @@ export default function CoinsPanel() {
       )}
       {!isLoading && !error && coins.length === 0 && (
         <EmptyState
-          description="Sincroniza el mercado para consultar precios y crear tu cartera."
-          title="Todavía no hay monedas sincronizadas."
+          description={t("market_description")}
+          title={t("no_synced_coins")}
           action={
             <Button onClick={() => void loadCoins(true)} variant="secondary">
-              Sincronizar mercado
+              {t("refresh_market")}
             </Button>
           }
         />
@@ -124,14 +126,14 @@ export default function CoinsPanel() {
                 </div>
                 <div className={styles.priceBlock}>
                   <strong>{formatPrice(coin.current_price)}</strong>
-                  <small>Precio actual</small>
+                  <small>{t("current_value")}</small>
                 </div>
                 <small>#{coin.market_cap_rank ?? "—"}</small>
                 <button
                   aria-label={
                     favorite
-                      ? `Quitar ${coin.name} de favoritos`
-                      : `Agregar ${coin.name} a favoritos`
+                      ? t("remove_favorite", { name: coin.name })
+                      : t("add_favorite", { name: coin.name })
                   }
                   aria-pressed={favorite}
                   className={`${styles.favoriteButton} ${favorite ? styles.favoriteActive : ""}`}
@@ -147,7 +149,7 @@ export default function CoinsPanel() {
                   onClick={() => void handlePriceUpdate(coin.id, coin.name)}
                   variant="secondary"
                 >
-                  Precio
+                  {t("update_price")}
                 </Button>
               </article>
             );

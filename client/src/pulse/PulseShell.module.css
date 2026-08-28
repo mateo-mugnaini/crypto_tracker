@@ -205,6 +205,12 @@
   padding: 43px 0 72px;
 }
 
+.languageControl {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
 .pageHeading {
   display: flex;
   align-items: flex-end;

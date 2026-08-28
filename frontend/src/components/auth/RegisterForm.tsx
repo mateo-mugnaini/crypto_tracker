@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from "react";
 
 import { ApiError, api } from "../../api/client";
+import { useI18n } from "../../i18n/I18nContext";
 import Alert from "../ui/Alert";
 import Button from "../ui/Button";
 import Field from "../ui/Field";
+import LanguageSelector from "../ui/LanguageSelector";
 import styles from "./RegisterForm.module.css";
 
 interface RegisterFormProps {
@@ -18,13 +20,14 @@ export default function RegisterForm({ onLogin, onRegistered }: RegisterFormProp
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useI18n();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
 
     if (password !== passwordConfirmation) {
-      setError("Las contraseñas no coinciden.");
+      setError(t("passwords_mismatch"));
       return;
     }
 
@@ -35,9 +38,7 @@ export default function RegisterForm({ onLogin, onRegistered }: RegisterFormProp
       onRegistered();
     } catch (caughtError) {
       setError(
-        caughtError instanceof ApiError
-          ? caughtError.message
-          : "No se pudo crear la cuenta.",
+        caughtError instanceof ApiError ? caughtError.message : t("register_failed"),
       );
     } finally {
       setIsSubmitting(false);
@@ -46,15 +47,16 @@ export default function RegisterForm({ onLogin, onRegistered }: RegisterFormProp
 
   return (
     <form className={styles.card} onSubmit={handleSubmit}>
+      <div className={styles.languageControl}>
+        <LanguageSelector />
+      </div>
       <div>
-        <span className={styles.eyebrow}>Nuevo workspace</span>
-        <h2>Crear tu cuenta</h2>
-        <p className={styles.muted}>
-          Guarda tus favoritos y consulta tu mercado desde un solo lugar.
-        </p>
+        <span className={styles.eyebrow}>{t("new_workspace")}</span>
+        <h2>{t("register_title")}</h2>
+        <p className={styles.muted}>{t("register_description")}</p>
       </div>
 
-      <Field id="register-username" label="Usuario">
+      <Field id="register-username" label={t("username")}>
         <input
           autoComplete="username"
           id="register-username"
@@ -68,7 +70,7 @@ export default function RegisterForm({ onLogin, onRegistered }: RegisterFormProp
         />
       </Field>
 
-      <Field id="register-email" label="Email">
+      <Field id="register-email" label={t("email")}>
         <input
           autoComplete="email"
           id="register-email"
@@ -81,28 +83,28 @@ export default function RegisterForm({ onLogin, onRegistered }: RegisterFormProp
         />
       </Field>
 
-      <Field id="register-password" label="Contraseña">
+      <Field id="register-password" label={t("password")}>
         <input
           autoComplete="new-password"
           id="register-password"
           maxLength={128}
           minLength={8}
           onChange={(event) => setPassword(event.target.value)}
-          placeholder="Mínimo 8 caracteres"
+          placeholder={t("min_password")}
           required
           type="password"
           value={password}
         />
       </Field>
 
-      <Field id="register-password-confirmation" label="Repetir contraseña">
+      <Field id="register-password-confirmation" label={t("repeat_password")}>
         <input
           autoComplete="new-password"
           id="register-password-confirmation"
           maxLength={128}
           minLength={8}
           onChange={(event) => setPasswordConfirmation(event.target.value)}
-          placeholder="Repite tu contraseña"
+          placeholder={t("repeat_password_placeholder")}
           required
           type="password"
           value={passwordConfirmation}
@@ -112,11 +114,11 @@ export default function RegisterForm({ onLogin, onRegistered }: RegisterFormProp
       {error && <Alert tone="error">{error}</Alert>}
 
       <Button fullWidth loading={isSubmitting} type="submit">
-        Crear cuenta
+        {t("register")}
       </Button>
 
       <Button className={styles.linkButton} onClick={onLogin} variant="ghost">
-        Ya tengo una cuenta
+        {t("existing_account")}
       </Button>
     </form>
   );

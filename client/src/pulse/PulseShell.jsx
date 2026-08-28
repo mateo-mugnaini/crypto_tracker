@@ -3,13 +3,18 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { useMarket } from "../features/market/MarketContext";
 import styles from "./PulseShell.module.css";
+import LanguageSelector from "../components/ui/LanguageSelector";
+import { useI18n } from "../i18n/I18nContext";
 
-function formatUpdated(date) {
-  if (!date) return "Sin sincronizar";
-  return `Actualizado ${new Intl.DateTimeFormat("es", {
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date)}`;
+function formatUpdated(date, locale) {
+  if (!date) return null;
+  return new Intl.DateTimeFormat(
+    locale === "it" ? "it-IT" : locale === "en" ? "en-US" : "es-AR",
+    {
+      hour: "2-digit",
+      minute: "2-digit",
+    },
+  ).format(date);
 }
 
 function primaryClassName({ isActive }) {
@@ -21,6 +26,7 @@ export default function PulseShell({ children, title, description, actions }) {
   const { lastUpdated, liveStatus, refresh } = useMarket();
   const location = useLocation();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { t, locale } = useI18n();
 
   useEffect(() => {
     document.title = title ? `${title} · Pulso` : "Pulso · Seguimiento cripto";
@@ -41,38 +47,38 @@ export default function PulseShell({ children, title, description, actions }) {
     <div className={styles.app}>
       <header className={styles.header}>
         <div className={styles.headerInner}>
-          <Link className={styles.brand} to="/dashboard" aria-label="Ir a inicio">
+          <Link className={styles.brand} to="/dashboard" aria-label={t("go_home")}>
             <span className={styles.brandMark}>P</span>
             <span>Pulso</span>
           </Link>
 
-          <nav className={styles.nav} aria-label="Navegación principal">
+          <nav className={styles.nav} aria-label={t("nav_main")}>
             <NavLink className={primaryClassName} to="/dashboard" end>
-              Inicio
+              {t("nav_home")}
             </NavLink>
             <NavLink className={primaryClassName} to="/market">
-              Mercado
+              {t("nav_market")}
             </NavLink>
             <NavLink className={primaryClassName} to="/portfolio">
-              Cartera
+              {t("nav_portfolio")}
             </NavLink>
             <details
               className={`${styles.more} ${isToolRoute ? styles.moreActive : ""}`}
             >
-              <summary>Más</summary>
+              <summary>{t("nav_more")}</summary>
               <div className={styles.moreMenu}>
-                <Link to="/favorites">Favoritos</Link>
-                <Link to="/history">Historial</Link>
-                <Link to="/compare">Comparar</Link>
-                <Link to="/alerts">Alertas</Link>
+                <Link to="/favorites">{t("nav_favorites")}</Link>
+                <Link to="/history">{t("nav_history")}</Link>
+                <Link to="/compare">{t("nav_compare")}</Link>
+                <Link to="/alerts">{t("nav_alerts")}</Link>
               </div>
             </details>
           </nav>
 
           <div className={styles.account}>
-            <span className={styles.userName}>{user?.username || "Mi cuenta"}</span>
+            <span className={styles.userName}>{user?.username || t("account")}</span>
             <button className={styles.logoutButton} onClick={logout} type="button">
-              Salir
+              {t("logout")}
             </button>
           </div>
         </div>
@@ -83,7 +89,11 @@ export default function PulseShell({ children, title, description, actions }) {
           <span
             className={`${styles.statusDot} ${liveStatus === "connected" ? styles.statusLive : ""}`}
           />
-          {liveStatus === "connected" ? "Datos en vivo" : formatUpdated(lastUpdated)}
+          {liveStatus === "connected"
+            ? t("connected")
+            : lastUpdated
+              ? t("updated", { time: formatUpdated(lastUpdated, locale) })
+              : t("not_synced")}
         </span>
         <button
           className={styles.refreshButton}
@@ -91,11 +101,14 @@ export default function PulseShell({ children, title, description, actions }) {
           onClick={handleRefresh}
           type="button"
         >
-          {isRefreshing ? "Actualizando…" : "Actualizar"}
+          {isRefreshing ? t("refreshing") : t("refresh")}
         </button>
       </div>
 
       <main className={styles.main}>
+        <div className={styles.languageControl}>
+          <LanguageSelector />
+        </div>
         {(title || description || actions) && (
           <div className={styles.pageHeading}>
             <div>

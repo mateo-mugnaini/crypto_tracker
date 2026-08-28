@@ -10,6 +10,7 @@ import { FavoritesProvider } from "./features/favorites/FavoritesContext";
 import { MarketProvider } from "./features/market/MarketContext";
 import { PortfolioProvider } from "./features/portfolio/PortfolioContext";
 import { AlertsProvider } from "./features/alerts/AlertsContext";
+import { useI18n } from "./i18n/I18nContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 
@@ -26,15 +27,18 @@ const AlertsPage = lazy(() => import("./pages/alerts/AlertsPage"));
 
 function AppContent() {
   const { status } = useAuth();
+  const { t } = useI18n();
 
   if (status === "loading") {
-    return <main className={styles.centeredState}>Verificando sesión…</main>;
+    return <main className={styles.centeredState}>{t("checking_session")}</main>;
   }
 
   const fallbackPath = status === "authenticated" ? "/dashboard" : "/login";
 
   return (
-    <Suspense fallback={<main className={styles.centeredState}>Cargando vista…</main>}>
+    <Suspense
+      fallback={<main className={styles.centeredState}>{t("loading_view")}</main>}
+    >
       <Routes>
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />

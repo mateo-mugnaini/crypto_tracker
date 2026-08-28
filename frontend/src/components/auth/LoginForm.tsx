@@ -2,9 +2,11 @@ import { useState, type FormEvent } from "react";
 
 import { ApiError } from "../../api/client";
 import { useAuth } from "../../auth/AuthContext";
+import { useI18n } from "../../i18n/I18nContext";
 import Alert from "../ui/Alert";
 import Button from "../ui/Button";
 import Field from "../ui/Field";
+import LanguageSelector from "../ui/LanguageSelector";
 import styles from "./LoginForm.module.css";
 
 interface LoginFormProps {
@@ -18,6 +20,7 @@ export default function LoginForm({ notice, onRegister }: LoginFormProps) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useI18n();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -39,15 +42,18 @@ export default function LoginForm({ notice, onRegister }: LoginFormProps) {
 
   return (
     <form className={styles.card} onSubmit={handleSubmit}>
+      <div className={styles.languageControl}>
+        <LanguageSelector />
+      </div>
       <div>
-        <span className={styles.eyebrow}>Workspace</span>
-        <h2>Volver al mercado</h2>
-        <p className={styles.muted}>Ingresa para continuar con tu seguimiento.</p>
+        <span className={styles.eyebrow}>{t("workspace")}</span>
+        <h2>{t("login_title")}</h2>
+        <p className={styles.muted}>{t("login_description")}</p>
       </div>
 
       {notice && <Alert tone="success">{notice}</Alert>}
 
-      <Field id="login-email" label="Email">
+      <Field id="login-email" label={t("email")}>
         <input
           autoComplete="email"
           id="login-email"
@@ -59,13 +65,13 @@ export default function LoginForm({ notice, onRegister }: LoginFormProps) {
         />
       </Field>
 
-      <Field id="login-password" label="Contraseña">
+      <Field id="login-password" label={t("password")}>
         <input
           autoComplete="current-password"
           id="login-password"
           minLength={8}
           onChange={(event) => setPassword(event.target.value)}
-          placeholder="Mínimo 8 caracteres"
+          placeholder={t("min_password")}
           required
           type="password"
           value={password}
@@ -75,11 +81,11 @@ export default function LoginForm({ notice, onRegister }: LoginFormProps) {
       {error && <Alert tone="error">{error}</Alert>}
 
       <Button fullWidth loading={isSubmitting} type="submit">
-        Ingresar
+        {t("login")}
       </Button>
 
       <Button className={styles.linkButton} onClick={onRegister} variant="ghost">
-        Crear una cuenta
+        {t("create_account")}
       </Button>
     </form>
   );

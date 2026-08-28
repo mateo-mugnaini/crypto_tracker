@@ -1,4 +1,5 @@
 import { useFavorites } from "../../features/favorites/FavoritesContext";
+import { useI18n } from "../../i18n/I18nContext";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import EmptyState from "../ui/EmptyState";
@@ -7,6 +8,7 @@ import styles from "./FavoritesPanel.module.css";
 export default function FavoritesPanel() {
   const { error, favorites, isLoading, removeFavorite, updatingCoinIds } =
     useFavorites();
+  const { t } = useI18n();
 
   return (
     <details
@@ -17,19 +19,16 @@ export default function FavoritesPanel() {
     >
       <summary className={styles.sectionHeading}>
         <div>
-          <span className={styles.eyebrow}>Tu selección</span>
-          <h2>Favoritos</h2>
+          <span className={styles.eyebrow}>{t("favorites_eyebrow")}</span>
+          <h2>{t("nav_favorites")}</h2>
         </div>
         <Badge>{favorites.length} guardados</Badge>
       </summary>
 
-      {isLoading && <p className={styles.muted}>Cargando favoritos…</p>}
+      {isLoading && <p className={styles.muted}>{t("loading_coins")}</p>}
       {error && <p className={styles.errorMessage}>{error}</p>}
       {!isLoading && !error && favorites.length === 0 && (
-        <EmptyState
-          description="Agrega una moneda desde el mercado para verla aquí."
-          title="Todavía no tenés favoritos."
-        />
+        <EmptyState description={t("market_description")} title={t("no_favorites")} />
       )}
 
       <div className={styles.favoriteGrid}>
@@ -51,7 +50,7 @@ export default function FavoritesPanel() {
                 onClick={() => void removeFavorite(favorite.coin_id)}
                 variant="danger"
               >
-                Quitar
+                {t("remove_favorite", { name: favorite.name })}
               </Button>
             </article>
           );

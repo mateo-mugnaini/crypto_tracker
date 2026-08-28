@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useMarket } from "../features/market/MarketContext";
 import { usePortfolio } from "../features/portfolio/PortfolioContext";
 import { useToast } from "../components/ui/ToastProvider";
+import { useI18n } from "../i18n/I18nContext";
 import PulseShell from "./PulseShell";
 import { formatCurrency, formatNumber } from "./pulseUtils";
 import styles from "./PulseViews.module.css";
@@ -16,6 +17,7 @@ export default function PulsePortfolio() {
   const [coinId, setCoinId] = useState(searchParams.get("coin") || "");
   const [quantity, setQuantity] = useState("");
   const [averageBuyPrice, setAverageBuyPrice] = useState("");
+  const { t } = useI18n();
 
   useEffect(() => {
     const requestedCoin = searchParams.get("coin");
@@ -34,7 +36,7 @@ export default function PulsePortfolio() {
     if (saved) {
       setQuantity("");
       setAverageBuyPrice("");
-      showToast("Posición guardada.", "success");
+      showToast(t("position_saved"), "success");
     }
   }
 
@@ -42,28 +44,28 @@ export default function PulsePortfolio() {
     const removed = await removeHolding(holding.coin_id);
     if (removed)
       showToast(
-        `${holding.symbol.toUpperCase()} fue quitada de tu cartera.`,
+        t("position_removed", { symbol: holding.symbol.toUpperCase() }),
         "success",
       );
   }
 
   return (
-    <PulseShell
-      description="Registrá cuánto tenés y dejá que Pulso calcule el valor actual."
-      title="Cartera"
-    >
+    <PulseShell description={t("portfolio_description")} title={t("portfolio_title")}>
       <div className={styles.stack}>
-        <section className={styles.portfolioSummary} aria-label="Resumen de cartera">
+        <section
+          className={styles.portfolioSummary}
+          aria-label={t("portfolio_summary")}
+        >
           <div className={styles.portfolioCard}>
-            <span>Valor actual</span>
+            <span>{t("current_value")}</span>
             <strong>{formatCurrency(portfolio?.total_current_value)}</strong>
           </div>
           <div className={styles.portfolioCard}>
-            <span>Invertido</span>
+            <span>{t("invested")}</span>
             <strong>{formatCurrency(portfolio?.total_invested)}</strong>
           </div>
           <div className={styles.portfolioCard}>
-            <span>Resultado</span>
+            <span>{t("result")}</span>
             <strong
               className={
                 (portfolio?.total_profit_loss || 0) >= 0
@@ -77,21 +79,18 @@ export default function PulsePortfolio() {
         </section>
 
         <section className={styles.formPanel}>
-          <h2>Agregar una posición</h2>
-          <p>
-            Elegí una moneda, indicá cuántas unidades tenés y tu precio promedio de
-            compra.
-          </p>
+          <h2>{t("new_position")}</h2>
+          <p>{t("position_help")}</p>
           <form className={styles.formGrid} onSubmit={handleSubmit}>
             <div className={styles.field}>
-              <label htmlFor="portfolio-coin">Moneda</label>
+              <label htmlFor="portfolio-coin">{t("coin")}</label>
               <select
                 id="portfolio-coin"
                 onChange={(event) => setCoinId(event.target.value)}
                 required
                 value={coinId}
               >
-                <option value="">Elegir…</option>
+                <option value="">{t("choose")}</option>
                 {coins.map((coin) => (
                   <option key={coin.id} value={coin.id}>
                     {coin.name} ({coin.symbol.toUpperCase()})
@@ -100,7 +99,7 @@ export default function PulsePortfolio() {
               </select>
             </div>
             <div className={styles.field}>
-              <label htmlFor="portfolio-quantity">Unidades</label>
+              <label htmlFor="portfolio-quantity">{t("units")}</label>
               <input
                 id="portfolio-quantity"
                 min="0"
@@ -112,7 +111,7 @@ export default function PulsePortfolio() {
               />
             </div>
             <div className={styles.field}>
-              <label htmlFor="portfolio-price">Precio promedio</label>
+              <label htmlFor="portfolio-price">{t("average_price")}</label>
               <input
                 id="portfolio-price"
                 min="0"
@@ -124,7 +123,7 @@ export default function PulsePortfolio() {
               />
             </div>
             <button className={styles.primaryButton} disabled={isSaving} type="submit">
-              {isSaving ? "Guardando…" : "Guardar"}
+              {isSaving ? t("saving") : t("save")}
             </button>
           </form>
         </section>
@@ -132,11 +131,11 @@ export default function PulsePortfolio() {
         {error && <div className={styles.notice}>{error}</div>}
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h2>Mis posiciones</h2>
-            <Link to="/history">Ver historial</Link>
+            <h2>{t("my_positions")}</h2>
+            <Link to="/history">{t("history_link")}</Link>
           </div>
           {isLoading && !portfolio ? (
-            <div className={styles.empty}>Cargando cartera…</div>
+            <div className={styles.empty}>{t("loading_portfolio")}</div>
           ) : portfolio?.holdings?.length ? (
             <div className={styles.holdingList}>
               {portfolio.holdings.map((holding) => (
@@ -159,7 +158,7 @@ export default function PulsePortfolio() {
                     {formatCurrency(holding.profit_loss)}
                   </span>
                   <button
-                    aria-label={`Quitar ${holding.name}`}
+                    aria-label={`${t("delete_position")}: ${holding.name}`}
                     className={styles.iconButton}
                     onClick={() => void handleRemove(holding)}
                     type="button"

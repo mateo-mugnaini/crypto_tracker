@@ -1,4 +1,5 @@
 import { useMarket } from "../../features/market/MarketContext";
+import { useI18n } from "../../i18n/I18nContext";
 import CoinsPanel from "../../components/dashboard/CoinsPanel";
 import FavoritesPanel from "../../components/dashboard/FavoritesPanel";
 import PortfolioPanel from "../../components/dashboard/PortfolioPanel";
@@ -10,31 +11,32 @@ import styles from "./DashboardPage.module.css";
 export default function DashboardPage() {
   const { coins } = useMarket();
   const pricedCoins = coins.filter((coin) => coin.current_price !== null).length;
+  const { t } = useI18n();
 
   return (
     <DashboardLayout
-      description="Una vista clara para seguir precios, detectar tendencias y entender qué está pasando con tus activos."
-      eyebrow="Overview / Market intelligence"
-      title="Tu mercado, con contexto."
+      description="dashboard_description"
+      eyebrow="dashboard_eyebrow"
+      title="dashboard_title"
     >
-      <section aria-label="Resumen del mercado" className={styles.overviewGrid}>
+      <section aria-label={t("market_summary")} className={styles.overviewGrid}>
         <article className={`${styles.summaryCard} ${styles.summaryHighlight}`}>
-          <span className={styles.summaryLabel}>Activos rastreados</span>
+          <span className={styles.summaryLabel}>{t("tracked_assets")}</span>
           <strong>{coins.length}</strong>
-          <small>Monedas sincronizadas localmente</small>
+          <small>{t("local_coins")}</small>
         </article>
         <article className={styles.summaryCard}>
-          <span className={styles.summaryLabel}>Precios disponibles</span>
+          <span className={styles.summaryLabel}>{t("prices_available")}</span>
           <strong>
             {pricedCoins}
             <small> / {coins.length || "—"}</small>
           </strong>
-          <small>Último snapshot persistido</small>
+          <small>{t("snapshot_saved")}</small>
         </article>
         <article className={styles.summaryCard}>
-          <span className={styles.summaryLabel}>Señal de mercado</span>
+          <span className={styles.summaryLabel}>{t("market_signal")}</span>
           <strong className={styles.positiveValue}>●</strong>
-          <small>Datos preparados para análisis</small>
+          <small>{t("analysis_ready")}</small>
         </article>
       </section>
 

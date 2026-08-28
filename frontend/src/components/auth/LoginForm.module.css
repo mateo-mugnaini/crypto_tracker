@@ -8,6 +8,12 @@
   box-shadow: var(--shadow-lg);
 }
 
+.languageControl {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
 .card h2 {
   margin-bottom: 0.35rem;
   color: var(--text-primary);

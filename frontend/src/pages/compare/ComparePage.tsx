@@ -4,9 +4,9 @@ import DashboardLayout from "../dashboard/DashboardLayout";
 export default function ComparePage() {
   return (
     <DashboardLayout
-      description="Compara dos monedas en el mismo período para distinguir tendencias relativas."
-      eyebrow="Compare / Relative performance"
-      title="Poné dos tendencias lado a lado."
+      description="compare_description"
+      eyebrow="compare_eyebrow"
+      title="compare_title"
     >
       <PriceComparisonPanel />
     </DashboardLayout>

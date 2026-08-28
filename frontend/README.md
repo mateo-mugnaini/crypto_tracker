@@ -177,3 +177,13 @@ salud.
 
 La PWA y su prueba offline local estan documentadas en
 [`docs/18-pwa-local.md`](docs/18-pwa-local.md).
+
+## Idiomas
+
+La interfaz incluye traducciones locales para italiano, espanol e ingles. No se
+realizan llamadas externas para traducir contenido. El idioma inicial es
+italiano; el selector de idioma esta disponible en la navegacion y la eleccion
+se recuerda en `localStorage` con la clave `crypto_tracker_locale`.
+
+El contexto esta en `src/i18n/I18nContext.tsx` y se consume mediante
+`useI18n().t("clave")`.

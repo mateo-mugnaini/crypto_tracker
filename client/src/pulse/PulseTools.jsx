@@ -5,6 +5,7 @@ import { useAlerts } from "../features/alerts/AlertsContext";
 import { useFavorites } from "../features/favorites/FavoritesContext";
 import { useMarket } from "../features/market/MarketContext";
 import { useToast } from "../components/ui/ToastProvider";
+import { useI18n } from "../i18n/I18nContext";
 import PulseShell from "./PulseShell";
 import { formatCurrency, formatDate, formatNumber, initials } from "./pulseUtils";
 import styles from "./PulseViews.module.css";
@@ -12,13 +13,14 @@ import styles from "./PulseViews.module.css";
 export function PulseFavoritesPage() {
   const { coins } = useMarket();
   const { favorites, isLoading, removeFavorite } = useFavorites();
+  const { t } = useI18n();
   const favoriteCoins = favorites
     .map((favorite) => coins.find((coin) => coin.id === favorite.coin_id))
     .filter(Boolean);
   return (
-    <PulseShell description="Las monedas que querés tener a mano." title="Favoritos">
+    <PulseShell description={t("favorites_description")} title={t("favorites_title")}>
       {isLoading ? (
-        <div className={styles.empty}>Cargando favoritos…</div>
+        <div className={styles.empty}>{t("loading_favorites")}</div>
       ) : favoriteCoins.length ? (
         <div className={styles.coinList}>
           {favoriteCoins.map((coin) => (
@@ -48,7 +50,7 @@ export function PulseFavoritesPage() {
         <div className={styles.empty}>
           Todavía no guardaste favoritos. Explorá el{" "}
           <Link className={styles.textLink} to="/market">
-            mercado
+            {t("nav_market")}
           </Link>{" "}
           para agregar alguno.
         </div>
@@ -66,6 +68,7 @@ export function PulseHistoryPage() {
   const [variation, setVariation] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     if (!coinId && coins[0]) setCoinId(coins[0].id);
@@ -108,14 +111,11 @@ export function PulseHistoryPage() {
 
   const selectedCoin = coins.find((coin) => coin.id === coinId);
   return (
-    <PulseShell
-      description="Una lectura breve de los precios registrados."
-      title="Historial"
-    >
+    <PulseShell description={t("history_description")} title={t("history_title")}>
       <div className={styles.stack}>
         <div className={styles.searchRow}>
           <div className={styles.field}>
-            <label htmlFor="history-coin">Moneda</label>
+            <label htmlFor="history-coin">{t("coin")}</label>
             <select id="history-coin" onChange={selectCoin} value={coinId}>
               {coins.map((coin) => (
                 <option key={coin.id} value={coin.id}>
@@ -127,20 +127,20 @@ export function PulseHistoryPage() {
         </div>
         {error && <div className={styles.notice}>{error}</div>}
         {loading ? (
-          <div className={styles.empty}>Cargando historial…</div>
+          <div className={styles.empty}>{t("loading_history")}</div>
         ) : (
           <>
             <section className={styles.infoGrid}>
               <div className={styles.infoItem}>
-                <span>Moneda</span>
+                <span>{t("coin")}</span>
                 <strong>{selectedCoin?.name || coinId}</strong>
               </div>
               <div className={styles.infoItem}>
-                <span>Promedio registrado</span>
+                <span>{t("average")}</span>
                 <strong>{formatCurrency(statistics?.average_price)}</strong>
               </div>
               <div className={styles.infoItem}>
-                <span>Variación</span>
+                <span>{t("variation")}</span>
                 <strong
                   className={
                     variation?.trend === "down" ? styles.negative : styles.positive
@@ -158,8 +158,8 @@ export function PulseHistoryPage() {
                 <table className={styles.table}>
                   <thead>
                     <tr>
-                      <th>Fecha</th>
-                      <th>Precio</th>
+                      <th>{t("date")}</th>
+                      <th>{t("price")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -173,7 +173,7 @@ export function PulseHistoryPage() {
                 </table>
               </div>
             ) : (
-              <div className={styles.empty}>No hay registros para esta moneda.</div>
+              <div className={styles.empty}>{t("no_records")}</div>
             )}
           </>
         )}
@@ -188,6 +188,7 @@ export function PulseComparePage() {
   const [secondId, setSecondId] = useState(coins[1]?.id || coins[0]?.id || "");
   const first = coins.find((coin) => coin.id === firstId);
   const second = coins.find((coin) => coin.id === secondId);
+  const { t } = useI18n();
   const rows = useMemo(
     () => [
       [
@@ -209,14 +210,11 @@ export function PulseComparePage() {
     [first, second],
   );
   return (
-    <PulseShell
-      description="Poné dos monedas lado a lado, sin gráficos ni ruido."
-      title="Comparar"
-    >
+    <PulseShell description={t("compare_description")} title={t("compare_title")}>
       <div className={styles.stack}>
         <div className={styles.searchRow}>
           <div className={styles.field}>
-            <label htmlFor="compare-first">Primera moneda</label>
+            <label htmlFor="compare-first">{t("first_coin")}</label>
             <select
               id="compare-first"
               onChange={(event) => setFirstId(event.target.value)}
@@ -230,7 +228,7 @@ export function PulseComparePage() {
             </select>
           </div>
           <div className={styles.field}>
-            <label htmlFor="compare-second">Segunda moneda</label>
+            <label htmlFor="compare-second">{t("second_coin")}</label>
             <select
               id="compare-second"
               onChange={(event) => setSecondId(event.target.value)}
@@ -248,7 +246,7 @@ export function PulseComparePage() {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Dato</th>
+                <th>{t("data")}</th>
                 <th>{first?.name || "—"}</th>
                 <th>{second?.name || "—"}</th>
               </tr>
@@ -285,6 +283,7 @@ export function PulseAlertsPage() {
   const [condition, setCondition] = useState("above");
   const [targetPrice, setTargetPrice] = useState("");
   const [saving, setSaving] = useState(false);
+  const { t } = useI18n();
   async function handleSubmit(event) {
     event.preventDefault();
     setSaving(true);
@@ -304,24 +303,21 @@ export function PulseAlertsPage() {
     }
   }
   return (
-    <PulseShell
-      description="Recibí un aviso cuando una moneda cruce el precio que elijas."
-      title="Alertas"
-    >
+    <PulseShell description={t("alerts_description")} title={t("alerts_title")}>
       <div className={styles.stack}>
         <section className={styles.formPanel}>
-          <h2>Nueva alerta</h2>
-          <p>La alerta queda guardada en tu cuenta.</p>
+          <h2>{t("new_alert")}</h2>
+          <p>{t("alert_help")}</p>
           <form className={styles.formGrid} onSubmit={handleSubmit}>
             <div className={styles.field}>
-              <label htmlFor="alert-coin">Moneda</label>
+              <label htmlFor="alert-coin">{t("coin")}</label>
               <select
                 id="alert-coin"
                 onChange={(event) => setCoinId(event.target.value)}
                 required
                 value={coinId}
               >
-                <option value="">Elegir…</option>
+                <option value="">{t("choose")}</option>
                 {coins.map((coin) => (
                   <option key={coin.id} value={coin.id}>
                     {coin.name}
@@ -330,18 +326,18 @@ export function PulseAlertsPage() {
               </select>
             </div>
             <div className={styles.field}>
-              <label htmlFor="alert-condition">Cuando esté</label>
+              <label htmlFor="alert-condition">{t("condition")}</label>
               <select
                 id="alert-condition"
                 onChange={(event) => setCondition(event.target.value)}
                 value={condition}
               >
-                <option value="above">Por encima de</option>
-                <option value="below">Por debajo de</option>
+                <option value="above">{t("above")}</option>
+                <option value="below">{t("below")}</option>
               </select>
             </div>
             <div className={styles.field}>
-              <label htmlFor="alert-price">Precio USD</label>
+              <label htmlFor="alert-price">{t("target_price")}</label>
               <input
                 id="alert-price"
                 min="0"
@@ -353,13 +349,13 @@ export function PulseAlertsPage() {
               />
             </div>
             <button className={styles.primaryButton} disabled={saving} type="submit">
-              {saving ? "Guardando…" : "Crear alerta"}
+              {saving ? t("creating") : t("create_alert")}
             </button>
           </form>
         </section>
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h2>Mis alertas</h2>
+            <h2>{t("my_alerts")}</h2>
           </div>
           {alerts.length ? (
             <div className={styles.coinList}>
@@ -396,20 +392,22 @@ export function PulseAlertsPage() {
               ))}
             </div>
           ) : (
-            <div className={styles.empty}>No tenés alertas creadas.</div>
+            <div className={styles.empty}>{t("no_alerts")}</div>
           )}
         </section>
         {notifications.length > 0 && (
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
-              <h2>Notificaciones {unreadCount ? `(${unreadCount})` : ""}</h2>
+              <h2>
+                {t("notifications")} {unreadCount ? `(${unreadCount})` : ""}
+              </h2>
               {unreadCount > 0 && (
                 <button
                   className={styles.secondaryButton}
                   onClick={() => void markAllNotificationsRead()}
                   type="button"
                 >
-                  Marcar leídas
+                  {t("mark_read")}
                 </button>
               )}
             </div>
@@ -437,37 +435,35 @@ export function PulseAlertsPage() {
 }
 
 export function PulseToolsPage() {
+  const { t } = useI18n();
   return (
-    <PulseShell
-      description="Funciones útiles cuando necesitás ir un poco más allá."
-      title="Más herramientas"
-    >
+    <PulseShell description={t("tools_description")} title={t("tools_title")}>
       <div className={styles.toolList}>
         <Link className={styles.toolItem} to="/favorites">
           <span>
-            <strong>Favoritos</strong>
-            <span>Guardá monedas para volver rápido.</span>
+            <strong>{t("favorites_title")}</strong>
+            <span>{t("tools_favorites")}</span>
           </span>
           <span className={styles.toolArrow}>→</span>
         </Link>
         <Link className={styles.toolItem} to="/history">
           <span>
-            <strong>Historial</strong>
-            <span>Revisá precios registrados.</span>
+            <strong>{t("history_title")}</strong>
+            <span>{t("tools_history")}</span>
           </span>
           <span className={styles.toolArrow}>→</span>
         </Link>
         <Link className={styles.toolItem} to="/compare">
           <span>
-            <strong>Comparar</strong>
-            <span>Mirá dos monedas juntas.</span>
+            <strong>{t("compare_title")}</strong>
+            <span>{t("tools_compare")}</span>
           </span>
           <span className={styles.toolArrow}>→</span>
         </Link>
         <Link className={styles.toolItem} to="/alerts">
           <span>
-            <strong>Alertas</strong>
-            <span>Recibí avisos de precio.</span>
+            <strong>{t("alerts_title")}</strong>
+            <span>{t("tools_alerts")}</span>
           </span>
           <span className={styles.toolArrow}>→</span>
         </Link>

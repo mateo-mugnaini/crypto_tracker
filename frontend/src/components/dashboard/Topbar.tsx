@@ -3,6 +3,8 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 import { useMarket } from "../../features/market/MarketContext";
 import { useOptionalAlerts } from "../../features/alerts/AlertsContext";
+import { useI18n } from "../../i18n/I18nContext";
+import LanguageSelector from "../ui/LanguageSelector";
 import styles from "./Topbar.module.css";
 
 function NavIcon({
@@ -46,6 +48,7 @@ function ActionButtons() {
   const { isAutoRefreshEnabled, refresh, status } = useMarket();
   const unreadCount = useOptionalAlerts()?.unreadCount ?? 0;
   const isRefreshing = status === "loading";
+  const { t } = useI18n();
 
   return (
     <div className={styles.actions}>
@@ -55,15 +58,13 @@ function ActionButtons() {
         </span>
         <span>
           <strong>{user?.username}</strong>
-          <small>
-            {isAutoRefreshEnabled ? "Sincronización activa" : "Vista manual"}
-          </small>
+          <small>{isAutoRefreshEnabled ? t("active_sync") : t("manual_view")}</small>
         </span>
       </span>
       <NavLink
-        aria-label="Ver alertas"
+        aria-label={t("view_alerts")}
         className={styles.notificationButton}
-        title={unreadCount ? `${unreadCount} alertas nuevas` : "Ver alertas"}
+        title={unreadCount ? t("new_alerts", { count: unreadCount }) : t("view_alerts")}
         to="/alerts"
       >
         <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
@@ -82,7 +83,7 @@ function ActionButtons() {
         )}
       </NavLink>
       <button
-        aria-label="Actualizar mercado"
+        aria-label={t("refresh_market")}
         className={styles.iconButton}
         disabled={isRefreshing}
         onClick={() => void refresh()}
@@ -97,10 +98,10 @@ function ActionButtons() {
             strokeWidth="1.8"
           />
         </svg>
-        <span>{isRefreshing ? "Actualizando" : "Actualizar"}</span>
+        <span>{isRefreshing ? t("refreshing") : t("refresh")}</span>
       </button>
       <button className={styles.logoutButton} onClick={logout} type="button">
-        Salir
+        {t("logout")}
       </button>
     </div>
   );
@@ -117,19 +118,20 @@ const links = [
 ] as const;
 
 export default function Topbar() {
+  const { t } = useI18n();
   return (
     <div className={styles.navigationRoot}>
-      <aside aria-label="Navegación principal" className={styles.sidebar}>
+      <aside aria-label={t("main_navigation")} className={styles.sidebar}>
         <div className={styles.brand}>
           <span className={styles.brandMark}>C</span>
           <span>
             <strong>Crypto Tracker</strong>
-            <small>Market intelligence</small>
+            <small>{t("market_intelligence")}</small>
           </span>
         </div>
 
         <div className={styles.navGroup}>
-          <span className={styles.navLabel}>Workspace</span>
+          <span className={styles.navLabel}>{t("workspace")}</span>
           <nav>
             {links.map(([to, label, icon]) => (
               <NavLink
@@ -141,7 +143,19 @@ export default function Topbar() {
                 to={to}
               >
                 <NavIcon kind={icon} />
-                <span>{label}</span>
+                <span>
+                  {t(
+                    {
+                      Resumen: "nav_summary",
+                      "Mi cartera": "nav_portfolio",
+                      Mercado: "nav_market",
+                      Favoritos: "nav_favorites",
+                      Historial: "nav_history",
+                      Comparativa: "nav_compare",
+                      Alertas: "nav_alerts",
+                    }[label],
+                  )}
+                </span>
               </NavLink>
             ))}
           </nav>
@@ -150,22 +164,23 @@ export default function Topbar() {
         <div className={styles.sidebarFooter}>
           <span className={styles.statusDot} />
           <span>
-            <strong>API conectada</strong>
-            <small>Datos sincronizados</small>
+            <strong>{t("api_connected")}</strong>
+            <small>{t("synced_data")}</small>
           </span>
         </div>
       </aside>
 
       <header className={styles.mobileHeader}>
+        <LanguageSelector />
         <div className={styles.brand}>
           <span className={styles.brandMark}>C</span>
           <span>
             <strong>Crypto Tracker</strong>
-            <small>Market intelligence</small>
+            <small>{t("market_intelligence")}</small>
           </span>
         </div>
         <ActionButtons />
-        <nav aria-label="Navegación móvil" className={styles.mobileNav}>
+        <nav aria-label={t("mobile_navigation")} className={styles.mobileNav}>
           {links.map(([to, label, icon]) => (
             <NavLink
               className={({ isActive }) =>
@@ -176,13 +191,26 @@ export default function Topbar() {
               to={to}
             >
               <NavIcon kind={icon} />
-              <span>{label}</span>
+              <span>
+                {t(
+                  {
+                    Resumen: "nav_summary",
+                    "Mi cartera": "nav_portfolio",
+                    Mercado: "nav_market",
+                    Favoritos: "nav_favorites",
+                    Historial: "nav_history",
+                    Comparativa: "nav_compare",
+                    Alertas: "nav_alerts",
+                  }[label],
+                )}
+              </span>
             </NavLink>
           ))}
         </nav>
       </header>
 
       <div className={styles.desktopActions}>
+        <LanguageSelector />
         <ActionButtons />
       </div>
     </div>

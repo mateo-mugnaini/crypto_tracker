@@ -4,9 +4,9 @@ import DashboardLayout from "../dashboard/DashboardLayout";
 export default function AlertsPage() {
   return (
     <DashboardLayout
-      description="Configurá avisos para enterarte cuando una moneda alcance el precio que te interesa."
-      eyebrow="Workspace / Price watch"
-      title="Vigilá el mercado."
+      description="alerts_description"
+      eyebrow="alerts_eyebrow"
+      title="alerts_title"
     >
       <AlertsPanel />
     </DashboardLayout>

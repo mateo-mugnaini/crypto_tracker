@@ -7,6 +7,7 @@ import type {
   PriceHistoryVariation,
 } from "../../api/types";
 import { useMarket } from "../../features/market/MarketContext";
+import { useI18n } from "../../i18n/I18nContext";
 import PriceHistoryChart from "./PriceHistoryChart";
 import styles from "./PriceHistoryPanel.module.css";
 
@@ -40,8 +41,8 @@ function formatPrice(price: number | null) {
   return price === null ? "—" : moneyFormatter.format(price);
 }
 
-function formatRecordedAt(value: string) {
-  return new Date(value).toLocaleString("es-AR", {
+function formatRecordedAt(value: string, locale: string) {
+  return new Date(value).toLocaleString(locale, {
     dateStyle: "short",
     timeStyle: "short",
   });
@@ -65,6 +66,8 @@ export default function PriceHistoryPanel({
     loadCoins,
     status: marketStatus,
   } = useMarket();
+  const { locale, t } = useI18n();
+  const dateLocale = locale === "it" ? "it-IT" : locale === "en" ? "en-US" : "es-AR";
   const [selectedCoinId, setSelectedCoinId] = useState("");
   const [records, setRecords] = useState<PriceHistoryRecord[]>([]);
   const [statistics, setStatistics] = useState<PriceHistoryStatistics | null>(null);
@@ -174,8 +177,8 @@ export default function PriceHistoryPanel({
     <details className={styles.panel} data-dashboard-accordion="true" id="history" open>
       <summary className={styles.sectionHeading}>
         <div>
-          <span className={styles.eyebrow}>Análisis</span>
-          <h2>Historial de precios</h2>
+          <span className={styles.eyebrow}>{t("history_eyebrow")}</span>
+          <h2>{t("price_history")}</h2>
         </div>
         <span className={styles.pill}>Página {page + 1}</span>
       </summary>
@@ -191,7 +194,7 @@ export default function PriceHistoryPanel({
 
       <div className={styles.toolbar}>
         <label>
-          Moneda
+          {t("coin")}
           <select
             disabled={isCoinsLoading || coins.length === 0}
             onChange={(event) => handleCoinChange(event.target.value)}
@@ -207,7 +210,7 @@ export default function PriceHistoryPanel({
 
         <form className={styles.filterForm} onSubmit={handleFilterSubmit}>
           <label>
-            Desde
+            {t("from")}
             <input
               onChange={(event) => updateDraftFilter("startDate", event.target.value)}
               type="date"
@@ -215,7 +218,7 @@ export default function PriceHistoryPanel({
             />
           </label>
           <label>
-            Hasta
+            {t("to")}
             <input
               onChange={(event) => updateDraftFilter("endDate", event.target.value)}
               type="date"
@@ -223,7 +226,7 @@ export default function PriceHistoryPanel({
             />
           </label>
           <label>
-            Precio mínimo
+            {t("min_price")}
             <input
               min="0"
               onChange={(event) => updateDraftFilter("minPrice", event.target.value)}
@@ -233,7 +236,7 @@ export default function PriceHistoryPanel({
             />
           </label>
           <label>
-            Precio máximo
+            {t("max_price")}
             <input
               min="0"
               onChange={(event) => updateDraftFilter("maxPrice", event.target.value)}
@@ -243,7 +246,7 @@ export default function PriceHistoryPanel({
             />
           </label>
           <label>
-            Ordenar por
+            {t("sort_by")}
             <select
               onChange={(event) =>
                 updateDraftFilter("sortBy", event.target.value as Filters["sortBy"])
@@ -255,7 +258,7 @@ export default function PriceHistoryPanel({
             </select>
           </label>
           <label>
-            Dirección
+            {t("direction")}
             <select
               onChange={(event) =>
                 updateDraftFilter(
@@ -269,7 +272,7 @@ export default function PriceHistoryPanel({
               <option value="asc">Ascendente</option>
             </select>
           </label>
-          <button type="submit">Aplicar filtros</button>
+          <button type="submit">{t("apply_filters")}</button>
         </form>
       </div>
 
@@ -278,19 +281,19 @@ export default function PriceHistoryPanel({
 
       <div className={styles.statGrid}>
         <div>
-          <span>Registros</span>
+          <span>{t("records")}</span>
           <strong>{statistics?.count ?? "—"}</strong>
         </div>
         <div>
-          <span>Mínimo</span>
+          <span>{t("min")}</span>
           <strong>{formatPrice(statistics?.min_price ?? null)}</strong>
         </div>
         <div>
-          <span>Máximo</span>
+          <span>{t("max")}</span>
           <strong>{formatPrice(statistics?.max_price ?? null)}</strong>
         </div>
         <div>
-          <span>Variación</span>
+          <span>{t("variation")}</span>
           <strong className={variation?.trend ? styles[variation.trend] : ""}>
             {variation?.percentage_change === null ||
             variation?.percentage_change === undefined
@@ -309,14 +312,14 @@ export default function PriceHistoryPanel({
           <table>
             <thead>
               <tr>
-                <th>Fecha</th>
-                <th>Precio</th>
+                <th>{t("date")}</th>
+                <th>{t("price")}</th>
               </tr>
             </thead>
             <tbody>
               {records.map((record) => (
                 <tr key={`${record.id ?? record.recorded_at}-${record.price}`}>
-                  <td>{formatRecordedAt(record.recorded_at)}</td>
+                  <td>{formatRecordedAt(record.recorded_at, dateLocale)}</td>
                   <td>{formatPrice(record.price)}</td>
                 </tr>
               ))}
@@ -333,15 +336,17 @@ export default function PriceHistoryPanel({
           onClick={() => setPage((current) => Math.max(0, current - 1))}
           type="button"
         >
-          Anterior
+          {t("previous")}
         </button>
-        <span>Página {page + 1}</span>
+        <span>
+          {t("page")} {page + 1}
+        </span>
         <button
           disabled={!hasNextPage || isHistoryLoading}
           onClick={() => setPage((current) => current + 1)}
           type="button"
         >
-          Siguiente
+          {t("next")}
         </button>
       </div>
     </details>

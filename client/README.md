@@ -64,6 +64,16 @@ Los componentes antiguos permanecen en el repositorio para no perder cobertura n
 
 ## Rutas
 
+## Idiomas
+
+Pulso incluye traducciones locales para italiano, espanol e ingles, sin API de
+traduccion. Italiano es el idioma predeterminado. El selector esta disponible
+en la experiencia principal y la preferencia se conserva en `localStorage` con
+la clave `crypto_tracker_locale`.
+
+La implementacion vive en `src/i18n/I18nContext.jsx` y los componentes usan
+`useI18n().t("clave")`.
+
 | Ruta              | Uso                      |
 | ----------------- | ------------------------ |
 | `/login`          | iniciar sesión           |

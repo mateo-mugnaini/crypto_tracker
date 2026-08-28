@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ApiError, api } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
+import { useI18n } from "../i18n/I18nContext";
+import LanguageSelector from "../components/ui/LanguageSelector";
 import styles from "./PulseAuth.module.css";
 
 function Brand() {
@@ -22,6 +24,7 @@ export function PulseLoginPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const message = location.state?.message;
+  const { t } = useI18n();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -32,9 +35,7 @@ export function PulseLoginPage() {
       navigate("/dashboard", { replace: true });
     } catch (caughtError) {
       setError(
-        caughtError instanceof ApiError
-          ? caughtError.message
-          : "No se pudo iniciar sesión.",
+        caughtError instanceof ApiError ? caughtError.message : t("login_failed"),
       );
     } finally {
       setIsSubmitting(false);
@@ -44,15 +45,16 @@ export function PulseLoginPage() {
   return (
     <main className={styles.page}>
       <section className={styles.card}>
+        <div className={styles.languageControl}>
+          <LanguageSelector />
+        </div>
         <Brand />
-        <h1>Entrá a tu pulso</h1>
-        <p className={styles.intro}>
-          Consultá el mercado y seguí tu cartera desde un solo lugar.
-        </p>
+        <h1>{t("login_title")}</h1>
+        <p className={styles.intro}>{t("login_description")}</p>
         {message && <p className={styles.success}>{message}</p>}
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.field}>
-            <label htmlFor="login-email">Email</label>
+            <label htmlFor="login-email">{t("email")}</label>
             <input
               id="login-email"
               onChange={(event) => setEmail(event.target.value)}
@@ -62,7 +64,7 @@ export function PulseLoginPage() {
             />
           </div>
           <div className={styles.field}>
-            <label htmlFor="login-password">Contraseña</label>
+            <label htmlFor="login-password">{t("password")}</label>
             <input
               id="login-password"
               minLength="8"
@@ -74,11 +76,11 @@ export function PulseLoginPage() {
           </div>
           {error && <p className={styles.error}>{error}</p>}
           <button className={styles.submit} disabled={isSubmitting} type="submit">
-            {isSubmitting ? "Entrando…" : "Entrar"}
+            {isSubmitting ? t("signing_in") : t("sign_in")}
           </button>
         </form>
         <p className={styles.footnote}>
-          ¿Todavía no tenés cuenta? <Link to="/register">Creala acá</Link>
+          {t("no_account")} <Link to="/register">{t("create_here")}</Link>
         </p>
       </section>
     </main>
@@ -92,6 +94,7 @@ export function PulseRegisterPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useI18n();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -101,13 +104,11 @@ export function PulseRegisterPage() {
       await api.register(username, email, password);
       navigate("/login", {
         replace: true,
-        state: { message: "Cuenta creada. Ya podés entrar." },
+        state: { message: t("account_created") },
       });
     } catch (caughtError) {
       setError(
-        caughtError instanceof ApiError
-          ? caughtError.message
-          : "No se pudo crear la cuenta.",
+        caughtError instanceof ApiError ? caughtError.message : t("register_failed"),
       );
     } finally {
       setIsSubmitting(false);
@@ -117,14 +118,15 @@ export function PulseRegisterPage() {
   return (
     <main className={styles.page}>
       <section className={styles.card}>
+        <div className={styles.languageControl}>
+          <LanguageSelector />
+        </div>
         <Brand />
-        <h1>Creá tu cuenta</h1>
-        <p className={styles.intro}>
-          Un espacio simple para mirar precios y ordenar tus inversiones.
-        </p>
+        <h1>{t("register_title")}</h1>
+        <p className={styles.intro}>{t("register_description")}</p>
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.field}>
-            <label htmlFor="register-username">Nombre de usuario</label>
+            <label htmlFor="register-username">{t("username")}</label>
             <input
               id="register-username"
               minLength="3"
@@ -134,7 +136,7 @@ export function PulseRegisterPage() {
             />
           </div>
           <div className={styles.field}>
-            <label htmlFor="register-email">Email</label>
+            <label htmlFor="register-email">{t("email")}</label>
             <input
               id="register-email"
               onChange={(event) => setEmail(event.target.value)}
@@ -144,7 +146,7 @@ export function PulseRegisterPage() {
             />
           </div>
           <div className={styles.field}>
-            <label htmlFor="register-password">Contraseña</label>
+            <label htmlFor="register-password">{t("password")}</label>
             <input
               id="register-password"
               minLength="8"
@@ -156,11 +158,11 @@ export function PulseRegisterPage() {
           </div>
           {error && <p className={styles.error}>{error}</p>}
           <button className={styles.submit} disabled={isSubmitting} type="submit">
-            {isSubmitting ? "Creando…" : "Crear cuenta"}
+            {isSubmitting ? t("signing_up") : t("sign_up")}
           </button>
         </form>
         <p className={styles.footnote}>
-          ¿Ya tenés cuenta? <Link to="/login">Volvé a entrar</Link>
+          {t("have_account")} <Link to="/login">{t("return_login")}</Link>
         </p>
       </section>
     </main>

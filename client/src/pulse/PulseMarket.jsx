@@ -5,6 +5,7 @@ import { useAuth } from "../auth/AuthContext";
 import { useFavorites } from "../features/favorites/FavoritesContext";
 import { useMarket } from "../features/market/MarketContext";
 import { useToast } from "../components/ui/ToastProvider";
+import { useI18n } from "../i18n/I18nContext";
 import PulseShell from "./PulseShell";
 import { formatCurrency, initials } from "./pulseUtils";
 import styles from "./PulseViews.module.css";
@@ -16,6 +17,7 @@ export default function PulseMarket() {
   const { token } = useAuth();
   const [query, setQuery] = useState("");
   const [updatingId, setUpdatingId] = useState(null);
+  const { t } = useI18n();
 
   useEffect(() => {
     if (status === "idle") void loadCoins();
@@ -31,34 +33,31 @@ export default function PulseMarket() {
 
   async function updatePrice(coin) {
     if (!token) {
-      showToast("Tu sesiÃ³n no estÃ¡ disponible. VolvÃ© a iniciar sesiÃ³n.", "error");
+      showToast(t("session_unavailable"), "error");
       return;
     }
     setUpdatingId(coin.id);
     try {
       await api.updateCurrentPrice(coin.id, token);
       await refresh();
-      showToast(`${coin.name} fue actualizada.`, "success");
+      showToast(t("price_updated", { name: coin.name }), "success");
     } catch (caughtError) {
-      showToast(caughtError.message || "No se pudo actualizar el precio.", "error");
+      showToast(caughtError.message || t("generic_error"), "error");
     } finally {
       setUpdatingId(null);
     }
   }
 
   return (
-    <PulseShell
-      description="Buscá una moneda y abrí solo la información que necesitás."
-      title="Mercado"
-    >
+    <PulseShell description={t("market_description")} title={t("market_title")}>
       <div className={styles.stack}>
         <div className={styles.searchRow}>
           <div className={styles.field}>
-            <label htmlFor="market-search">Buscar moneda</label>
+            <label htmlFor="market-search">{t("search_coin")}</label>
             <input
               id="market-search"
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Bitcoin, BTC…"
+              placeholder={t("search_placeholder")}
               type="search"
               value={query}
             />
@@ -69,17 +68,18 @@ export default function PulseMarket() {
               onClick={() => setQuery("")}
               type="button"
             >
-              Limpiar
+              {t("clear")}
             </button>
           )}
         </div>
 
         {error && <div className={styles.notice}>{error}</div>}
         <p className={styles.resultHint}>
-          {visibleCoins.length} resultado{visibleCoins.length === 1 ? "" : "s"}
+          {visibleCoins.length}{" "}
+          {visibleCoins.length === 1 ? t("result_count") : t("results")}
         </p>
         {status === "loading" && !coins.length ? (
-          <div className={styles.empty}>Cargando mercado…</div>
+          <div className={styles.empty}>{t("loading_market")}</div>
         ) : visibleCoins.length ? (
           <div className={styles.coinList}>
             {visibleCoins.map((coin) => {
@@ -101,7 +101,11 @@ export default function PulseMarket() {
                   </span>
                   <span className={styles.coinActions}>
                     <button
-                      aria-label={`${isFavorite(coin.id) ? "Quitar" : "Agregar"} ${coin.name} de favoritos`}
+                      aria-label={
+                        isFavorite(coin.id)
+                          ? t("remove_favorite", { name: coin.name })
+                          : t("add_favorite", { name: coin.name })
+                      }
                       className={`${styles.iconButton} ${isFavorite(coin.id) ? styles.iconButtonActive : ""}`}
                       disabled={favoriteUpdating}
                       onClick={() => void toggleFavorite(coin.id)}
@@ -118,7 +122,7 @@ export default function PulseMarket() {
                       {updatingId === coin.id ? "…" : "↻"}
                     </button>
                     <Link className={styles.rowLink} to={`/market/${coin.id}`}>
-                      Abrir
+                      {t("open")}
                     </Link>
                   </span>
                 </div>
@@ -126,7 +130,7 @@ export default function PulseMarket() {
             })}
           </div>
         ) : (
-          <div className={styles.empty}>No encontramos una moneda con ese nombre.</div>
+          <div className={styles.empty}>{t("no_coin")}</div>
         )}
       </div>
     </PulseShell>
